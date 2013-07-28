@@ -60,4 +60,11 @@ public class Wildcards {
 	public static <T> T someExpressionUsing(Object value) {
 		return null;
 	}
+
+	@Wildcard(
+			matcher = SomeConditionMatcher.class)
+	public static boolean someConditionUsing(Object value) {
+		return true;
+	}
+
 }
