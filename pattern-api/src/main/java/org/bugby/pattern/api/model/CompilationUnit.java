@@ -22,9 +22,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class CompilationUnit extends Node {
-	private final String PackageName;
-private final 	List<Annotation> Annotations;
-private final 	List<Import> Imports;
-private final 	List<TypeDecl> Types;
-	private final String FileName;
+	private final String packageName;
+private final 	List<Annotation> annotations;
+private final 	List<Import> imports;
+private final 	List<TypeDecl> types;
+	private final String fileName;
 }

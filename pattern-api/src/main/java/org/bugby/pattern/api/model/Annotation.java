@@ -22,10 +22,10 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class Annotation extends Node {
-	private final String TypeName;
+	private final String typeName;
 	// TODO: how to visit it ?
 	// TODO: switch to AnnotationMirror#getElementValues type
-private final 	Map<String, Expr> Values;
+private final 	Map<String, Expr> values;
 
 	static final String defaultValue = "value";
 }

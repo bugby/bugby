@@ -22,8 +22,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Node {
 
-	//	private final List<Method> SimpleFields;
+	//	private final List<Method> simpleFields;
 	//
-	//	private final List<Method> NodeFields;
+	//	private final List<Method> nodeFields;
 
 }

@@ -20,7 +20,7 @@ package org.bugby.pattern.api.model;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class UnaryExpr extends Expr {
-	private final String Operator;
-	private final Expr Expression;
+	private final String operator;
+	private final Expr expression;
 	boolean isPostfix();
 }

@@ -26,5 +26,5 @@ public class Expr extends Node {
 	/**
 	 * @return Resolved type, if available. null otherwise
 	 */
-	private final TypeMirror ResolvedType;
+	private final TypeMirror resolvedType;
 }

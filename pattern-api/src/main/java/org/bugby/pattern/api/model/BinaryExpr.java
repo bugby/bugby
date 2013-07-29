@@ -20,7 +20,7 @@ package org.bugby.pattern.api.model;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class BinaryExpr extends Expr {
-    private final Expr LeftOperand;
-    private final String Operator;
-    private final Expr RightOperand;    
+    private final Expr leftOperand;
+    private final String operator;
+    private final Expr rightOperand    ;
 }

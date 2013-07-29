@@ -20,6 +20,6 @@ package org.bugby.pattern.api.model;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class AssertStmt extends Stmt {
-    private final Expr Condition;
-    private final Expr Detail;
+    private final Expr condition;
+    private final Expr detail;
 }

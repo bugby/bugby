@@ -20,6 +20,6 @@ package org.bugby.pattern.api.model;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class AssignExpr extends Expr {
-    private final Expr Var;
-    private final Expr Expr;
+    private final Expr var;
+    private final Expr expr;
 }

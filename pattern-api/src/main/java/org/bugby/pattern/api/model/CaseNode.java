@@ -25,6 +25,6 @@ import lombok.RequiredArgsConstructor;
     /**
      * @return null if and only if this Case is {@code default:}
      */
-    private final Expr Case;
-private final     List<Stmt> Statements;
+    private final Expr case;
+private final     List<Stmt> statements;
 }

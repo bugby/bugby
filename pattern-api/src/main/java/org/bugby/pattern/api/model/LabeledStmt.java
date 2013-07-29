@@ -20,6 +20,6 @@ package org.bugby.pattern.api.model;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class LabeledStmt extends Stmt {
-    private final String Label;
-    private final Stmt Statement;
+    private final String label;
+    private final Stmt statement;
 }

@@ -20,5 +20,5 @@ package org.bugby.pattern.api.model;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class Type extends Node {
-	private final String Name;
+	private final String name;
 }

@@ -25,7 +25,7 @@ import javax.lang.model.type.TypeMirror;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class MethodParam extends Node, Annotable {
-private final 	Set<Modifier> Modifiers;
-	private final TypeMirror Type;
-	private final String Name;
+private final 	Set<Modifier> modifiers;
+	private final TypeMirror type;
+	private final String name;
 }

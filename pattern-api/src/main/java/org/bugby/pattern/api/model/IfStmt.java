@@ -20,7 +20,7 @@ package org.bugby.pattern.api.model;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class IfStmt extends Stmt {
-    private final Expr Condition;
-    private final Stmt Then;
-    private final Stmt Else;
+    private final Expr condition;
+    private final Stmt then;
+    private final Stmt else;
 }

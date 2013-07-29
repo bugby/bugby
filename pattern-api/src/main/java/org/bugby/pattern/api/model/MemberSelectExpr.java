@@ -20,6 +20,6 @@ package org.bugby.pattern.api.model;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class MemberSelectExpr extends Expr {
-    private final Expr Expr;
-    private final String Id;
+    private final Expr expr;
+    private final String id;
 }

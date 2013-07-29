@@ -22,6 +22,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class SwitchStmt extends Stmt {
-    private final Expr Expression;
-private final     List<CaseNode> Cases;
+    private final Expr expression;
+private final     List<CaseNode> cases;
 }

@@ -22,5 +22,5 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class Block extends Stmt {
-private final 	List<Stmt> Stmts;
+private final 	List<Stmt> stmts;
 }

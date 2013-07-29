@@ -20,5 +20,5 @@ package org.bugby.pattern.api.model;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class VarStmt extends Stmt {
-	private final VarDecl Var;
+	private final VarDecl var;
 }

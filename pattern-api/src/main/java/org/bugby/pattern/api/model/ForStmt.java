@@ -22,8 +22,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class ForStmt extends Stmt {
-private final     List<Stmt> Initializer;
-    private final Expr Condition;
-private final     List<Stmt> Step;
-    private final Stmt Action;
+private final     List<Stmt> initializer;
+    private final Expr condition;
+private final     List<Stmt> step;
+    private final Stmt action;
 }

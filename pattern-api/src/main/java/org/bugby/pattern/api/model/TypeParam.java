@@ -22,6 +22,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class TypeParam extends Node {
-	private final String Name;
-private final 	List<String> Bounds;
+	private final String name;
+private final 	List<String> bounds;
 }

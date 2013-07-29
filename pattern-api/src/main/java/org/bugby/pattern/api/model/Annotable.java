@@ -23,5 +23,5 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public final class Annotable extends Node {
-	private final List<Annotation> Annotations;
+	private final List<Annotation> annotations;
 }

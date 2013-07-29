@@ -20,5 +20,5 @@ package org.bugby.pattern.api.model;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class ExprStmt extends Stmt {
-	private final Expr Expr;
+	private final Expr expr;
 }

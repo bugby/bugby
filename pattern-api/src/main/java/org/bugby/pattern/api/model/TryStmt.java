@@ -22,7 +22,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class TryStmt extends Stmt {
-    private final Block Body;
-private final     List<CatchNode> Catches;
-    private final Block Finally;
+    private final Block body;
+private final     List<CatchNode> catches;
+    private final Block finally;
 }

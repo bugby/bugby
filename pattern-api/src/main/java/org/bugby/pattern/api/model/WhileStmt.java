@@ -25,6 +25,6 @@ import lombok.RequiredArgsConstructor;
 	 * false if "while () {}"
 	 */
 	boolean isPostfix();
-    private final Expr Condition;
-    private final Stmt Action;
+    private final Expr condition;
+    private final Stmt action;
 }

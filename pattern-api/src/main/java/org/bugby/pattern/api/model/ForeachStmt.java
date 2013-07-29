@@ -20,7 +20,7 @@ package org.bugby.pattern.api.model;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class ForeachStmt extends Stmt {
-    private final VarStmt Variable;
-    private final Expr Collection;
-    private final Stmt Action;
+    private final VarStmt variable;
+    private final Expr collection;
+    private final Stmt action;
 }

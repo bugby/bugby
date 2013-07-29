@@ -24,5 +24,5 @@ import javax.lang.model.element.Modifier;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class BodyDecl extends Annotable {
-private final 	Set<Modifier> Modifiers;
+private final 	Set<Modifier> modifiers;
 }

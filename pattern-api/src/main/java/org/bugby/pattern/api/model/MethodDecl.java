@@ -24,18 +24,18 @@ import javax.lang.model.type.TypeMirror;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class MethodDecl extends BodyDecl {
-private final 	List<TypeParam> TypeParameters;
-	private final TypeMirror ReturnType;
-	private final String Name;
-private final 	List<MethodParam> Parameters;
-private final 	List<TypeMirror> Throws;
-	private final Block Body;
+private final 	List<TypeParam> typeParameters;
+	private final TypeMirror returnType;
+	private final String name;
+private final 	List<MethodParam> parameters;
+private final 	List<TypeMirror> throws;
+	private final Block body;
 	/**
 	 * Only for annotation types
 	 */
-	private final Expr DefaultValue;
+	private final Expr defaultValue;
 	
-	private final MethodKind Kind;
+	private final MethodKind kind;
 	
 	enum MethodKind {
 		Constructor,

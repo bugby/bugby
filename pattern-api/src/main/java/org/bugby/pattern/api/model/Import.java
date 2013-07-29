@@ -21,5 +21,5 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class Import extends Node {
 	boolean isStatic();
-	private final String Name;
+	private final String name;
 }

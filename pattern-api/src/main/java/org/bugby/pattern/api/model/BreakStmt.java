@@ -20,5 +20,5 @@ package org.bugby.pattern.api.model;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class BreakStmt extends Stmt {
-	private final String Label;
+	private final String label;
 }

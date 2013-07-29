@@ -20,5 +20,5 @@ package org.bugby.pattern.api.model;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class LiteralExpr extends Expr {
-	private final Object Value;
+	private final Object value;
 }

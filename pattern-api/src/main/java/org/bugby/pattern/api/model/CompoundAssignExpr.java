@@ -20,7 +20,7 @@ package org.bugby.pattern.api.model;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class CompoundAssignExpr extends Expr {
-    private final Expr Variable;
-    private final String Operator;
-    private final Expr Expression;
+    private final Expr variable;
+    private final String operator;
+    private final Expr expression;
 }

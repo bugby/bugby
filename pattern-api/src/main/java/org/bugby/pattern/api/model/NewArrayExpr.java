@@ -24,7 +24,7 @@ import javax.lang.model.type.TypeMirror;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class NewArrayExpr extends Expr {
-    private final TypeMirror Type;
-private final     List<Expr> Dimensions;
-private final     List<Expr> Initializers;
+    private final TypeMirror type;
+private final     List<Expr> dimensions;
+private final     List<Expr> initializers;
 }

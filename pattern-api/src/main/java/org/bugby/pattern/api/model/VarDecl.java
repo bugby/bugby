@@ -22,7 +22,7 @@ import javax.lang.model.type.TypeMirror;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class VarDecl extends BodyDecl {
-	private final TypeMirror Type;
-	private final String Var;
-	private final Expr Init;
+	private final TypeMirror type;
+	private final String var;
+	private final Expr init;
 }

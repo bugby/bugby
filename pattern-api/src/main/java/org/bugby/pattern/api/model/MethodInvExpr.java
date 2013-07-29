@@ -24,10 +24,10 @@ import javax.lang.model.type.TypeMirror;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class MethodInvExpr extends Expr, Annotable {
-private final     List<TypeMirror> TypeArgs;
-private final     List<List<Annotation>> ArgsAnnotations;
-    private final String Method;
+private final     List<TypeMirror> typeArgs;
+private final     List<List<Annotation>> argsAnnotations;
+    private final String method;
     /** MemberSelectExpr or IdExpr */
-    private final Expr Receiver;
-private final     List<Expr> Args;
+    private final Expr receiver;
+private final     List<Expr> args;
 }

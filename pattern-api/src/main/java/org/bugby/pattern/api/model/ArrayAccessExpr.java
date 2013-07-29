@@ -19,7 +19,7 @@ package org.bugby.pattern.api.model;
 
 
 public final class ArrayAccessExpr extends Expr {
-	private final Expr Array;
-	private final Expr Index;
+	private final Expr array;
+	private final Expr index;
 
 }

@@ -24,12 +24,12 @@ import javax.lang.model.type.TypeMirror;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class TypeDecl extends BodyDecl, Stmt {
-	private final String Name;
-	private final TypeKind Kind;
-private final 	List<TypeParam> TypeParameters;
-	private final TypeMirror Extends;
-private final 	List<TypeMirror> Implements;
-private final 	List<BodyDecl> Body;
+	private final String name;
+	private final TypeKind kind;
+private final 	List<TypeParam> typeParameters;
+	private final TypeMirror extends;
+private final 	List<TypeMirror> implements;
+private final 	List<BodyDecl> body;
 
 	enum TypeKind {
 		Class,

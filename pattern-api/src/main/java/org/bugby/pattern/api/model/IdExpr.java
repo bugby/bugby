@@ -20,5 +20,5 @@ package org.bugby.pattern.api.model;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class IdExpr extends Expr, Annotable {
-	private final String Id;
+	private final String id;
 }

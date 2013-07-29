@@ -20,6 +20,6 @@ package org.bugby.pattern.api.model;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class CatchNode extends Node {
-	private final VarStmt Catch;
-    private final Block Body;
+	private final VarStmt catch;
+    private final Block body;
 }

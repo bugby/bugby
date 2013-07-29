@@ -20,7 +20,7 @@ package org.bugby.pattern.api.model;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class ConditionalExpr extends Expr {
-    private final Expr Condition;
-    private final Expr TrueExpression;
-    private final Expr FalseExpression;
+    private final Expr condition;
+    private final Expr trueExpression;
+    private final Expr falseExpression;
 }

@@ -24,9 +24,9 @@ import javax.lang.model.type.TypeMirror;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class NewClassExpr extends Expr {
-    private final Expr EnclosingExpression;
-private final     List<TypeMirror> TypeArguments;
-    private final String ClassName;
-private final     List<Expr> Arguments;
+    private final Expr enclosingExpression;
+private final     List<TypeMirror> typeArguments;
+    private final String className;
+private final     List<Expr> arguments;
     TypeDecl	getClassBody();
 }

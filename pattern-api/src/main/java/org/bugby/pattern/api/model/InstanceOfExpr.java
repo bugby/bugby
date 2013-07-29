@@ -22,6 +22,6 @@ import javax.lang.model.type.TypeMirror;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor public final class InstanceOfExpr extends Expr {
-    private final Expr Expression;
-    private final TypeMirror Type;
+    private final Expr expression;
+    private final TypeMirror type;
 }
