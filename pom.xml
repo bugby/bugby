@@ -43,6 +43,7 @@
 	</parent>
 
 	<modules>
+		<module>pattern-api</module>
 		<module>annotation</module>
 		<module>wildcard-api</module>
 		<module>rich-ast</module>
