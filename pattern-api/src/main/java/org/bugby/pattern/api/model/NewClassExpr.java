@@ -21,12 +21,26 @@ import java.util.List;
 
 import javax.lang.model.type.TypeMirror;
 
-import lombok.RequiredArgsConstructor;
+import org.bugby.pattern.api.matcher.Matcher;
 
-@RequiredArgsConstructor public final class NewClassExpr extends Expr {
-    private final Expr enclosingExpression;
-private final     List<TypeMirror> typeArguments;
-    private final String className;
-private final     List<Expr> arguments;
-    TypeDecl	getClassBody();
+import lombok.Getter;
+
+@Getter
+public final class NewClassExpr extends Expr {
+	private final Expr enclosingExpression;
+	private final Matcher<List<TypeMirror>> typeArguments;
+	private final Matcher<String> className;
+	private final List<Expr> arguments;
+	private final TypeDecl classBody;
+
+	public NewClassExpr(Matcher<TypeMirror> resolvedType, Expr enclosingExpression, Matcher<List<TypeMirror>> typeArguments,
+			Matcher<String> className, List<Expr> arguments, TypeDecl classBody) {
+		super(resolvedType);
+		this.enclosingExpression = enclosingExpression;
+		this.typeArguments = typeArguments;
+		this.className = className;
+		this.arguments = arguments;
+		this.classBody = classBody;
+	}
+
 }

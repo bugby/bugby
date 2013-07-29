@@ -17,15 +17,23 @@
 
 package org.bugby.pattern.api.model;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeMirror;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class MethodParam extends Node, Annotable {
-private final 	Set<Modifier> modifiers;
-	private final TypeMirror type;
-	private final String name;
+import org.bugby.pattern.api.matcher.Matcher;
+
+@RequiredArgsConstructor
+@Getter
+public final class MethodParam extends Node implements Annotable {
+
+	private final List<Annotation> annotations;
+	private final Matcher<Set<Modifier>> modifiers;
+	private final Matcher<TypeMirror> type;
+	private final Matcher<String> name;
 }

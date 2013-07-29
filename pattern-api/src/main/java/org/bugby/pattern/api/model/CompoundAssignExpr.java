@@ -17,10 +17,23 @@
 
 package org.bugby.pattern.api.model;
 
-import lombok.RequiredArgsConstructor;
+import javax.lang.model.type.TypeMirror;
 
-@RequiredArgsConstructor public final class CompoundAssignExpr extends Expr {
-    private final Expr variable;
-    private final String operator;
-    private final Expr expression;
+import org.bugby.pattern.api.matcher.Matcher;
+
+import lombok.Getter;
+
+@Getter
+public final class CompoundAssignExpr extends Expr {
+	private final Expr variable;
+	private final Matcher<String> operator;
+	private final Expr expression;
+
+	public CompoundAssignExpr(Matcher<TypeMirror> resolvedType, Expr variable, Matcher<String> operator, Expr expression) {
+		super(resolvedType);
+		this.variable = variable;
+		this.operator = operator;
+		this.expression = expression;
+	}
+
 }

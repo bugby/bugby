@@ -17,11 +17,24 @@
 
 package org.bugby.pattern.api.model;
 
+import java.util.List;
+import java.util.Set;
+
+import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeMirror;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class VarDecl extends BodyDecl {
+import org.bugby.pattern.api.matcher.Matcher;
+
+@RequiredArgsConstructor
+@Getter
+public final class VarDecl implements BodyDecl {
+
+	private final Matcher<Set<Modifier>> modifiers;
+	private final List<Annotation> annotations;
+
 	private final TypeMirror type;
 	private final String var;
 	private final Expr init;

@@ -17,9 +17,21 @@
 
 package org.bugby.pattern.api.model;
 
-import lombok.RequiredArgsConstructor;
+import javax.lang.model.type.TypeMirror;
 
-@RequiredArgsConstructor public final class MemberSelectExpr extends Expr {
-    private final Expr expr;
-    private final String id;
+import org.bugby.pattern.api.matcher.Matcher;
+
+import lombok.Getter;
+
+@Getter
+public final class MemberSelectExpr extends Expr {
+	private final Expr expr;
+	private final Matcher<String> id;
+
+	public MemberSelectExpr(Matcher<TypeMirror> resolvedType, Expr expr, Matcher<String> id) {
+		super(resolvedType);
+		this.expr = expr;
+		this.id = id;
+	}
+
 }

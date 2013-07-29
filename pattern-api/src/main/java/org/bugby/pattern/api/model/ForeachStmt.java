@@ -17,10 +17,13 @@
 
 package org.bugby.pattern.api.model;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class ForeachStmt extends Stmt {
-    private final VarStmt variable;
-    private final Expr collection;
-    private final Stmt action;
+@RequiredArgsConstructor
+@Getter
+public final class ForeachStmt extends Stmt {
+	private final VarStmt variable;
+	private final Expr collection;
+	private final Stmt action;
 }

@@ -17,8 +17,11 @@
 
 package org.bugby.pattern.api.model;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class EmptyStmt extends Stmt {
+@RequiredArgsConstructor
+@Getter
+public final class EmptyStmt extends Stmt {
 
 }

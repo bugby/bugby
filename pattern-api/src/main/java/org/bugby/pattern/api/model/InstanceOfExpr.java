@@ -19,9 +19,19 @@ package org.bugby.pattern.api.model;
 
 import javax.lang.model.type.TypeMirror;
 
-import lombok.RequiredArgsConstructor;
+import org.bugby.pattern.api.matcher.Matcher;
 
-@RequiredArgsConstructor public final class InstanceOfExpr extends Expr {
-    private final Expr expression;
-    private final TypeMirror type;
+import lombok.Getter;
+
+@Getter
+public final class InstanceOfExpr extends Expr {
+	private final Expr expression;
+	private final Matcher<TypeMirror> type;
+
+	public InstanceOfExpr(Matcher<TypeMirror> resolvedType, Expr expression, Matcher<TypeMirror> type) {
+		super(resolvedType);
+		this.expression = expression;
+		this.type = type;
+	}
+
 }

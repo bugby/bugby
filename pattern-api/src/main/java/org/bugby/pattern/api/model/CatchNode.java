@@ -17,9 +17,12 @@
 
 package org.bugby.pattern.api.model;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class CatchNode extends Node {
-	private final VarStmt catch;
-    private final Block body;
+@RequiredArgsConstructor
+@Getter
+public final class CatchNode extends Node {
+	private final VarStmt catchStmt;
+	private final Block body;
 }

@@ -17,10 +17,23 @@
 
 package org.bugby.pattern.api.model;
 
-import lombok.RequiredArgsConstructor;
+import javax.lang.model.type.TypeMirror;
 
-@RequiredArgsConstructor public final class BinaryExpr extends Expr {
-    private final Expr leftOperand;
-    private final String operator;
-    private final Expr rightOperand    ;
+import org.bugby.pattern.api.matcher.Matcher;
+
+import lombok.Getter;
+
+@Getter
+public final class BinaryExpr extends Expr {
+	private final Expr leftOperand;
+	private final Matcher<String> operator;
+	private final Expr rightOperand;
+
+	public BinaryExpr(Matcher<TypeMirror> resolvedType, Expr leftOperand, Matcher<String> operator, Expr rightOperand) {
+		super(resolvedType);
+		this.leftOperand = leftOperand;
+		this.operator = operator;
+		this.rightOperand = rightOperand;
+	}
+
 }

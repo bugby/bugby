@@ -17,10 +17,13 @@
 
 package org.bugby.pattern.api.model;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class IfStmt extends Stmt {
-    private final Expr condition;
-    private final Stmt then;
-    private final Stmt else;
+@RequiredArgsConstructor
+@Getter
+public final class IfStmt extends Stmt {
+	private final Expr condition;
+	private final Stmt then;
+	private final Stmt elseStmt;
 }

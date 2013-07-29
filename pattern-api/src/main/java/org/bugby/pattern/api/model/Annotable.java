@@ -19,9 +19,6 @@ package org.bugby.pattern.api.model;
 
 import java.util.List;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
-public final class Annotable extends Node {
-	private final List<Annotation> annotations;
+public interface Annotable {
+	List<Annotation> getAnnotations();
 }

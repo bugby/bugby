@@ -19,9 +19,12 @@ package org.bugby.pattern.api.model;
 
 import java.util.List;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class SwitchStmt extends Stmt {
-    private final Expr expression;
-private final     List<CaseNode> cases;
+@RequiredArgsConstructor
+@Getter
+public final class SwitchStmt extends Stmt {
+	private final Expr expression;
+	private final List<CaseNode> cases;
 }

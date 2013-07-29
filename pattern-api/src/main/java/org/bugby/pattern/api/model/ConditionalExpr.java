@@ -17,10 +17,23 @@
 
 package org.bugby.pattern.api.model;
 
-import lombok.RequiredArgsConstructor;
+import javax.lang.model.type.TypeMirror;
 
-@RequiredArgsConstructor public final class ConditionalExpr extends Expr {
-    private final Expr condition;
-    private final Expr trueExpression;
-    private final Expr falseExpression;
+import org.bugby.pattern.api.matcher.Matcher;
+
+import lombok.Getter;
+
+@Getter
+public final class ConditionalExpr extends Expr {
+	private final Expr condition;
+	private final Expr trueExpression;
+	private final Expr falseExpression;
+
+	public ConditionalExpr(Matcher<TypeMirror> resolvedType, Expr condition, Expr trueExpression, Expr falseExpression) {
+		super(resolvedType);
+		this.condition = condition;
+		this.trueExpression = trueExpression;
+		this.falseExpression = falseExpression;
+	}
+
 }

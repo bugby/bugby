@@ -18,29 +18,38 @@
 package org.bugby.pattern.api.model;
 
 import java.util.List;
+import java.util.Set;
 
+import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeMirror;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class MethodDecl extends BodyDecl {
-private final 	List<TypeParam> typeParameters;
-	private final TypeMirror returnType;
-	private final String name;
-private final 	List<MethodParam> parameters;
-private final 	List<TypeMirror> throws;
+import org.bugby.pattern.api.matcher.Matcher;
+
+@RequiredArgsConstructor
+@Getter
+public final class MethodDecl extends Node implements BodyDecl {
+
+	private final Matcher<Set<Modifier>> modifiers;
+	private final List<Annotation> annotations;
+
+	private final Matcher<List<TypeParam>> typeParameters;
+	private final Matcher<TypeMirror> returnType;
+	private final Matcher<String> name;
+	private final Matcher<List<MethodParam>> parameters;
+	private final Matcher<List<TypeMirror>> throwsType;
 	private final Block body;
 	/**
 	 * Only for annotation types
 	 */
 	private final Expr defaultValue;
-	
+
 	private final MethodKind kind;
-	
+
 	enum MethodKind {
-		Constructor,
-		Initializer,
-		Method,
-		AnnotationMethod
+		Constructor, Initializer, Method, AnnotationMethod
 	}
+
 }

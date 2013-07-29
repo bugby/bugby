@@ -17,8 +17,19 @@
 
 package org.bugby.pattern.api.model;
 
-import lombok.RequiredArgsConstructor;
+import javax.lang.model.type.TypeMirror;
 
-@RequiredArgsConstructor public final class LiteralExpr extends Expr {
-	private final Object value;
+import org.bugby.pattern.api.matcher.Matcher;
+
+import lombok.Getter;
+
+@Getter
+public final class LiteralExpr extends Expr {
+	private final Matcher<Object> value;
+
+	public LiteralExpr(Matcher<TypeMirror> resolvedType, Matcher<Object> value) {
+		super(resolvedType);
+		this.value = value;
+	}
+
 }

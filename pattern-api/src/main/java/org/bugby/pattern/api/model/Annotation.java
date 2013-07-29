@@ -19,13 +19,16 @@ package org.bugby.pattern.api.model;
 
 import java.util.Map;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class Annotation extends Node {
+@RequiredArgsConstructor
+@Getter
+public final class Annotation extends Node {
 	private final String typeName;
 	// TODO: how to visit it ?
 	// TODO: switch to AnnotationMirror#getElementValues type
-private final 	Map<String, Expr> values;
+	private final Map<String, Expr> values;
 
 	static final String defaultValue = "value";
 }

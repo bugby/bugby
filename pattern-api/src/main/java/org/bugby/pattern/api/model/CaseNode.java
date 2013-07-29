@@ -19,12 +19,15 @@ package org.bugby.pattern.api.model;
 
 import java.util.List;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class CaseNode extends Node {
-    /**
-     * @return null if and only if this Case is {@code default:}
-     */
-    private final Expr case;
-private final     List<Stmt> statements;
+@RequiredArgsConstructor
+@Getter
+public final class CaseNode extends Node {
+	/**
+	 * @return null if and only if this Case is {@code default:}
+	 */
+	private final Expr caseExpr;
+	private final List<Stmt> statements;
 }

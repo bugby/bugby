@@ -17,9 +17,14 @@
 
 package org.bugby.pattern.api.model;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class Import extends Node {
-	boolean isStatic();
-	private final String name;
+import org.bugby.pattern.api.matcher.Matcher;
+
+@RequiredArgsConstructor
+@Getter
+public final class Import extends Node {
+	private final Matcher<Boolean> isStatic;
+	private final Matcher<String> name;
 }

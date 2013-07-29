@@ -18,23 +18,31 @@
 package org.bugby.pattern.api.model;
 
 import java.util.List;
+import java.util.Set;
 
+import javax.lang.model.element.Modifier;
 import javax.lang.model.type.TypeMirror;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class TypeDecl extends BodyDecl, Stmt {
-	private final String name;
-	private final TypeKind kind;
-private final 	List<TypeParam> typeParameters;
-	private final TypeMirror extends;
-private final 	List<TypeMirror> implements;
-private final 	List<BodyDecl> body;
+import org.bugby.pattern.api.matcher.Matcher;
+
+@RequiredArgsConstructor
+@Getter
+public final class TypeDecl extends Stmt implements BodyDecl {
+
+	private final Matcher<Set<Modifier>> modifiers;
+	private final List<Annotation> annotations;
+
+	private final Matcher<String> name;
+	private final Matcher<TypeKind> kind;
+	private final Matcher<List<TypeParam>> typeParameters;
+	private final Matcher<TypeMirror> extendsType;
+	private final Matcher<List<TypeMirror>> implementsType;
+	private final List<BodyDecl> body;
 
 	enum TypeKind {
-		Class,
-		Interface,
-		Enum,
-		AnnotationType
+		Class, Interface, Enum, AnnotationType
 	}
 }

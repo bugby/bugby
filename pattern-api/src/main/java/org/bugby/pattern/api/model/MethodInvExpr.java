@@ -21,13 +21,30 @@ import java.util.List;
 
 import javax.lang.model.type.TypeMirror;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
 
-@RequiredArgsConstructor public final class MethodInvExpr extends Expr, Annotable {
-private final     List<TypeMirror> typeArgs;
-private final     List<List<Annotation>> argsAnnotations;
-    private final String method;
-    /** MemberSelectExpr or IdExpr */
-    private final Expr receiver;
-private final     List<Expr> args;
+import org.bugby.pattern.api.matcher.Matcher;
+
+@Getter
+public final class MethodInvExpr extends Expr implements Annotable {
+
+	private final List<Annotation> annotations;
+	private final Matcher<List<TypeMirror>> typeArgs;
+	private final List<List<Annotation>> argsAnnotations;
+	private final Matcher<String> method;
+	/** MemberSelectExpr or IdExpr */
+	private final Expr receiver;
+	private final List<Expr> args;
+
+	public MethodInvExpr(Matcher<TypeMirror> resolvedType, List<Annotation> annotations, Matcher<List<TypeMirror>> typeArgs,
+			List<List<Annotation>> argsAnnotations, Matcher<String> method, Expr receiver, List<Expr> args) {
+		super(resolvedType);
+		this.annotations = annotations;
+		this.typeArgs = typeArgs;
+		this.argsAnnotations = argsAnnotations;
+		this.method = method;
+		this.receiver = receiver;
+		this.args = args;
+	}
+
 }

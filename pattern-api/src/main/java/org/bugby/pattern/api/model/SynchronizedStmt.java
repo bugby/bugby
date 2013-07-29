@@ -17,9 +17,12 @@
 
 package org.bugby.pattern.api.model;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class SynchronizedStmt extends Stmt {
-    private final Expr lock;
-    private final Block body;
+@RequiredArgsConstructor
+@Getter
+public final class SynchronizedStmt extends Stmt {
+	private final Expr lock;
+	private final Block body;
 }

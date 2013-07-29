@@ -17,8 +17,13 @@
 
 package org.bugby.pattern.api.model;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class ContinueStmt extends Stmt {
-	private final String label;
+import org.bugby.pattern.api.matcher.Matcher;
+
+@RequiredArgsConstructor
+@Getter
+public final class ContinueStmt extends Stmt {
+	private final Matcher<String> label;
 }

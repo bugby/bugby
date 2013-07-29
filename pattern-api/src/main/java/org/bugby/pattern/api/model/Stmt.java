@@ -17,9 +17,9 @@
 
 package org.bugby.pattern.api.model;
 
-
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class Stmt extends Node {
+@RequiredArgsConstructor
+public class Stmt extends Node {
 
 }

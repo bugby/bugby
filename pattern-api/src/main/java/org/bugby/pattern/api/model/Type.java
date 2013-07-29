@@ -17,8 +17,14 @@
 
 package org.bugby.pattern.api.model;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class Type extends Node {
-	private final String name;
+import org.bugby.pattern.api.matcher.Matcher;
+
+@RequiredArgsConstructor
+@Getter
+public final class Type extends Node {
+	///TODO support Matcher<Class<?>>
+	private final Matcher<String> name;
 }

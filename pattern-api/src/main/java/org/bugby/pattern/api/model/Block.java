@@ -19,8 +19,11 @@ package org.bugby.pattern.api.model;
 
 import java.util.List;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class Block extends Stmt {
-private final 	List<Stmt> stmts;
+@RequiredArgsConstructor
+@Getter
+public final class Block extends Stmt {
+	private final List<Stmt> stmts;
 }

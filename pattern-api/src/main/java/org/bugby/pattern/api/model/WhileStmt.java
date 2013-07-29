@@ -17,14 +17,18 @@
 
 package org.bugby.pattern.api.model;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class WhileStmt extends Stmt {
+import org.bugby.pattern.api.matcher.Matcher;
+
+@RequiredArgsConstructor
+@Getter
+public final class WhileStmt extends Stmt {
 	/**
-	 * @return true if "do {} while ();"
-	 * false if "while () {}"
+	 * @return true if "do {} while ();" false if "while () {}"
 	 */
-	boolean isPostfix();
-    private final Expr condition;
-    private final Stmt action;
+	private final Matcher<Boolean> isPostfix;
+	private final Expr condition;
+	private final Stmt action;
 }

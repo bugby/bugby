@@ -19,12 +19,17 @@ package org.bugby.pattern.api.model;
 
 import java.util.List;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class CompilationUnit extends Node {
-	private final String packageName;
-private final 	List<Annotation> annotations;
-private final 	List<Import> imports;
-private final 	List<TypeDecl> types;
-	private final String fileName;
+import org.bugby.pattern.api.matcher.Matcher;
+
+@RequiredArgsConstructor
+@Getter
+public final class CompilationUnit extends Node {
+	private final Matcher<String> packageName;
+	private final List<Annotation> annotations;
+	private final List<Import> imports;
+	private final List<TypeDecl> types;
+	private final Matcher<String> fileName;
 }

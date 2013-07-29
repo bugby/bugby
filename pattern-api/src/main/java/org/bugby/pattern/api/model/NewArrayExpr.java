@@ -21,10 +21,21 @@ import java.util.List;
 
 import javax.lang.model.type.TypeMirror;
 
-import lombok.RequiredArgsConstructor;
+import org.bugby.pattern.api.matcher.Matcher;
 
-@RequiredArgsConstructor public final class NewArrayExpr extends Expr {
-    private final TypeMirror type;
-private final     List<Expr> dimensions;
-private final     List<Expr> initializers;
+import lombok.Getter;
+
+@Getter
+public final class NewArrayExpr extends Expr {
+	private final Matcher<TypeMirror> type;
+	private final List<Expr> dimensions;
+	private final List<Expr> initializers;
+
+	public NewArrayExpr(Matcher<TypeMirror> resolvedType, Matcher<TypeMirror> type, List<Expr> dimensions, List<Expr> initializers) {
+		super(resolvedType);
+		this.type = type;
+		this.dimensions = dimensions;
+		this.initializers = initializers;
+	}
+
 }

@@ -21,8 +21,9 @@ import java.util.Set;
 
 import javax.lang.model.element.Modifier;
 
-import lombok.RequiredArgsConstructor;
+import org.bugby.pattern.api.matcher.Matcher;
 
-@RequiredArgsConstructor public final class BodyDecl extends Annotable {
-private final 	Set<Modifier> modifiers;
+public interface BodyDecl extends Annotable {
+	Matcher<Set<Modifier>> getModifiers();
+
 }

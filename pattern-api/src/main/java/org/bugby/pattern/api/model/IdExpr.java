@@ -17,8 +17,24 @@
 
 package org.bugby.pattern.api.model;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
-@RequiredArgsConstructor public final class IdExpr extends Expr, Annotable {
-	private final String id;
+import javax.lang.model.type.TypeMirror;
+
+import lombok.Getter;
+
+import org.bugby.pattern.api.matcher.Matcher;
+
+@Getter
+public final class IdExpr extends Expr implements Annotable {
+
+	private final List<Annotation> annotations;
+	private final Matcher<String> id;
+
+	public IdExpr(Matcher<TypeMirror> resolvedType, List<Annotation> annotations, Matcher<String> id) {
+		super(resolvedType);
+		this.annotations = annotations;
+		this.id = id;
+	}
+
 }

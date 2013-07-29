@@ -17,9 +17,12 @@
 
 package org.bugby.pattern.api.model;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class AssertStmt extends Stmt {
-    private final Expr condition;
-    private final Expr detail;
+@RequiredArgsConstructor
+@Getter
+public final class AssertStmt extends Stmt {
+	private final Expr condition;
+	private final Expr detail;
 }

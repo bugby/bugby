@@ -19,11 +19,14 @@ package org.bugby.pattern.api.model;
 
 import java.util.List;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class ForStmt extends Stmt {
-private final     List<Stmt> initializer;
-    private final Expr condition;
-private final     List<Stmt> step;
-    private final Stmt action;
+@RequiredArgsConstructor
+@Getter
+public final class ForStmt extends Stmt {
+	private final List<Stmt> initializer;
+	private final Expr condition;
+	private final List<Stmt> step;
+	private final Stmt action;
 }

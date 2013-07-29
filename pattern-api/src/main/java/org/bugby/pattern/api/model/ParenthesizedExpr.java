@@ -17,8 +17,19 @@
 
 package org.bugby.pattern.api.model;
 
-import lombok.RequiredArgsConstructor;
+import javax.lang.model.type.TypeMirror;
 
-@RequiredArgsConstructor public final class ParenthesizedExpr extends Expr {
+import org.bugby.pattern.api.matcher.Matcher;
+
+import lombok.Getter;
+
+@Getter
+public final class ParenthesizedExpr extends Expr {
 	private final Expr expression;
+
+	public ParenthesizedExpr(Matcher<TypeMirror> resolvedType, Expr expression) {
+		super(resolvedType);
+		this.expression = expression;
+	}
+
 }

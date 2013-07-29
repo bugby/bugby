@@ -19,9 +19,14 @@ package org.bugby.pattern.api.model;
 
 import java.util.List;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor public final class TypeParam extends Node {
-	private final String name;
-private final 	List<String> bounds;
+import org.bugby.pattern.api.matcher.Matcher;
+
+@RequiredArgsConstructor
+@Getter
+public final class TypeParam extends Node {
+	private final Matcher<String> name;
+	private final Matcher<List<String>> bounds;
 }
