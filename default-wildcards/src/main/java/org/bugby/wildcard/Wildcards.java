@@ -1,14 +1,12 @@
 package org.bugby.wildcard;
 
 import org.bugby.wildcard.api.Wildcard;
-import org.bugby.wildcard.api.WildcardDictionary;
 import org.bugby.wildcard.matcher.SomeCodeMatcher;
 import org.bugby.wildcard.matcher.SomeConditionMatcher;
 import org.bugby.wildcard.matcher.SomeFieldMatcher;
 import org.bugby.wildcard.matcher.SomeParamMatcher;
 import org.bugby.wildcard.matcher.SomeValueMatcher;
 
-@WildcardDictionary
 public class Wildcards {
 	// LITERALS
 	public static int someInteger = 0;

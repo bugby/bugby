@@ -15,7 +15,13 @@
  */
 package org.richast.type;
 
+import java.lang.annotation.Annotation;
+import java.util.Collections;
+import java.util.List;
+
 import org.richast.variable.Variable;
+
+import com.google.common.collect.Lists;
 
 /**
  * This class wrapps a class field to use the type wrappers.
@@ -28,13 +34,16 @@ public class FieldWrapper implements Variable {
 	private final TypeWrapper ownerType;
 	private final int modifiers;
 	private final boolean declared;
+	private final List<Annotation> annotations;
 
-	public FieldWrapper(String name, TypeWrapper type, int modifiers, TypeWrapper ownerType, boolean declared) {
+	public FieldWrapper(String name, TypeWrapper type, int modifiers, TypeWrapper ownerType, boolean declared,
+			Annotation[] annotations) {
 		this.name = name;
 		this.type = type;
 		this.ownerType = ownerType;
 		this.modifiers = modifiers;
 		this.declared = declared;
+		this.annotations = annotations == null ? Collections.<Annotation>emptyList() : Lists.newArrayList(annotations);
 	}
 
 	@Override
@@ -53,6 +62,16 @@ public class FieldWrapper implements Variable {
 
 	public int getModifiers() {
 		return modifiers;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
+		for (Annotation a : annotations) {
+			if (a.annotationType().equals(annotationClass)) {
+				return (T) a;
+			}
+		}
+		return null;
 	}
 
 	/**

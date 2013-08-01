@@ -79,10 +79,10 @@ public class ClassWrapper implements TypeWrapper {
 	}
 
 	private FieldWrapper buildFieldWrapper(String name, TypeWrapper type, int modifiers, Class<?> ownerClass,
-			TypeWrapper[] actualTypeArgs) {
+			TypeWrapper[] actualTypeArgs, Annotation[] annotations) {
 		// substitute the field's type with the actual type if the field has a generic type
 		return new FieldWrapper(name, substituteType(type, ownerClass, actualTypeArgs), modifiers, this,
-				ownerClass.equals(clazz));
+				ownerClass.equals(clazz), annotations);
 	}
 
 	private TypeWrapper substituteTypeInParameterizedType(ParameterizedTypeWrapper origParamType, Class<?> ownerClass,
@@ -232,14 +232,15 @@ public class ClassWrapper implements TypeWrapper {
 				fields.put(
 						f.getName(),
 						buildFieldWrapper(f.getName(), TypeWrappers.wrap(f.getGenericType()), f.getModifiers(),
-								rawClass, actualTypeArgs));
+								rawClass, actualTypeArgs, f.getAnnotations()));
 			}
 		}
 		if (rawClass.isArray()) {
 			// add the "length" field not listed for generic arrays
 			fields.put(
 					"length",
-					buildFieldWrapper("length", TypeWrappers.wrap(int.class), Modifier.PUBLIC, rawClass, actualTypeArgs));
+					buildFieldWrapper("length", TypeWrappers.wrap(int.class), Modifier.PUBLIC, rawClass,
+							actualTypeArgs, null));
 		}
 	}
 
