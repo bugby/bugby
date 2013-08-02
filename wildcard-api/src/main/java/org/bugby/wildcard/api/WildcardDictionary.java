@@ -20,11 +20,12 @@ import org.richast.type.MethodWrapper;
 import org.richast.variable.Variable;
 
 public class WildcardDictionary {
-	private Map<String, Class<? extends WildcardNodeMatcher<? extends Node>>> matchers = new HashMap<String, Class<? extends WildcardNodeMatcher<? extends Node>>>();
+	private Map<String, Class<? extends WildcardNodeMatcher<? extends Node>>> matchers =
+			new HashMap<String, Class<? extends WildcardNodeMatcher<? extends Node>>>();
 
 	public void addWildcardsFromFile(ClassLoader builtProjectClassLoader, File file) {
-		ClassLoaderWrapper classLoaderWrapper = new ClassLoaderWrapper(builtProjectClassLoader,
-				Collections.<String>emptyList(), Collections.<String>emptyList());
+		ClassLoaderWrapper classLoaderWrapper =
+				new ClassLoaderWrapper(builtProjectClassLoader, Collections.<String> emptyList(), Collections.<String> emptyList());
 		GenerationContext context = new GenerationContext(file);
 		CompilationUnit cu = RichASTParser.parseAndResolve(classLoaderWrapper, file, context, "UTF-8");
 		cu.accept(new WildcardVisitor(), this);
@@ -66,6 +67,10 @@ public class WildcardDictionary {
 
 	public void addMatcher(VariableDeclarator n, Class<? extends WildcardNodeMatcher<?>> matcherClass) {
 		matchers.put(n.getId().getName(), matcherClass);
+	}
+
+	public Class<? extends WildcardNodeMatcher<?>> findMatcherClass(String name) {
+		return matchers.get(name);
 	}
 
 }

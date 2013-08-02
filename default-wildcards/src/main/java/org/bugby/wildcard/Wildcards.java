@@ -6,6 +6,7 @@ import org.bugby.wildcard.matcher.SomeConditionMatcher;
 import org.bugby.wildcard.matcher.SomeFieldMatcher;
 import org.bugby.wildcard.matcher.SomeParamMatcher;
 import org.bugby.wildcard.matcher.SomeValueMatcher;
+import org.bugby.wildcard.matcher.SomeVariableMatcher;
 
 public class Wildcards {
 	// LITERALS
@@ -16,41 +17,40 @@ public class Wildcards {
 	/**
 	 * matches any field
 	 */
-	@Wildcard(
-			matcher = SomeFieldMatcher.class)
+	@Wildcard(matcher = SomeFieldMatcher.class)
 	public static SomeType someField;
 
 	/**
 	 * matches any parameter
 	 */
-	@Wildcard(
-			matcher = SomeParamMatcher.class)
+	@Wildcard(matcher = SomeParamMatcher.class)
 	public static SomeType someParameter;
 
 	/**
+	 * matches any variable
+	 */
+	@Wildcard(matcher = SomeVariableMatcher.class)
+	public static SomeType someVar;
+
+	/**
 	 * matches any expression of any type
-	 * 
 	 * @return
 	 */
-	@Wildcard(
-			matcher = SomeValueMatcher.class)
+	@Wildcard(matcher = SomeValueMatcher.class)
 	public static <T> T someValue() {
 		return null;
 	}
 
-	@Wildcard(
-			matcher = SomeValueMatcher.class)
+	@Wildcard(matcher = SomeValueMatcher.class)
 	public static <T> T someTypedValue(Class<T> type) {
 		return null;
 	}
 
-	@Wildcard(
-			matcher = SomeCodeMatcher.class)
+	@Wildcard(matcher = SomeCodeMatcher.class)
 	public static void someCode() {
 	}
 
-	@Wildcard(
-			matcher = SomeConditionMatcher.class)
+	@Wildcard(matcher = SomeConditionMatcher.class)
 	public static boolean someCondition() {
 		return true;
 	}
@@ -59,8 +59,7 @@ public class Wildcards {
 		return null;
 	}
 
-	@Wildcard(
-			matcher = SomeConditionMatcher.class)
+	@Wildcard(matcher = SomeConditionMatcher.class)
 	public static boolean someConditionUsing(Object value) {
 		return true;
 	}
