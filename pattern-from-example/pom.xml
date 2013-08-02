@@ -33,6 +33,11 @@
 			<artifactId>default-examples</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.bugby</groupId>
+			<artifactId>ast-matcher</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 

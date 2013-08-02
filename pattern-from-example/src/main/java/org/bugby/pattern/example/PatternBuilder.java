@@ -4,10 +4,9 @@ import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.Node;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
+import org.bugby.matcher.tree.Tree;
 import org.bugby.wildcard.WildcardNodeMatcherFromExample;
 import org.bugby.wildcard.api.DefaultNodeMatcher;
 import org.bugby.wildcard.api.WildcardDictionary;
@@ -18,7 +17,7 @@ import org.richast.type.ClassLoaderWrapper;
 
 public class PatternBuilder {
 	private WildcardDictionary wildcardDictionary;
-	private List<WildcardNodeMatcher<?>> matchers = new ArrayList<WildcardNodeMatcher<?>>();
+	private Tree<WildcardNodeMatcher<?>> root;
 
 	public WildcardDictionary getWildcardDictionary() {
 		return wildcardDictionary;
@@ -29,16 +28,25 @@ public class PatternBuilder {
 	}
 
 	public void buildFromFile(ClassLoader builtProjectClassLoader, File file) {
-		ClassLoaderWrapper classLoaderWrapper =
-				new ClassLoaderWrapper(builtProjectClassLoader, Collections.<String> emptyList(), Collections.<String> emptyList());
+		ClassLoaderWrapper classLoaderWrapper = new ClassLoaderWrapper(builtProjectClassLoader,
+				Collections.<String>emptyList(), Collections.<String>emptyList());
 		GenerationContext context = new GenerationContext(file);
 		CompilationUnit cu = RichASTParser.parseAndResolve(classLoaderWrapper, file, context, "UTF-8");
 		cu.accept(new PatternFromExampleVisitor(), this);
 		// System.out.println(matchers);
 	}
 
-	public void addMatcher(String name, Node n) {
-		//remove the ending digits
+	private Tree<WildcardNodeMatcher<?>> addPatternNode(Tree<WildcardNodeMatcher<?>> parentPatternNode,
+			WildcardNodeMatcher<?> matcher) {
+		if (parentPatternNode == null) {
+			root = new Tree<WildcardNodeMatcher<?>>(matcher);
+			return root;
+		}
+		return parentPatternNode.newChild(matcher);
+	}
+
+	public Tree<WildcardNodeMatcher<?>> addMatcher(Tree<WildcardNodeMatcher<?>> parentPatternNode, String name, Node n) {
+		// remove the ending digits
 		String simpleMethodeName = name.replaceAll("\\d+$", "");
 		Class<? extends WildcardNodeMatcher<?>> matcherClass = wildcardDictionary.findMatcherClass(simpleMethodeName);
 		if (matcherClass != null) {
@@ -47,16 +55,14 @@ public class PatternBuilder {
 				if (matcher instanceof WildcardNodeMatcherFromExample) {
 					((WildcardNodeMatcherFromExample<?>) matcher).init(n);
 				}
-				matchers.add(matcher);
-			}
-			catch (InstantiationException e) {
-				e.printStackTrace();
-			}
-			catch (IllegalAccessException e) {
-				e.printStackTrace();
+				return addPatternNode(parentPatternNode, matcher);
+			} catch (InstantiationException e) {
+				throw new RuntimeException(e);
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException(e);
 			}
 		} else {
-			matchers.add(new DefaultNodeMatcher(n));
+			return addPatternNode(parentPatternNode, new DefaultNodeMatcher(n));
 		}
 	}
 
@@ -71,8 +77,6 @@ public class PatternBuilder {
 		patternBuilder.setWildcardDictionary(wildcardDictionary);
 		patternBuilder.buildFromFile(builtProjectClassLoader, new File(
 				"../default-examples/src/main/java/org/bugby/bugs/pmd/CollapsibleIfStatements.java"));
-		for (WildcardNodeMatcher m : patternBuilder.matchers) {
-			System.out.println(m);
-		}
+		System.out.println(patternBuilder.root.toString());
 	}
 }

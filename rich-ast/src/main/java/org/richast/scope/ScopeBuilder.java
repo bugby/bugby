@@ -419,6 +419,18 @@ public class ScopeBuilder extends ForEachNodeVisitor<Scope> {
 	}
 
 	@Override
+	public void visit(VariableDeclarator n, Scope arg) {
+		VariableWithScope var = arg.resolveVariable(n.getId().getName());
+		if (var != null) {
+			ASTNodeData.resolvedVariable(n, var.getVariable());
+			ASTNodeData.resolvedVariableScope(n, var.getScope());
+			ASTNodeData.resolvedType(n, var.getVariable().getType());
+			// Checks.checkScope(n, context);
+		}
+		super.visit(n, arg);
+	}
+
+	@Override
 	public void visit(VariableDeclaratorId n, Scope scope) {
 		// Checks.checkVariableDeclaratorId(n, context);
 		super.visit(n, scope);
