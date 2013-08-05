@@ -1,5 +1,6 @@
 package org.bugby.matcher.tree;
 
+import org.bugby.matcher.value.MatchAnalyzer;
 import org.bugby.matcher.value.ValueMatcher;
 
 /**
@@ -13,10 +14,10 @@ import org.bugby.matcher.value.ValueMatcher;
 public class Pattern<T> {
 
 	// the matcher to use when first seeing a tree node (pre-order matcher)
-	private final ValueMatcher<T> preMatcher;
+	private final ValueMatcher<T> valueMatcher;
 
 	// optional matcher to use after child-patterns were executed (post-order matcher)
-	private final ValueMatcher<T> pstMatcher;
+	private final MatchAnalyzer<T> matchAnalyzer;
 
 	// optional example for the pattern. This could have been part of the valueMatcher,
 	// but passing it to the pattern allows having state-less ValueMatchers.
@@ -39,8 +40,8 @@ public class Pattern<T> {
 	private Tree<T> matchedTree;
 
 	public Pattern(Builder<T> builder) {
-		this.preMatcher = builder.preMatcher;
-		this.pstMatcher = builder.pstMatcher;
+		this.valueMatcher = builder.valueMatcher;
+		this.matchAnalyzer = builder.matchAnalyzer;
 		this.exampleValue = builder.exampleValue;
 		this.refPattern = builder.refPattern;
 		this.hasNothingBefore = builder.hasNothingBefore;
@@ -51,24 +52,40 @@ public class Pattern<T> {
 		return new Builder<T>(valueMatcher);
 	}
 
+	public ValueMatcher<T> getValueMatcher() {
+		return valueMatcher;
+	}
+
 	public T getExampleValue() {
 		return exampleValue;
 	}
 
+	public void setMatchedTree(Tree<T> matchedTree) {
+		this.matchedTree = matchedTree;
+	}
+
+	public Tree<T> getMatchedTree() {
+		return matchedTree;
+	}
+
+	public boolean hasMatched() {
+		return matchedTree != null;
+	}
+
 	public static class Builder<T> {
-		private final ValueMatcher<T> preMatcher;
-		private ValueMatcher<T> pstMatcher;
+		private final ValueMatcher<T> valueMatcher;
+		private MatchAnalyzer<T> matchAnalyzer;
 		private T exampleValue;
 		private Pattern<T> refPattern;
 		private boolean hasNothingBefore;
 		private boolean hasNothingAfter;
 
-		public Builder(ValueMatcher<T> preMatcher) {
-			this.preMatcher = preMatcher;
+		public Builder(ValueMatcher<T> valueMatcher) {
+			this.valueMatcher = valueMatcher;
 		}
 
-		public Builder<T> withPostorderMatcher(ValueMatcher<T> aPstMatcher) {
-			this.pstMatcher = aPstMatcher;
+		public Builder<T> withPostorderMatcher(MatchAnalyzer<T> aMatchAnalyzer) {
+			this.matchAnalyzer = aMatchAnalyzer;
 			return this;
 		}
 
