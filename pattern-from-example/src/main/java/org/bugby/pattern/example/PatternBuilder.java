@@ -28,16 +28,15 @@ public class PatternBuilder {
 	}
 
 	public void buildFromFile(ClassLoader builtProjectClassLoader, File file) {
-		ClassLoaderWrapper classLoaderWrapper = new ClassLoaderWrapper(builtProjectClassLoader,
-				Collections.<String>emptyList(), Collections.<String>emptyList());
+		ClassLoaderWrapper classLoaderWrapper =
+				new ClassLoaderWrapper(builtProjectClassLoader, Collections.<String> emptyList(), Collections.<String> emptyList());
 		GenerationContext context = new GenerationContext(file);
 		CompilationUnit cu = RichASTParser.parseAndResolve(classLoaderWrapper, file, context, "UTF-8");
 		cu.accept(new PatternFromExampleVisitor(), this);
 		// System.out.println(matchers);
 	}
 
-	private Tree<WildcardNodeMatcher<?>> addPatternNode(Tree<WildcardNodeMatcher<?>> parentPatternNode,
-			WildcardNodeMatcher<?> matcher) {
+	private Tree<WildcardNodeMatcher<?>> addPatternNode(Tree<WildcardNodeMatcher<?>> parentPatternNode, WildcardNodeMatcher<?> matcher) {
 		if (parentPatternNode == null) {
 			root = new Tree<WildcardNodeMatcher<?>>(matcher);
 			return root;
@@ -56,14 +55,15 @@ public class PatternBuilder {
 					((WildcardNodeMatcherFromExample<?>) matcher).init(n);
 				}
 				return addPatternNode(parentPatternNode, matcher);
-			} catch (InstantiationException e) {
-				throw new RuntimeException(e);
-			} catch (IllegalAccessException e) {
+			}
+			catch (InstantiationException e) {
 				throw new RuntimeException(e);
 			}
-		} else {
-			return addPatternNode(parentPatternNode, new DefaultNodeMatcher(n));
+			catch (IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
 		}
+		return addPatternNode(parentPatternNode, new DefaultNodeMatcher(n));
 	}
 
 	public static void main(String[] args) {

@@ -3,11 +3,14 @@ package org.bugby.wildcard;
 import org.bugby.wildcard.api.Wildcard;
 import org.bugby.wildcard.matcher.SomeCodeMatcher;
 import org.bugby.wildcard.matcher.SomeConditionMatcher;
+import org.bugby.wildcard.matcher.SomeConditionUsingMatcher;
+import org.bugby.wildcard.matcher.SomeExpressionUsingMatcher;
 import org.bugby.wildcard.matcher.SomeFieldMatcher;
 import org.bugby.wildcard.matcher.SomeParamMatcher;
 import org.bugby.wildcard.matcher.SomeValueMatcher;
 import org.bugby.wildcard.matcher.SomeVariableMatcher;
 
+@SuppressWarnings("unused")
 public class Wildcards {
 	// LITERALS
 	public static int someInteger = 0;
@@ -47,7 +50,7 @@ public class Wildcards {
 	}
 
 	@Wildcard(matcher = SomeCodeMatcher.class)
-	public static void someCode() {
+	public static void someCode() {//
 	}
 
 	@Wildcard(matcher = SomeConditionMatcher.class)
@@ -55,11 +58,12 @@ public class Wildcards {
 		return true;
 	}
 
+	@Wildcard(matcher = SomeExpressionUsingMatcher.class)
 	public static <T> T someExpressionUsing(Object value) {
 		return null;
 	}
 
-	@Wildcard(matcher = SomeConditionMatcher.class)
+	@Wildcard(matcher = SomeConditionUsingMatcher.class)
 	public static boolean someConditionUsing(Object value) {
 		return true;
 	}
