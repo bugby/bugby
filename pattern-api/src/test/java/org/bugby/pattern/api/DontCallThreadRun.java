@@ -17,7 +17,7 @@ import org.bugby.pattern.api.model.Expr;
 import org.bugby.pattern.api.model.MethodInvExpr;
 import org.junit.Test;
 
-public class BugDefinitionTest {
+public class DontCallThreadRun {
 
 	@Test
 	public void testCallTrhreadRun() {
@@ -26,9 +26,13 @@ public class BugDefinitionTest {
 		BugDefinition bugDefinition = new BugDefinition(//
 				new CodePattern(//
 						//Thread.run()
-						new MethodInvExpr(specificClass(Thread.class), Matchers.<List<Annotation>> any(),
-								Matchers.<List<TypeMirror>> any(), Matchers.<List<List<Annotation>>> any(), string("run"),
-								ChildDefinition.<Expr> anyChild(), Collections.<ChildDefinition<Expr>> emptyList())),//
+						new MethodInvExpr(specificClass(Thread.class),//
+								Matchers.<List<Annotation>> any(),//
+								Matchers.<List<TypeMirror>> any(),//
+								Matchers.<List<List<Annotation>>> any(),//
+								string("run"),//
+								ChildDefinition.<Expr> anyChild(),//
+								Collections.<ChildDefinition<Expr>> emptyList())),//
 				Collections.<CodePattern> emptyList(),//
 				Collections.<CodePattern> emptyList()//
 		);
