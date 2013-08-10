@@ -19,7 +19,7 @@ package org.bugby.pattern.api.model;
 
 import javax.lang.model.type.TypeMirror;
 
-import org.bugby.pattern.api.matcher.Matcher;
+import org.bugby.pattern.api.matcher.content.ContentMatcher;
 
 import lombok.Getter;
 
@@ -28,7 +28,7 @@ public final class AssignExpr extends Expr {
 	private final Expr var;
 	private final Expr expr;
 
-	public AssignExpr(Matcher<TypeMirror> resolvedType, Expr var, Expr expr) {
+	public AssignExpr(ContentMatcher<TypeMirror> resolvedType, Expr var, Expr expr) {
 		super(resolvedType);
 		this.var = var;
 		this.expr = expr;

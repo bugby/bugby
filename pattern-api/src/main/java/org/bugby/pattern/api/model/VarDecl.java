@@ -26,14 +26,14 @@ import javax.lang.model.type.TypeMirror;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import org.bugby.pattern.api.matcher.Matcher;
+import org.bugby.pattern.api.matcher.content.ContentMatcher;
 
 @RequiredArgsConstructor
 @Getter
 public final class VarDecl implements BodyDecl {
 
-	private final Matcher<Set<Modifier>> modifiers;
-	private final List<Annotation> annotations;
+	private final ContentMatcher<Set<Modifier>> modifiers;
+	private final ContentMatcher<List<Annotation>> annotations;
 
 	private final TypeMirror type;
 	private final String var;

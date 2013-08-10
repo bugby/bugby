@@ -22,14 +22,14 @@ import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import org.bugby.pattern.api.matcher.Matcher;
+import org.bugby.pattern.api.matcher.content.ContentMatcher;
 
 @RequiredArgsConstructor
 @Getter
 public final class CompilationUnit extends Node {
-	private final Matcher<String> packageName;
+	private final ContentMatcher<String> packageName;
 	private final List<Annotation> annotations;
 	private final List<Import> imports;
 	private final List<TypeDecl> types;
-	private final Matcher<String> fileName;
+	private final ContentMatcher<String> fileName;
 }

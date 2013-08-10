@@ -22,11 +22,11 @@ import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import org.bugby.pattern.api.matcher.Matcher;
+import org.bugby.pattern.api.matcher.content.ContentMatcher;
 
 @RequiredArgsConstructor
 @Getter
 public final class TypeParam extends Node {
-	private final Matcher<String> name;
-	private final Matcher<List<String>> bounds;
+	private final ContentMatcher<String> name;
+	private final ContentMatcher<List<String>> bounds;
 }

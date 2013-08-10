@@ -26,14 +26,14 @@ import javax.lang.model.type.TypeMirror;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import org.bugby.pattern.api.matcher.Matcher;
+import org.bugby.pattern.api.matcher.content.ContentMatcher;
 
 @RequiredArgsConstructor
 @Getter
 public final class MethodParam extends Node implements Annotable {
 
-	private final List<Annotation> annotations;
-	private final Matcher<Set<Modifier>> modifiers;
-	private final Matcher<TypeMirror> type;
-	private final Matcher<String> name;
+	private final ContentMatcher<List<Annotation>> annotations;
+	private final ContentMatcher<Set<Modifier>> modifiers;
+	private final ContentMatcher<TypeMirror> type;
+	private final ContentMatcher<String> name;
 }

@@ -20,7 +20,7 @@ package org.bugby.pattern.api.model;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import org.bugby.pattern.api.matcher.Matcher;
+import org.bugby.pattern.api.matcher.content.ContentMatcher;
 
 @RequiredArgsConstructor
 @Getter
@@ -28,7 +28,7 @@ public final class WhileStmt extends Stmt {
 	/**
 	 * @return true if "do {} while ();" false if "while () {}"
 	 */
-	private final Matcher<Boolean> isPostfix;
+	private final ContentMatcher<Boolean> isPostfix;
 	private final Expr condition;
 	private final Stmt action;
 }

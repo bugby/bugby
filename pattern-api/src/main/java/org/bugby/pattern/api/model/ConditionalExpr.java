@@ -19,7 +19,7 @@ package org.bugby.pattern.api.model;
 
 import javax.lang.model.type.TypeMirror;
 
-import org.bugby.pattern.api.matcher.Matcher;
+import org.bugby.pattern.api.matcher.content.ContentMatcher;
 
 import lombok.Getter;
 
@@ -29,7 +29,7 @@ public final class ConditionalExpr extends Expr {
 	private final Expr trueExpression;
 	private final Expr falseExpression;
 
-	public ConditionalExpr(Matcher<TypeMirror> resolvedType, Expr condition, Expr trueExpression, Expr falseExpression) {
+	public ConditionalExpr(ContentMatcher<TypeMirror> resolvedType, Expr condition, Expr trueExpression, Expr falseExpression) {
 		super(resolvedType);
 		this.condition = condition;
 		this.trueExpression = trueExpression;

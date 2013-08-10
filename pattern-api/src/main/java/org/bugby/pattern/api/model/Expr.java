@@ -21,12 +21,12 @@ import javax.lang.model.type.TypeMirror;
 
 import lombok.RequiredArgsConstructor;
 
-import org.bugby.pattern.api.matcher.Matcher;
+import org.bugby.pattern.api.matcher.content.ContentMatcher;
 
 @RequiredArgsConstructor
 public class Expr extends Node {
 	/**
 	 * @return Resolved type, if available. null otherwise
 	 */
-	private final Matcher<TypeMirror> resolvedType;
+	private final ContentMatcher<TypeMirror> resolvedType;
 }

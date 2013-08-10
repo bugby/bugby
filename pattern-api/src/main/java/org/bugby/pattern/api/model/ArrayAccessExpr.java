@@ -19,7 +19,7 @@ package org.bugby.pattern.api.model;
 
 import javax.lang.model.type.TypeMirror;
 
-import org.bugby.pattern.api.matcher.Matcher;
+import org.bugby.pattern.api.matcher.content.ContentMatcher;
 
 import lombok.Getter;
 
@@ -28,7 +28,7 @@ public final class ArrayAccessExpr extends Expr {
 	private final Expr array;
 	private final Expr index;
 
-	public ArrayAccessExpr(Matcher<TypeMirror> resolvedType, Expr array, Expr index) {
+	public ArrayAccessExpr(ContentMatcher<TypeMirror> resolvedType, Expr array, Expr index) {
 		super(resolvedType);
 		this.array = array;
 		this.index = index;

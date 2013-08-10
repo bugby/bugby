@@ -23,15 +23,15 @@ import javax.lang.model.type.TypeMirror;
 
 import lombok.Getter;
 
-import org.bugby.pattern.api.matcher.Matcher;
+import org.bugby.pattern.api.matcher.content.ContentMatcher;
 
 @Getter
 public final class IdExpr extends Expr implements Annotable {
 
-	private final List<Annotation> annotations;
-	private final Matcher<String> id;
+	private final ContentMatcher<List<Annotation>> annotations;
+	private final ContentMatcher<String> id;
 
-	public IdExpr(Matcher<TypeMirror> resolvedType, List<Annotation> annotations, Matcher<String> id) {
+	public IdExpr(ContentMatcher<TypeMirror> resolvedType, ContentMatcher<List<Annotation>> annotations, ContentMatcher<String> id) {
 		super(resolvedType);
 		this.annotations = annotations;
 		this.id = id;

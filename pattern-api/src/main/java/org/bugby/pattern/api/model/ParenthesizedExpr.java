@@ -19,7 +19,7 @@ package org.bugby.pattern.api.model;
 
 import javax.lang.model.type.TypeMirror;
 
-import org.bugby.pattern.api.matcher.Matcher;
+import org.bugby.pattern.api.matcher.content.ContentMatcher;
 
 import lombok.Getter;
 
@@ -27,7 +27,7 @@ import lombok.Getter;
 public final class ParenthesizedExpr extends Expr {
 	private final Expr expression;
 
-	public ParenthesizedExpr(Matcher<TypeMirror> resolvedType, Expr expression) {
+	public ParenthesizedExpr(ContentMatcher<TypeMirror> resolvedType, Expr expression) {
 		super(resolvedType);
 		this.expression = expression;
 	}

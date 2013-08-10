@@ -19,6 +19,8 @@ package org.bugby.pattern.api.model;
 
 import java.util.List;
 
+import org.bugby.pattern.api.matcher.content.ContentMatcher;
+
 public interface Annotable {
-	List<Annotation> getAnnotations();
+	ContentMatcher<List<Annotation>> getAnnotations();
 }

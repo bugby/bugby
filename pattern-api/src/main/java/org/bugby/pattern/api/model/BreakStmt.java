@@ -20,10 +20,10 @@ package org.bugby.pattern.api.model;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import org.bugby.pattern.api.matcher.Matcher;
+import org.bugby.pattern.api.matcher.content.ContentMatcher;
 
 @RequiredArgsConstructor
 @Getter
 public final class BreakStmt extends Stmt {
-	private final Matcher<String> label;
+	private final ContentMatcher<String> label;
 }

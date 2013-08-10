@@ -21,9 +21,9 @@ import java.util.Set;
 
 import javax.lang.model.element.Modifier;
 
-import org.bugby.pattern.api.matcher.Matcher;
+import org.bugby.pattern.api.matcher.content.ContentMatcher;
 
 public interface BodyDecl extends Annotable {
-	Matcher<Set<Modifier>> getModifiers();
+	ContentMatcher<Set<Modifier>> getModifiers();
 
 }

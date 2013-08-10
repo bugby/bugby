@@ -19,17 +19,17 @@ package org.bugby.pattern.api.model;
 
 import javax.lang.model.type.TypeMirror;
 
-import org.bugby.pattern.api.matcher.Matcher;
+import org.bugby.pattern.api.matcher.content.ContentMatcher;
 
 import lombok.Getter;
 
 @Getter
 public final class UnaryExpr extends Expr {
-	private final Matcher<String> operator;
+	private final ContentMatcher<String> operator;
 	private final Expr expression;
-	private final Matcher<Boolean> isPostfix;
+	private final ContentMatcher<Boolean> isPostfix;
 
-	public UnaryExpr(Matcher<TypeMirror> resolvedType, Matcher<String> operator, Expr expression, Matcher<Boolean> isPostfix) {
+	public UnaryExpr(ContentMatcher<TypeMirror> resolvedType, ContentMatcher<String> operator, Expr expression, ContentMatcher<Boolean> isPostfix) {
 		super(resolvedType);
 		this.operator = operator;
 		this.expression = expression;

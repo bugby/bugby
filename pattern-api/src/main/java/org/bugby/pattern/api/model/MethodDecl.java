@@ -26,20 +26,20 @@ import javax.lang.model.type.TypeMirror;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import org.bugby.pattern.api.matcher.Matcher;
+import org.bugby.pattern.api.matcher.content.ContentMatcher;
 
 @RequiredArgsConstructor
 @Getter
 public final class MethodDecl extends Node implements BodyDecl {
 
-	private final Matcher<Set<Modifier>> modifiers;
-	private final List<Annotation> annotations;
+	private final ContentMatcher<Set<Modifier>> modifiers;
+	private final ContentMatcher<List<Annotation>> annotations;
 
-	private final Matcher<List<TypeParam>> typeParameters;
-	private final Matcher<TypeMirror> returnType;
-	private final Matcher<String> name;
-	private final Matcher<List<MethodParam>> parameters;
-	private final Matcher<List<TypeMirror>> throwsType;
+	private final ContentMatcher<List<TypeParam>> typeParameters;
+	private final ContentMatcher<TypeMirror> returnType;
+	private final ContentMatcher<String> name;
+	private final ContentMatcher<List<MethodParam>> parameters;
+	private final ContentMatcher<List<TypeMirror>> throwsType;
 	private final Block body;
 	/**
 	 * Only for annotation types

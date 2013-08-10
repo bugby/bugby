@@ -20,11 +20,11 @@ package org.bugby.pattern.api.model;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import org.bugby.pattern.api.matcher.Matcher;
+import org.bugby.pattern.api.matcher.content.ContentMatcher;
 
 @RequiredArgsConstructor
 @Getter
 public final class Type extends Node {
 	///TODO support Matcher<Class<?>>
-	private final Matcher<String> name;
+	private final ContentMatcher<String> name;
 }

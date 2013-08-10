@@ -19,15 +19,15 @@ package org.bugby.pattern.api.model;
 
 import javax.lang.model.type.TypeMirror;
 
-import org.bugby.pattern.api.matcher.Matcher;
+import org.bugby.pattern.api.matcher.content.ContentMatcher;
 
 import lombok.Getter;
 
 @Getter
 public final class LiteralExpr extends Expr {
-	private final Matcher<Object> value;
+	private final ContentMatcher<Object> value;
 
-	public LiteralExpr(Matcher<TypeMirror> resolvedType, Matcher<Object> value) {
+	public LiteralExpr(ContentMatcher<TypeMirror> resolvedType, ContentMatcher<Object> value) {
 		super(resolvedType);
 		this.value = value;
 	}
