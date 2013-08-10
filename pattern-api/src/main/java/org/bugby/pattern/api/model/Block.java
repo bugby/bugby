@@ -25,5 +25,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public final class Block extends Stmt {
-	private final List<Stmt> stmts;
+	private final List<? extends Stmt> stmts;
 }

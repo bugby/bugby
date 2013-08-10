@@ -22,11 +22,13 @@ import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import org.bugby.pattern.api.matcher.structure.ChildDefinition;
+
 @RequiredArgsConstructor
 @Getter
 public final class ForStmt extends Stmt {
 	private final List<Stmt> initializer;
-	private final Expr condition;
+	private final ChildDefinition<? extends Expr> condition;
 	private final List<Stmt> step;
-	private final Stmt action;
+	private final ChildDefinition<? extends Stmt> action;
 }
