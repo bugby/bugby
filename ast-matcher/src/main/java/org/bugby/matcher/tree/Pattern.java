@@ -35,6 +35,9 @@ public class Pattern<T> {
 	// regexp: $ (it's a leaf node)
 	private final boolean hasNothingAfter;
 
+	// optional requirement that children patterns are matched in any order 
+	private final boolean hasUnorderedChildren;
+
 	// running values - the actual tree node that was matched, or null if no match
 	// regexp: captured element
 	private Tree<T> matchedTree;
@@ -46,6 +49,7 @@ public class Pattern<T> {
 		this.refPattern = builder.refPattern;
 		this.hasNothingBefore = builder.hasNothingBefore;
 		this.hasNothingAfter = builder.hasNothingAfter;
+		this.hasUnorderedChildren = builder.hasUnorderedChildren;
 	}
 
 	public static <T> Builder<T> pattern(ValueMatcher<T> valueMatcher) {
@@ -56,9 +60,31 @@ public class Pattern<T> {
 		return valueMatcher;
 	}
 
+	public MatchAnalyzer<T> getMatchAnalyzer() {
+		return matchAnalyzer;
+	}
+
 	public T getExampleValue() {
 		return exampleValue;
 	}
+
+	public Pattern<T> getRefPattern() {
+		return refPattern;
+	}
+
+	public boolean hasNothingBefore() {
+		return hasNothingBefore;
+	}
+
+	public boolean hasNothingAfter() {
+		return hasNothingAfter;
+	}
+
+	public boolean hasUnorderedChildren() {
+		return hasUnorderedChildren;
+	}
+
+	// dynamic fields
 
 	public void setMatchedTree(Tree<T> matchedTree) {
 		this.matchedTree = matchedTree;
@@ -68,7 +94,7 @@ public class Pattern<T> {
 		return matchedTree;
 	}
 
-	public boolean hasMatched() {
+	public boolean matched() {
 		return matchedTree != null;
 	}
 
@@ -79,6 +105,7 @@ public class Pattern<T> {
 		private Pattern<T> refPattern;
 		private boolean hasNothingBefore;
 		private boolean hasNothingAfter;
+		private boolean hasUnorderedChildren;
 
 		public Builder(ValueMatcher<T> valueMatcher) {
 			this.valueMatcher = valueMatcher;
@@ -106,6 +133,11 @@ public class Pattern<T> {
 
 		public Builder<T> withNothingAfter() {
 			this.hasNothingAfter = true;
+			return this;
+		}
+
+		public Builder<T> withUnorderedChildren() {
+			this.hasUnorderedChildren = true;
 			return this;
 		}
 
