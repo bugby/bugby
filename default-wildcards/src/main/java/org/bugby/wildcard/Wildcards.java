@@ -1,6 +1,8 @@
 package org.bugby.wildcard;
 
 import org.bugby.wildcard.api.Wildcard;
+import org.bugby.wildcard.matcher.BeginMatcher;
+import org.bugby.wildcard.matcher.EndMatcher;
 import org.bugby.wildcard.matcher.SomeCodeMatcher;
 import org.bugby.wildcard.matcher.SomeConditionMatcher;
 import org.bugby.wildcard.matcher.SomeConditionUsingMatcher;
@@ -76,6 +78,18 @@ public class Wildcards {
 			matcher = SomeConditionUsingMatcher.class)
 	public static boolean someConditionUsing(Object value) {
 		return true;
+	}
+
+	@Wildcard(
+			matcher = BeginMatcher.class)
+	public static void begin() {
+		//
+	}
+
+	@Wildcard(
+			matcher = EndMatcher.class)
+	public static void end() {
+		//
 	}
 
 }
