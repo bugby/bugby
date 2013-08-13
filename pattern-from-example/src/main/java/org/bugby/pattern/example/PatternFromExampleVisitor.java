@@ -89,7 +89,7 @@ import org.richast.visitor.ForEachNodeVisitor;
 
 public class PatternFromExampleVisitor extends ForEachNodeVisitor<PatternBuilder> {
 	private Node lastAdded = null;
-	private Stack<Tree<WildcardNodeMatcher<?>>> parents = new Stack<Tree<WildcardNodeMatcher<?>>>();
+	private Stack<Tree<WildcardNodeMatcher>> parents = new Stack<Tree<WildcardNodeMatcher>>();
 	private Stack<Node> addedNodes = new Stack<Node>();
 
 	@Override
@@ -108,8 +108,8 @@ public class PatternFromExampleVisitor extends ForEachNodeVisitor<PatternBuilder
 	}
 
 	private void addMatcher(PatternBuilder builder, String name, Node node) {
-		Tree<WildcardNodeMatcher<?>> parentPatternNode = parents.isEmpty() ? null : parents.peek();
-		Tree<WildcardNodeMatcher<?>> newNode = builder.addMatcher(parentPatternNode, name, node);
+		Tree<WildcardNodeMatcher> parentPatternNode = parents.isEmpty() ? null : parents.peek();
+		Tree<WildcardNodeMatcher> newNode = builder.addMatcher(parentPatternNode, name, node);
 		parents.push(newNode);
 		addedNodes.push(node);
 	}

@@ -5,12 +5,11 @@ import japa.parser.ast.expr.Expression;
 
 import org.bugby.wildcard.WildcardNodeMatcherFromExample;
 
-public class SomeExpressionUsingMatcher implements WildcardNodeMatcherFromExample<Expression> {
+public class SomeExpressionUsingMatcher implements WildcardNodeMatcherFromExample {
 
 	@Override
-	public boolean matches(Expression node) {
-		// check if type = boolean
-		return true;
+	public boolean matches(Node node) {
+		return node instanceof Expression;
 	}
 
 	@Override

@@ -4,6 +4,6 @@ import japa.parser.ast.Node;
 
 import org.bugby.wildcard.api.WildcardNodeMatcher;
 
-public interface WildcardNodeMatcherFromExample<T extends Node> extends WildcardNodeMatcher<T> {
+public interface WildcardNodeMatcherFromExample extends WildcardNodeMatcher {
 	public void init(Node nodeFromExample);
 }

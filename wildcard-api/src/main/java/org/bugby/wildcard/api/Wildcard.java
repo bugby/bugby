@@ -5,5 +5,5 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Wildcard {
-	Class<? extends WildcardNodeMatcher<?>> matcher();
+	Class<? extends WildcardNodeMatcher> matcher();
 }
