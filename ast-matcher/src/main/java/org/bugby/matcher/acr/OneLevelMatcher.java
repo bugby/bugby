@@ -26,7 +26,6 @@ public class OneLevelMatcher {
 	 */
 	public <T> boolean matchOrdered(List<T> nodes, List<? extends Wildcard<T>> wildcards) {
 		int n = 0, w = 0;
-		int lastMatch = -1;
 		boolean nextMustMatch = false;
 		while (n < nodes.size() && w < wildcards.size()) {
 			Wildcard<T> wildcard = wildcards.get(w);
@@ -36,13 +35,12 @@ public class OneLevelMatcher {
 				w++;
 				continue;
 			}
-			if (wildcard == END) {
-				// assert w == wildcards.size() - 1
-				break;
+			// check END match - look ahead
+			if (w == wildcards.size() - 2 && wildcards.get(w + 1) == OneLevelMatcher.END) {
+				return wildcard.match(nodes.get(nodes.size() - 1));
 			}
 			if (wildcard.match(nodes.get(n))) {
 				w++;
-				lastMatch = n;
 				nextMustMatch = false;
 			} else if (nextMustMatch) {
 				// a match was expected here
@@ -50,15 +48,7 @@ public class OneLevelMatcher {
 			}
 			n++;
 		}
-		if (w == wildcards.size()) {
-			// full normal match
-			return true;
-		}
-		if (w == wildcards.size() - 1 && wildcards.get(w) == OneLevelMatcher.END && lastMatch == nodes.size() - 1) {
-			// match on end
-			return true;
-		}
-		return false;
+		return (w == wildcards.size());
 	}
 
 	/**

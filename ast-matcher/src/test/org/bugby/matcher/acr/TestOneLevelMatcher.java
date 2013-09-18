@@ -64,6 +64,15 @@ public class TestOneLevelMatcher {
 	}
 
 	@Test
+	public void testEndFalseFirstMatch() {
+		OneLevelMatcher matcher = new OneLevelMatcher();
+		List<String> nodes = Arrays.asList("a", "c", "b", "c");
+		List<? extends Wildcard<String>> wildcards = Arrays.asList(new DefaultWildcard<String>("c"),
+				(Wildcard<String>) OneLevelMatcher.END);
+		Assert.assertEquals(true, matcher.matchOrdered(nodes, wildcards));
+	}
+
+	@Test
 	public void testEndWrong() {
 		OneLevelMatcher matcher = new OneLevelMatcher();
 		List<String> nodes = Arrays.asList("a", "b", "c");
@@ -79,6 +88,15 @@ public class TestOneLevelMatcher {
 		List<? extends Wildcard<String>> wildcards = Arrays.asList((Wildcard<String>) OneLevelMatcher.BEGIN,
 				new DefaultWildcard<String>("a"), new DefaultWildcard<String>("b"), new DefaultWildcard<String>("c"),
 				(Wildcard<String>) OneLevelMatcher.END);
+		Assert.assertEquals(true, matcher.matchOrdered(nodes, wildcards));
+	}
+
+	@Test
+	public void testExactMatchOne() {
+		OneLevelMatcher matcher = new OneLevelMatcher();
+		List<String> nodes = Arrays.asList("a");
+		List<? extends Wildcard<String>> wildcards = Arrays.asList((Wildcard<String>) OneLevelMatcher.BEGIN,
+				new DefaultWildcard<String>("a"), (Wildcard<String>) OneLevelMatcher.END);
 		Assert.assertEquals(true, matcher.matchOrdered(nodes, wildcards));
 	}
 
