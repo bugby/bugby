@@ -199,6 +199,14 @@ public class TestOneLevelMatcher {
 		assertPositions(positionsMore(0, 1, -1, 0, 3), matcher.matchOrdered(nodes, wildcards));
 	}
 
+	@Test
+	public void testEmpty() {
+		OneLevelMatcher matcher = new OneLevelMatcher();
+		List<IndexedValue> nodes = values();
+		List<? extends Wildcard<IndexedValue>> wildcards = DefaultWildcard.buildEmpty();
+		assertPositions(positions1(), matcher.matchOrdered(nodes, wildcards));
+	}
+
 	/** -------------- unordered ------------- **/
 
 	@Test

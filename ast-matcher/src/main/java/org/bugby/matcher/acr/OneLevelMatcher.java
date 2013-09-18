@@ -18,6 +18,9 @@ public class OneLevelMatcher {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static final Wildcard<?> END = new DefaultWildcard(null);
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static final Wildcard<?> EMPTY = new DefaultWildcard(null);
+
 	private class MatchPosition {
 		private final int node;
 		private final int wildcard;
@@ -47,6 +50,15 @@ public class OneLevelMatcher {
 	public <T> List<List<T>> matchOrdered(List<T> nodes, List<? extends Wildcard<T>> wildcards) {
 		Stack<MatchPosition> matchingStack = new Stack<OneLevelMatcher.MatchPosition>();
 		List<List<T>> matchings = new ArrayList<List<T>>();
+		// special case - EMPTY
+		if (wildcards.size() == 1 && wildcards.get(0) == EMPTY) {
+			// assert w == 0 && w == wildcards.size() - 1
+			if (nodes.isEmpty()) {
+				matchings.add(new ArrayList<T>());
+			}
+			return matchings;
+		}
+
 		matchingStack.push(new MatchPosition(-1, 0));
 
 		while (!matchingStack.isEmpty()) {
@@ -72,6 +84,7 @@ public class OneLevelMatcher {
 		boolean nextMustMatch = false;
 		while (n < nodes.size() && w < wildcards.size()) {
 			Wildcard<T> wildcard = wildcards.get(w);
+
 			if (wildcard == BEGIN) {
 				// assert w == 0
 				nextMustMatch = true;

@@ -47,4 +47,11 @@ public class DefaultWildcard<T> implements Wildcard<T> {
 		list.add((Wildcard<T>) OneLevelMatcher.END);
 		return list;
 	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> List<Wildcard<T>> buildEmpty() {
+		List<Wildcard<T>> list = new ArrayList<Wildcard<T>>();
+		list.add((Wildcard<T>) OneLevelMatcher.EMPTY);
+		return list;
+	}
 }
