@@ -12,6 +12,8 @@ import org.junit.Test;
 
 @SuppressWarnings("unchecked")
 public class TestOneLevelMatcher {
+	private static final int EOL = -1;
+
 	private static class IndexedValue {
 
 		private final String value;
@@ -58,6 +60,11 @@ public class TestOneLevelMatcher {
 				return false;
 			}
 			return true;
+		}
+
+		@Override
+		public String toString() {
+			return "{" + index + "/" + value + "}";
 		}
 	}
 
@@ -188,7 +195,7 @@ public class TestOneLevelMatcher {
 		OneLevelMatcher matcher = new OneLevelMatcher();
 		List<IndexedValue> nodes = values("a", "c", "b", "c");
 		List<? extends Wildcard<IndexedValue>> wildcards = DefaultWildcard.build(array("c"));
-		assertPositions(positionsMore(1, -1, 3), matcher.matchOrdered(nodes, wildcards));
+		assertPositions(positionsMore(1, EOL, 3), matcher.matchOrdered(nodes, wildcards));
 	}
 
 	@Test
@@ -196,7 +203,7 @@ public class TestOneLevelMatcher {
 		OneLevelMatcher matcher = new OneLevelMatcher();
 		List<IndexedValue> nodes = values("a", "c", "b", "c");
 		List<? extends Wildcard<IndexedValue>> wildcards = DefaultWildcard.build(array("a", "c"));
-		assertPositions(positionsMore(0, 1, -1, 0, 3), matcher.matchOrdered(nodes, wildcards));
+		assertPositions(positionsMore(0, 1, EOL, 0, 3), matcher.matchOrdered(nodes, wildcards));
 	}
 
 	@Test
@@ -212,32 +219,48 @@ public class TestOneLevelMatcher {
 	@Test
 	public void testSimpleMatchUnordered() {
 		OneLevelMatcher matcher = new OneLevelMatcher();
-		List<String> nodes = Arrays.asList("a", "b", "c");
-		List<? extends Wildcard<String>> wildcards = DefaultWildcard.build("a");
-		Assert.assertEquals(true, matcher.matchUnordered(nodes, wildcards));
+		List<IndexedValue> nodes = values("a", "b", "c");
+		List<? extends Wildcard<IndexedValue>> wildcards = DefaultWildcard.build(array("a"));
+		assertPositions(positions1(0), matcher.matchUnordered(nodes, wildcards));
 	}
 
 	@Test
 	public void testTwoMatchUnordered() {
 		OneLevelMatcher matcher = new OneLevelMatcher();
-		List<String> nodes = Arrays.asList("a", "b", "c");
-		List<? extends Wildcard<String>> wildcards = DefaultWildcard.build("c", "a");
-		Assert.assertEquals(true, matcher.matchUnordered(nodes, wildcards));
+		List<IndexedValue> nodes = values("a", "b", "c");
+		List<? extends Wildcard<IndexedValue>> wildcards = DefaultWildcard.build(array("c", "a"));
+		assertPositions(positions1(2, 0), matcher.matchUnordered(nodes, wildcards));
 	}
 
 	@Test
 	public void testSimpleNotMatchUnordered() {
 		OneLevelMatcher matcher = new OneLevelMatcher();
-		List<String> nodes = Arrays.asList("a", "b", "c");
-		List<? extends Wildcard<String>> wildcards = DefaultWildcard.build("x");
-		Assert.assertEquals(false, matcher.matchUnordered(nodes, wildcards));
+		List<IndexedValue> nodes = values("a", "b", "c");
+		List<? extends Wildcard<IndexedValue>> wildcards = DefaultWildcard.build(array("x"));
+		Assert.assertEquals(0, matcher.matchUnordered(nodes, wildcards).size());
+	}
+
+	@Test
+	public void testTwoMatchUnorderedDouble() {
+		OneLevelMatcher matcher = new OneLevelMatcher();
+		List<IndexedValue> nodes = values("a", "b", "a");
+		List<? extends Wildcard<IndexedValue>> wildcards = DefaultWildcard.build(array("a", "b"));
+		assertPositions(positionsMore(0, 1, EOL, 2, 1), matcher.matchUnordered(nodes, wildcards));
 	}
 
 	@Test
 	public void testTwoNotMatchUnordered() {
 		OneLevelMatcher matcher = new OneLevelMatcher();
-		List<String> nodes = Arrays.asList("a", "b", "c");
-		List<? extends Wildcard<String>> wildcards = DefaultWildcard.build("a", "a");
-		Assert.assertEquals(false, matcher.matchUnordered(nodes, wildcards));
+		List<IndexedValue> nodes = values("a", "b", "c");
+		List<? extends Wildcard<IndexedValue>> wildcards = DefaultWildcard.build(array("a", "a"));
+		Assert.assertEquals(0, matcher.matchUnordered(nodes, wildcards).size());
+	}
+
+	@Test
+	public void testUnorderedWithPermutations() {
+		OneLevelMatcher matcher = new OneLevelMatcher();
+		List<IndexedValue> nodes = values("a", "a");
+		List<? extends Wildcard<IndexedValue>> wildcards = DefaultWildcard.build(array("a", "a"));
+		assertPositions(positionsMore(0, 1, EOL, 1, 0), matcher.matchUnordered(nodes, wildcards));
 	}
 }

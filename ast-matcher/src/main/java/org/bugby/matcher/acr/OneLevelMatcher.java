@@ -1,8 +1,7 @@
 package org.bugby.matcher.acr;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
@@ -116,25 +115,39 @@ public class OneLevelMatcher {
 	 * @param wildcards
 	 * @return
 	 */
-	public <T> boolean matchUnordered(List<T> nodes, List<? extends Wildcard<T>> wildcards) {
-		List<? extends Wildcard<T>> copyWildcards = new ArrayList<Wildcard<T>>(wildcards);
-		for (T node : nodes) {
-			Iterator<? extends Wildcard<T>> it = copyWildcards.iterator();
-			while (it.hasNext()) {
-				if (it.next().match(node)) {
-					it.remove();
-					break;
+	public <T> List<List<T>> matchUnordered(List<T> nodes, List<? extends Wildcard<T>> wildcards) {
+		if (nodes.isEmpty() || wildcards.isEmpty()) {
+			return Collections.emptyList();
+		}
+		List<List<T>> result = new ArrayList<List<T>>();
+		for (int j = 0; j < wildcards.size(); ++j) {
+			for (int i = 0; i < nodes.size(); ++i) {
+				if (wildcards.get(j).match(nodes.get(i))) {
+					if (wildcards.size() == 1) {
+						result.add(Collections.singletonList(nodes.get(i)));
+					} else {
+						List<T> nodesWithoutCurrent = listWithout(nodes, i);
+						List<? extends Wildcard<T>> wildcardsWithoutCurrent = wildcards
+								.subList(j + 1, wildcards.size());
+						List<List<T>> subresult = matchUnordered(nodesWithoutCurrent, wildcardsWithoutCurrent);
+						for (List<T> s : subresult) {
+							List<T> oneResult = new ArrayList<T>(s.size() + 1);
+							oneResult.add(nodes.get(i));
+							oneResult.addAll(s);
+							result.add(oneResult);
+						}
+					}
 				}
 			}
 		}
 
-		return copyWildcards.isEmpty();
+		return result;
 	}
 
-	public static void main(String[] args) {
-		OneLevelMatcher matcher = new OneLevelMatcher();
-		List<String> nodes = Arrays.asList("a", "b", "c");
-		List<? extends Wildcard<String>> wildcards = Arrays.asList(new DefaultWildcard<String>("x"));
-		System.out.println(matcher.matchOrdered(nodes, wildcards));
+	private <T> List<T> listWithout(List<T> in, int index) {
+		List<T> ret = new ArrayList<T>(in);
+		ret.remove(index);
+		return ret;
+
 	}
 }
