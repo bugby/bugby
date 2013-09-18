@@ -1,6 +1,8 @@
 package org.bugby.matcher.acr;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 public class OneLevelMatcher {
@@ -15,7 +17,14 @@ public class OneLevelMatcher {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static final Wildcard<?> END = new DefaultWildcard(null);
 
-	public <T> boolean match(List<T> nodes, List<? extends Wildcard<T>> wildcards) {
+	/**
+	 * the wildcards have to be match in order
+	 * 
+	 * @param nodes
+	 * @param wildcards
+	 * @return
+	 */
+	public <T> boolean matchOrdered(List<T> nodes, List<? extends Wildcard<T>> wildcards) {
 		int n = 0, w = 0;
 		int lastMatch = -1;
 		boolean nextMustMatch = false;
@@ -52,6 +61,28 @@ public class OneLevelMatcher {
 		return false;
 	}
 
+	/**
+	 * the wildcards may match in any order
+	 * 
+	 * @param nodes
+	 * @param wildcards
+	 * @return
+	 */
+	public <T> boolean matchUnordered(List<T> nodes, List<? extends Wildcard<T>> wildcards) {
+		List<? extends Wildcard<T>> copyWildcards = new ArrayList<Wildcard<T>>(wildcards);
+		for (T node : nodes) {
+			Iterator<? extends Wildcard<T>> it = copyWildcards.iterator();
+			while (it.hasNext()) {
+				if (it.next().match(node)) {
+					it.remove();
+					break;
+				}
+			}
+		}
+
+		return copyWildcards.isEmpty();
+	}
+
 	public static interface Wildcard<T> {
 		public boolean match(T t);
 	}
@@ -67,12 +98,13 @@ public class OneLevelMatcher {
 		public boolean match(T t) {
 			return t.equals(value);
 		}
+
 	}
 
 	public static void main(String[] args) {
 		OneLevelMatcher matcher = new OneLevelMatcher();
 		List<String> nodes = Arrays.asList("a", "b", "c");
 		List<? extends Wildcard<String>> wildcards = Arrays.asList(new DefaultWildcard<String>("x"));
-		System.out.println(matcher.match(nodes, wildcards));
+		System.out.println(matcher.matchOrdered(nodes, wildcards));
 	}
 }

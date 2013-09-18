@@ -16,7 +16,7 @@ public class TestOneLevelMatcher {
 		OneLevelMatcher matcher = new OneLevelMatcher();
 		List<String> nodes = Arrays.asList("a", "b", "c");
 		List<? extends Wildcard<String>> wildcards = Arrays.asList(new DefaultWildcard<String>("a"));
-		Assert.assertEquals(true, matcher.match(nodes, wildcards));
+		Assert.assertEquals(true, matcher.matchOrdered(nodes, wildcards));
 	}
 
 	@Test
@@ -25,7 +25,7 @@ public class TestOneLevelMatcher {
 		List<String> nodes = Arrays.asList("a", "b", "c");
 		List<? extends Wildcard<String>> wildcards = Arrays.asList(new DefaultWildcard<String>("a"),
 				new DefaultWildcard<String>("c"));
-		Assert.assertEquals(true, matcher.match(nodes, wildcards));
+		Assert.assertEquals(true, matcher.matchOrdered(nodes, wildcards));
 	}
 
 	@Test
@@ -33,7 +33,7 @@ public class TestOneLevelMatcher {
 		OneLevelMatcher matcher = new OneLevelMatcher();
 		List<String> nodes = Arrays.asList("a", "b", "c");
 		List<? extends Wildcard<String>> wildcards = Arrays.asList(new DefaultWildcard<String>("x"));
-		Assert.assertEquals(false, matcher.match(nodes, wildcards));
+		Assert.assertEquals(false, matcher.matchOrdered(nodes, wildcards));
 	}
 
 	@Test
@@ -42,7 +42,7 @@ public class TestOneLevelMatcher {
 		List<String> nodes = Arrays.asList("a", "b", "c");
 		List<? extends Wildcard<String>> wildcards = Arrays.asList((Wildcard<String>) OneLevelMatcher.BEGIN,
 				new DefaultWildcard<String>("a"));
-		Assert.assertEquals(true, matcher.match(nodes, wildcards));
+		Assert.assertEquals(true, matcher.matchOrdered(nodes, wildcards));
 	}
 
 	@Test
@@ -51,7 +51,7 @@ public class TestOneLevelMatcher {
 		List<String> nodes = Arrays.asList("a", "b", "c");
 		List<? extends Wildcard<String>> wildcards = Arrays.asList((Wildcard<String>) OneLevelMatcher.BEGIN,
 				new DefaultWildcard<String>("b"));
-		Assert.assertEquals(false, matcher.match(nodes, wildcards));
+		Assert.assertEquals(false, matcher.matchOrdered(nodes, wildcards));
 	}
 
 	@Test
@@ -60,7 +60,7 @@ public class TestOneLevelMatcher {
 		List<String> nodes = Arrays.asList("a", "b", "c");
 		List<? extends Wildcard<String>> wildcards = Arrays.asList(new DefaultWildcard<String>("c"),
 				(Wildcard<String>) OneLevelMatcher.END);
-		Assert.assertEquals(true, matcher.match(nodes, wildcards));
+		Assert.assertEquals(true, matcher.matchOrdered(nodes, wildcards));
 	}
 
 	@Test
@@ -69,7 +69,7 @@ public class TestOneLevelMatcher {
 		List<String> nodes = Arrays.asList("a", "b", "c");
 		List<? extends Wildcard<String>> wildcards = Arrays.asList(new DefaultWildcard<String>("b"),
 				(Wildcard<String>) OneLevelMatcher.END);
-		Assert.assertEquals(false, matcher.match(nodes, wildcards));
+		Assert.assertEquals(false, matcher.matchOrdered(nodes, wildcards));
 	}
 
 	@Test
@@ -79,7 +79,40 @@ public class TestOneLevelMatcher {
 		List<? extends Wildcard<String>> wildcards = Arrays.asList((Wildcard<String>) OneLevelMatcher.BEGIN,
 				new DefaultWildcard<String>("a"), new DefaultWildcard<String>("b"), new DefaultWildcard<String>("c"),
 				(Wildcard<String>) OneLevelMatcher.END);
-		Assert.assertEquals(true, matcher.match(nodes, wildcards));
+		Assert.assertEquals(true, matcher.matchOrdered(nodes, wildcards));
 	}
 
+	@Test
+	public void testSimpleMatchUnordered() {
+		OneLevelMatcher matcher = new OneLevelMatcher();
+		List<String> nodes = Arrays.asList("a", "b", "c");
+		List<? extends Wildcard<String>> wildcards = Arrays.asList(new DefaultWildcard<String>("a"));
+		Assert.assertEquals(true, matcher.matchUnordered(nodes, wildcards));
+	}
+
+	@Test
+	public void testTwoMatchUnordered() {
+		OneLevelMatcher matcher = new OneLevelMatcher();
+		List<String> nodes = Arrays.asList("a", "b", "c");
+		List<? extends Wildcard<String>> wildcards = Arrays.asList(new DefaultWildcard<String>("c"),
+				new DefaultWildcard<String>("a"));
+		Assert.assertEquals(true, matcher.matchUnordered(nodes, wildcards));
+	}
+
+	@Test
+	public void testSimpleNotMatchUnordered() {
+		OneLevelMatcher matcher = new OneLevelMatcher();
+		List<String> nodes = Arrays.asList("a", "b", "c");
+		List<? extends Wildcard<String>> wildcards = Arrays.asList(new DefaultWildcard<String>("x"));
+		Assert.assertEquals(false, matcher.matchUnordered(nodes, wildcards));
+	}
+
+	@Test
+	public void testTwoNotMatchUnordered() {
+		OneLevelMatcher matcher = new OneLevelMatcher();
+		List<String> nodes = Arrays.asList("a", "b", "c");
+		List<? extends Wildcard<String>> wildcards = Arrays.asList(new DefaultWildcard<String>("a"),
+				new DefaultWildcard<String>("a"));
+		Assert.assertEquals(false, matcher.matchUnordered(nodes, wildcards));
+	}
 }
