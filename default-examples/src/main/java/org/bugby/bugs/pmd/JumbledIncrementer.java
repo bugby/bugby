@@ -8,9 +8,8 @@ import org.bugby.annotation.BadExample;
 @BadExample
 public class JumbledIncrementer {
 	public void someCode() {
-		// TODO i should find a way to tell i and k are wildcards as well
-		for (int i = someValue();;) { // only references 'i'
-			for (int k = someValue();; someExpressionUsing(i)) { // references both 'i' and 'k'
+		for (int someVar1 = someValue();;) { // only references 'i'
+			for (int someVar2 = someValue();; someExpressionUsing(someVar1)) { // references both 'i' and 'k'
 			}
 		}
 	}

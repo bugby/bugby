@@ -10,6 +10,10 @@ public class DefaultWildcard<T> implements Wildcard<T> {
 		this.value = value;
 	}
 
+	public T getValue() {
+		return value;
+	}
+
 	@Override
 	public boolean match(T t) {
 		return t.equals(value);

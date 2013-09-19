@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Generic tree - we'll use this for matching against the Pattern.
- *  
+ * 
  * @author catac
  */
 public class Tree<T> {
@@ -49,6 +49,10 @@ public class Tree<T> {
 
 	public Tree<T> getChild(int index) {
 		return children.get(index);
+	}
+
+	public List<Tree<T>> getChildren() {
+		return new ArrayList<Tree<T>>(children);
 	}
 
 	public Tree<T> newChild(T aValue) {
