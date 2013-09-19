@@ -36,8 +36,8 @@ abstract class DefaultTreeModel<V> implements TreeModel<Tree<V>, V> {
 			Tree<V> child = parent.getChild(i);
 			if (isOrdered(child) == ordered) {
 				descendants.add(child);
-				descendants.addAll(getDescendants(child, ordered));
 			}
+			descendants.addAll(getDescendants(child, ordered));
 		}
 		return descendants;
 	}

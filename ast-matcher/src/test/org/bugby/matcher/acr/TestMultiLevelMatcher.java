@@ -1,5 +1,8 @@
 package org.bugby.matcher.acr;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import junit.framework.Assert;
 
 import org.bugby.matcher.tree.Tree;
@@ -40,7 +43,7 @@ public class TestMultiLevelMatcher extends CommonMatcherTest {
 		MultiLevelMatcher<IndexedValue, Wildcard<IndexedValue>, Tree<IndexedValue>, Tree<Wildcard<IndexedValue>>> matcher = matcher();
 		Tree<IndexedValue> nodes = tree("a", "b", "c");
 		Tree<Wildcard<IndexedValue>> wildcards = wtree("a", "b");
-		Assert.assertEquals(true, matcher.match(nodes, wildcards));
+		assertTerminalPositions(Arrays.asList(1), matcher.match(nodes, wildcards));
 	}
 
 	@Test
@@ -48,7 +51,7 @@ public class TestMultiLevelMatcher extends CommonMatcherTest {
 		MultiLevelMatcher<IndexedValue, Wildcard<IndexedValue>, Tree<IndexedValue>, Tree<Wildcard<IndexedValue>>> matcher = matcher();
 		Tree<IndexedValue> nodes = tree("a", tree("b", "d", "e"), "c");
 		Tree<Wildcard<IndexedValue>> wildcards = wtree("a", "b");
-		Assert.assertEquals(true, matcher.match(nodes, wildcards));
+		assertTerminalPositions(Arrays.asList(1), matcher.match(nodes, wildcards));
 	}
 
 	@Test
@@ -56,7 +59,7 @@ public class TestMultiLevelMatcher extends CommonMatcherTest {
 		MultiLevelMatcher<IndexedValue, Wildcard<IndexedValue>, Tree<IndexedValue>, Tree<Wildcard<IndexedValue>>> matcher = matcher();
 		Tree<IndexedValue> nodes = tree("a", tree("b", "d", "e"), "c");
 		Tree<Wildcard<IndexedValue>> wildcards = wtree("a", wtree("b", "e"));
-		Assert.assertEquals(true, matcher.match(nodes, wildcards));
+		assertTerminalPositions(Arrays.asList(3), matcher.match(nodes, wildcards));
 	}
 
 	@Test
@@ -64,7 +67,7 @@ public class TestMultiLevelMatcher extends CommonMatcherTest {
 		MultiLevelMatcher<IndexedValue, Wildcard<IndexedValue>, Tree<IndexedValue>, Tree<Wildcard<IndexedValue>>> matcher = matcher();
 		Tree<IndexedValue> nodes = tree("a", tree("b", "d", "e"), "c");
 		Tree<Wildcard<IndexedValue>> wildcards = wtree("a", "e");
-		Assert.assertEquals(true, matcher.match(nodes, wildcards));
+		assertTerminalPositions(Arrays.asList(3), matcher.match(nodes, wildcards));
 	}
 
 	@Test
@@ -72,7 +75,7 @@ public class TestMultiLevelMatcher extends CommonMatcherTest {
 		MultiLevelMatcher<IndexedValue, Wildcard<IndexedValue>, Tree<IndexedValue>, Tree<Wildcard<IndexedValue>>> matcher = matcher();
 		Tree<IndexedValue> nodes = tree("a", tree("b", "d", "e"), "c");
 		Tree<Wildcard<IndexedValue>> wildcards = wtree("a", "d", "e");
-		Assert.assertEquals(true, matcher.match(nodes, wildcards));
+		assertTerminalPositions(Arrays.asList(3), matcher.match(nodes, wildcards));
 	}
 
 	@Test
@@ -80,7 +83,7 @@ public class TestMultiLevelMatcher extends CommonMatcherTest {
 		MultiLevelMatcher<IndexedValue, Wildcard<IndexedValue>, Tree<IndexedValue>, Tree<Wildcard<IndexedValue>>> matcher = matcher();
 		Tree<IndexedValue> nodes = tree("a", tree("b", tree("d", "g", "h"), "e"));
 		Tree<Wildcard<IndexedValue>> wildcards = wtree("a", wtree("d", "h"));
-		Assert.assertEquals(true, matcher.match(nodes, wildcards));
+		assertTerminalPositions(Arrays.asList(4), matcher.match(nodes, wildcards));
 	}
 
 	@Test
@@ -88,7 +91,7 @@ public class TestMultiLevelMatcher extends CommonMatcherTest {
 		MultiLevelMatcher<IndexedValue, Wildcard<IndexedValue>, Tree<IndexedValue>, Tree<Wildcard<IndexedValue>>> matcher = matcher();
 		Tree<IndexedValue> nodes = tree("a", tree("b", "d", "e"), "c");
 		Tree<Wildcard<IndexedValue>> wildcards = wtree("a", "e", "d");
-		Assert.assertEquals(false, matcher.match(nodes, wildcards));
+		Assert.assertEquals(Collections.emptyList(), matcher.match(nodes, wildcards));
 	}
 
 	@Test
@@ -96,6 +99,22 @@ public class TestMultiLevelMatcher extends CommonMatcherTest {
 		MultiLevelMatcher<IndexedValue, Wildcard<IndexedValue>, Tree<IndexedValue>, Tree<Wildcard<IndexedValue>>> matcher = matcher();
 		Tree<IndexedValue> nodes = tree("a", tree("B", "d"), tree("C", "e"));
 		Tree<Wildcard<IndexedValue>> wildcards = wtree("a", wtree("C", "e"), "B");
-		Assert.assertEquals(true, matcher.match(nodes, wildcards));
+		assertTerminalPositions(Arrays.asList(4), matcher.match(nodes, wildcards));
+	}
+
+	@Test
+	public void testDescendantsWithUnordered2() {
+		MultiLevelMatcher<IndexedValue, Wildcard<IndexedValue>, Tree<IndexedValue>, Tree<Wildcard<IndexedValue>>> matcher = matcher();
+		Tree<IndexedValue> nodes = tree("a", tree("B", "d"), tree("C", "e"));
+		Tree<Wildcard<IndexedValue>> wildcards = wtree("a", "d");
+		assertTerminalPositions(Arrays.asList(2), matcher.match(nodes, wildcards));
+	}
+
+	@Test
+	public void testDescendantsMultiMatch() {
+		MultiLevelMatcher<IndexedValue, Wildcard<IndexedValue>, Tree<IndexedValue>, Tree<Wildcard<IndexedValue>>> matcher = matcher();
+		Tree<IndexedValue> nodes = tree("a", tree("b", tree("d", "g", "h"), tree("e", "h")));
+		Tree<Wildcard<IndexedValue>> wildcards = wtree("a", "h");
+		assertTerminalPositions(Arrays.asList(4, 6), matcher.match(nodes, wildcards));
 	}
 }

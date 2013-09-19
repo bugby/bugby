@@ -1,6 +1,6 @@
 package org.bugby.matcher.acr;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,10 +18,14 @@ import java.util.List;
  */
 public class MultiLevelMatcher<T, W, TT, TW> {
 	private final NodeMatch<T, W> nodeMatch;
+	private final NodeMatch<TT, TW> treeNodeMatch;
 	private final OneLevelMatcher<TT, TW> oneLevelMatcher;
 
 	private final TreeModel<TT, T> nodeTreeModel;
 	private final TreeModel<TW, W> wildcaldTreeModel;
+
+	private TW terminalWildcard;
+	private List<T> currentResult;
 
 	public MultiLevelMatcher(NodeMatch<T, W> nodeMatch, TreeModel<TT, T> nodeTreeModel,
 			TreeModel<TW, W> wildcaldTreeModel) {
@@ -29,7 +33,7 @@ public class MultiLevelMatcher<T, W, TT, TW> {
 		this.nodeTreeModel = nodeTreeModel;
 		this.wildcaldTreeModel = wildcaldTreeModel;
 
-		NodeMatch<TT, TW> treeNodeMatch = new NodeMatch<TT, TW>() {
+		treeNodeMatch = new NodeMatch<TT, TW>() {
 			@Override
 			public boolean match(TW wildcard, TT node) {
 				// match first the node itself
@@ -54,6 +58,11 @@ public class MultiLevelMatcher<T, W, TT, TW> {
 								MultiLevelMatcher.this.nodeTreeModel.getDescendants(node, true), orderedWildcards)
 								.isEmpty();
 					}
+				} else {
+					if (wildcard == terminalWildcard) {
+						// found a terminal result
+						currentResult.add(MultiLevelMatcher.this.nodeTreeModel.getValue(node));
+					}
 				}
 				return true;
 			}
@@ -61,10 +70,34 @@ public class MultiLevelMatcher<T, W, TT, TW> {
 		oneLevelMatcher = new OneLevelMatcher<TT, TW>(treeNodeMatch);
 	}
 
-	public boolean match(TT parentNode, TW wildcardParent) {
-		List<TT> initialNodes = Collections.singletonList(parentNode);
-		List<TW> initialWildcards = Collections.singletonList(wildcardParent);
-		List<List<TT>> match = oneLevelMatcher.matchOrdered(initialNodes, initialWildcards);
-		return !match.isEmpty();
+	/**
+	 * 
+	 * @param parentNode
+	 * @param wildcardParent
+	 * @return the list with each node that matches the wildcard terminal (i.e. the last node - depth order - in the
+	 *         wildcard tree)
+	 */
+	public List<T> match(TT parentNode, TW wildcardParent) {
+		currentResult = new ArrayList<T>();
+		terminalWildcard = findTerminal(wildcardParent);
+		treeNodeMatch.match(wildcardParent, parentNode);
+		return currentResult;
+	}
+
+	private TW findTerminal(TW wildcardParent) {
+		TW terminal = null;
+		List<TW> descendants = wildcaldTreeModel.getDescendants(wildcardParent, true);
+		if (!descendants.isEmpty()) {
+			terminal = descendants.get(descendants.size() - 1);
+		} else {
+			descendants = wildcaldTreeModel.getDescendants(wildcardParent, false);
+			if (!descendants.isEmpty()) {
+				// XXX not sure this is ok (when only unordered descendants exist)
+				terminal = descendants.get(descendants.size() - 1);
+			} else {
+				terminal = wildcardParent;
+			}
+		}
+		return terminal;
 	}
 }

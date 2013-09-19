@@ -87,6 +87,15 @@ public class CommonMatcherTest {
 		}
 	}
 
+	protected void assertTerminalPositions(List<Integer> positions, List<IndexedValue> match) {
+		assertEquals(positions.size(), match.size());
+
+		for (int j = 0; j < positions.size(); ++j) {
+			assertEquals(positions.get(j).intValue(), match.get(j).getIndex());
+		}
+
+	}
+
 	protected List<List<Integer>> positions1(Integer... n) {
 		return Arrays.asList(Arrays.asList(n));
 	}
@@ -109,16 +118,26 @@ public class CommonMatcherTest {
 
 	protected Tree<IndexedValue> tree(String root, Object... children) {
 		Tree<IndexedValue> parent = new Tree<IndexedValue>(new IndexedValue(root, 0));
+		int index = 0;
 		for (int i = 0; i < children.length; ++i) {
 			if (children[i] instanceof String) {
-				parent.newChild(new IndexedValue((String) children[i], i));
+				parent.newChild(new IndexedValue((String) children[i], ++index));
 			} else {
 				Tree<IndexedValue> child = (Tree<IndexedValue>) children[i];
-				Tree<IndexedValue> newChild = parent.newChild(new IndexedValue(child.getValue().getValue(), i));
-				addChildren(newChild, child);
+				Tree<IndexedValue> newChild = parent.newChild(new IndexedValue(child.getValue().getValue(), ++index));
+				index = addChildren(newChild, child, index);
 			}
 		}
 		return parent;
+	}
+
+	private int addChildren(Tree<IndexedValue> newParent, Tree<IndexedValue> oldParent, int index) {
+		for (int i = 0; i < oldParent.getChildrenCount(); ++i) {
+			Tree<IndexedValue> newChild = newParent.newChild(new IndexedValue(oldParent.getChild(i).getValue()
+					.getValue(), ++index));
+			index = addChildren(newChild, oldParent.getChild(i), index);
+		}
+		return index;
 	}
 
 	private <T> void addChildren(Tree<T> newParent, Tree<T> oldParent) {
