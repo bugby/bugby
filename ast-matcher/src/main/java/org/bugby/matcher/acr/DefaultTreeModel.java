@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bugby.matcher.tree.Tree;
 
-public class DefaultTreeModel<V> implements TreeModel<Tree<V>, V> {
+abstract class DefaultTreeModel<V> implements TreeModel<Tree<V>, V> {
 
 	@Override
 	public int getChildrenCount(Tree<V> parent) {
@@ -13,8 +13,15 @@ public class DefaultTreeModel<V> implements TreeModel<Tree<V>, V> {
 	}
 
 	@Override
-	public List<Tree<V>> getChildren(Tree<V> parent) {
-		return parent.getChildren();
+	public List<Tree<V>> getChildren(Tree<V> parent, boolean ordered) {
+		List<Tree<V>> children = new ArrayList<Tree<V>>();
+		for (int i = 0; i < parent.getChildrenCount(); ++i) {
+			Tree<V> child = parent.getChild(i);
+			if (isOrdered(child) == ordered) {
+				children.add(child);
+			}
+		}
+		return children;
 	}
 
 	@Override
@@ -23,11 +30,14 @@ public class DefaultTreeModel<V> implements TreeModel<Tree<V>, V> {
 	}
 
 	@Override
-	public List<Tree<V>> getDescendants(Tree<V> parent) {
+	public List<Tree<V>> getDescendants(Tree<V> parent, boolean ordered) {
 		List<Tree<V>> descendants = new ArrayList<Tree<V>>();
 		for (int i = 0; i < parent.getChildrenCount(); ++i) {
-			descendants.add(parent.getChild(i));
-			descendants.addAll(getDescendants(parent.getChild(i)));
+			Tree<V> child = parent.getChild(i);
+			if (isOrdered(child) == ordered) {
+				descendants.add(child);
+				descendants.addAll(getDescendants(child, ordered));
+			}
 		}
 		return descendants;
 	}

@@ -39,10 +39,21 @@ public class MultiLevelMatcher<T, W, TT, TW> {
 				if (!ok) {
 					return false;
 				}
-				if (MultiLevelMatcher.this.wildcaldTreeModel.getChildrenCount(wildcard) != 0) {
+				if (MultiLevelMatcher.this.wildcaldTreeModel.getChildrenCount(wildcard) > 0) {
 					// if the wildcard has children continue the matching to the children
-					return !oneLevelMatcher.matchOrdered(MultiLevelMatcher.this.nodeTreeModel.getDescendants(node),
-							MultiLevelMatcher.this.wildcaldTreeModel.getChildren(wildcard)).isEmpty();
+					List<TW> unorderedWildcards = MultiLevelMatcher.this.wildcaldTreeModel.getChildren(wildcard, false);
+					if (unorderedWildcards.size() > 0
+							&& oneLevelMatcher.matchUnordered(
+									MultiLevelMatcher.this.nodeTreeModel.getDescendants(node, false),
+									unorderedWildcards).isEmpty()) {
+						return false;
+					}
+					List<TW> orderedWildcards = MultiLevelMatcher.this.wildcaldTreeModel.getChildren(wildcard, true);
+					if (orderedWildcards.size() > 0) {
+						return !oneLevelMatcher.matchOrdered(
+								MultiLevelMatcher.this.nodeTreeModel.getDescendants(node, true), orderedWildcards)
+								.isEmpty();
+					}
 				}
 				return true;
 			}

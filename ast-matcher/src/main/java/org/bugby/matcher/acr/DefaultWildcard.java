@@ -15,6 +15,11 @@ public class DefaultWildcard<T> implements Wildcard<T> {
 	}
 
 	@Override
+	public String toString() {
+		return "W:" + value;
+	}
+
+	@Override
 	public boolean match(T t) {
 		return t.equals(value);
 	}
