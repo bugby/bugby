@@ -35,6 +35,11 @@ public class TestMultiLevelMatcher extends CommonMatcherTest {
 					public boolean match(Wildcard<IndexedValue> wildcard, IndexedValue node) {
 						return wildcard.match(node);
 					}
+
+					@Override
+					public MatchingType getMatchingType(Wildcard<IndexedValue> wildcard) {
+						return wildcard.getMatchingType();
+					}
 				}, new TestNodeDefaultTreeModel(), new TestWildcardDefaultTreeModel());
 	}
 

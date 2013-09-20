@@ -2,6 +2,7 @@ package org.bugby.pattern.example;
 
 import japa.parser.ast.Node;
 
+import org.bugby.matcher.acr.MatchingType;
 import org.bugby.wildcard.api.WildcardNodeMatcher;
 
 public class DefaultNodeMatcher implements WildcardNodeMatcher {
@@ -27,6 +28,16 @@ public class DefaultNodeMatcher implements WildcardNodeMatcher {
 	@Override
 	public String toString() {
 		return "DefaultNodeMatcher [targetNode=" + targetNode.getClass() + "]";
+	}
+
+	@Override
+	public boolean isOrdered() {
+		return ASTModelBridges.getBridge(targetNode).isOrdered(targetNode);
+	}
+
+	@Override
+	public MatchingType getMatchingType() {
+		return MatchingType.normal;
 	}
 
 }

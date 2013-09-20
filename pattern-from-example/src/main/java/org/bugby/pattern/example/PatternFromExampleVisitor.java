@@ -114,6 +114,10 @@ public class PatternFromExampleVisitor extends ForEachNodeVisitor<PatternBuilder
 		addedNodes.push(node);
 	}
 
+	private void dontAdd(Node n) {
+		lastAdded = n;// don't add
+	}
+
 	@Override
 	public void visit(MethodCallExpr n, PatternBuilder builder) {
 		addMatcher(builder, n.getName(), n);
@@ -140,13 +144,12 @@ public class PatternFromExampleVisitor extends ForEachNodeVisitor<PatternBuilder
 
 	@Override
 	public void visit(CompilationUnit n, PatternBuilder builder) {
-		lastAdded = n;// don't add
 		super.visit(n, builder);
 	}
 
 	@Override
 	public void visit(BlockStmt n, PatternBuilder builder) {
-		lastAdded = n;// don't add
+		dontAdd(n);
 		super.visit(n, builder);
 	}
 
@@ -355,7 +358,7 @@ public class PatternFromExampleVisitor extends ForEachNodeVisitor<PatternBuilder
 
 	@Override
 	public void visit(ExpressionStmt n, PatternBuilder builder) {
-
+		dontAdd(n);
 		super.visit(n, builder);
 
 	}
@@ -439,7 +442,7 @@ public class PatternFromExampleVisitor extends ForEachNodeVisitor<PatternBuilder
 
 	@Override
 	public void visit(LineComment n, PatternBuilder builder) {
-		lastAdded = n;// don't add
+		dontAdd(n);
 		super.visit(n, builder);
 
 	}
@@ -460,14 +463,13 @@ public class PatternFromExampleVisitor extends ForEachNodeVisitor<PatternBuilder
 
 	@Override
 	public void visit(MarkerAnnotationExpr n, PatternBuilder builder) {
-
-		super.visit(n, builder);
-
+		// skip (TODO - some annotation must be kept!
+		// super.visit(n, builder);
 	}
 
 	@Override
 	public void visit(MemberValuePair n, PatternBuilder builder) {
-		lastAdded = n;// don't add
+		dontAdd(n);
 		super.visit(n, builder);
 
 	}
@@ -636,15 +638,15 @@ public class PatternFromExampleVisitor extends ForEachNodeVisitor<PatternBuilder
 
 	@Override
 	public void visit(VariableDeclaratorId n, PatternBuilder builder) {
-		lastAdded = n;// don't add
+		dontAdd(n);
 		super.visit(n, builder);
 
 	}
 
 	@Override
 	public void visit(VoidType n, PatternBuilder builder) {
-
-		super.visit(n, builder);
+		// XXX put it back
+		// super.visit(n, builder);
 
 	}
 

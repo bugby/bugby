@@ -3,6 +3,7 @@ package org.bugby.wildcard.matcher;
 import japa.parser.ast.Node;
 import japa.parser.ast.expr.Expression;
 
+import org.bugby.matcher.acr.MatchingType;
 import org.bugby.wildcard.api.WildcardNodeMatcher;
 import org.richast.node.ASTNodeData;
 import org.richast.type.TypeWrapper;
@@ -20,4 +21,13 @@ public class SomeConditionMatcher implements WildcardNodeMatcher {
 		return false;
 	}
 
+	@Override
+	public boolean isOrdered() {
+		return true;
+	}
+
+	@Override
+	public MatchingType getMatchingType() {
+		return MatchingType.normal;
+	}
 }

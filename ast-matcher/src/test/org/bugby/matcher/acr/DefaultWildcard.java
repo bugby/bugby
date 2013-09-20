@@ -3,11 +3,33 @@ package org.bugby.matcher.acr;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultWildcard<T> implements Wildcard<T> {
+class DefaultWildcard<T> implements Wildcard<T> {
+	/**
+	 * means next node must match
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static final Wildcard<?> BEGIN = new DefaultWildcard(MatchingType.begin);
+	/**
+	 * means the last match should've been on the last position
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static final Wildcard<?> END = new DefaultWildcard(MatchingType.end);
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static final Wildcard<?> EMPTY = new DefaultWildcard(MatchingType.empty);
+
 	private final T value;
+
+	private final MatchingType matchingType;
 
 	public DefaultWildcard(T value) {
 		this.value = value;
+		this.matchingType = MatchingType.normal;
+	}
+
+	public DefaultWildcard(MatchingType matchingType) {
+		this.value = null;
+		this.matchingType = matchingType;
 	}
 
 	public T getValue() {
@@ -24,6 +46,10 @@ public class DefaultWildcard<T> implements Wildcard<T> {
 		return t.equals(value);
 	}
 
+	public MatchingType getMatchingType() {
+		return matchingType;
+	}
+
 	public static <T> List<Wildcard<T>> build(T... values) {
 		List<Wildcard<T>> list = new ArrayList<Wildcard<T>>(values.length);
 		for (T v : values) {
@@ -35,7 +61,7 @@ public class DefaultWildcard<T> implements Wildcard<T> {
 	@SuppressWarnings("unchecked")
 	public static <T> List<Wildcard<T>> buildBegin(T... values) {
 		List<Wildcard<T>> list = new ArrayList<Wildcard<T>>(values.length + 1);
-		list.add((Wildcard<T>) OneLevelMatcher.BEGIN);
+		list.add((Wildcard<T>) BEGIN);
 		list.addAll(build(values));
 		return list;
 	}
@@ -44,23 +70,23 @@ public class DefaultWildcard<T> implements Wildcard<T> {
 	public static <T> List<Wildcard<T>> buildEnd(T... values) {
 		List<Wildcard<T>> list = new ArrayList<Wildcard<T>>(values.length + 1);
 		list.addAll(build(values));
-		list.add((Wildcard<T>) OneLevelMatcher.END);
+		list.add((Wildcard<T>) END);
 		return list;
 	}
 
 	@SuppressWarnings("unchecked")
 	public static <T> List<Wildcard<T>> buildBeginEnd(T... values) {
 		List<Wildcard<T>> list = new ArrayList<Wildcard<T>>(values.length + 2);
-		list.add((Wildcard<T>) OneLevelMatcher.BEGIN);
+		list.add((Wildcard<T>) BEGIN);
 		list.addAll(build(values));
-		list.add((Wildcard<T>) OneLevelMatcher.END);
+		list.add((Wildcard<T>) END);
 		return list;
 	}
 
 	@SuppressWarnings("unchecked")
 	public static <T> List<Wildcard<T>> buildEmpty() {
 		List<Wildcard<T>> list = new ArrayList<Wildcard<T>>();
-		list.add((Wildcard<T>) OneLevelMatcher.EMPTY);
+		list.add((Wildcard<T>) EMPTY);
 		return list;
 	}
 }

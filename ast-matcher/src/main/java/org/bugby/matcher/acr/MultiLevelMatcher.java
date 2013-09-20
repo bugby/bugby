@@ -66,6 +66,12 @@ public class MultiLevelMatcher<T, W, TT, TW> {
 				}
 				return true;
 			}
+
+			@Override
+			public MatchingType getMatchingType(TW wildcard) {
+				return MultiLevelMatcher.this.nodeMatch.getMatchingType(MultiLevelMatcher.this.wildcaldTreeModel
+						.getValue(wildcard));
+			}
 		};
 		oneLevelMatcher = new OneLevelMatcher<TT, TW>(treeNodeMatch);
 	}

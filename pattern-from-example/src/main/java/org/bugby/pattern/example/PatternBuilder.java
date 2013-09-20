@@ -5,6 +5,7 @@ import japa.parser.ast.Node;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.List;
 
 import org.bugby.matcher.tree.Tree;
 import org.bugby.wildcard.WildcardNodeMatcherFromExample;
@@ -25,13 +26,31 @@ public class PatternBuilder {
 		this.wildcardDictionary = wildcardDictionary;
 	}
 
-	public void buildFromFile(ClassLoader builtProjectClassLoader, File file) {
+	public Tree<WildcardNodeMatcher> buildFromFile(ClassLoader builtProjectClassLoader, File file) {
 		ClassLoaderWrapper classLoaderWrapper = new ClassLoaderWrapper(builtProjectClassLoader,
 				Collections.<String>emptyList(), Collections.<String>emptyList());
 		GenerationContext context = new GenerationContext(file);
 		CompilationUnit cu = RichASTParser.parseAndResolve(classLoaderWrapper, file, context, "UTF-8");
-		cu.accept(new PatternFromExampleVisitor(), this);
+		// cu.accept(new PatternFromExampleVisitor(), this);
 		// System.out.println(matchers);
+		ASTTreeModel treeModel = new ASTTreeModel();
+		addWildcards(treeModel, null, cu);
+		return root;
+	}
+
+	private void addWildcards(ASTTreeModel treeModel, Tree<WildcardNodeMatcher> parentPatternNode, Node node) {
+		String name = ASTModelBridges.getBridge(node).getMatcherName(node);
+		Tree<WildcardNodeMatcher> newParentPatternNode = parentPatternNode;
+		if (name != null) {
+			newParentPatternNode = addMatcher(parentPatternNode, name, node);
+		}
+		for (Node child : treeModel.getChildren(node, false)) {
+			addWildcards(treeModel, newParentPatternNode, child);
+		}
+		for (Node child : treeModel.getChildren(node, true)) {
+			addWildcards(treeModel, newParentPatternNode, child);
+		}
+
 	}
 
 	private Tree<WildcardNodeMatcher> addPatternNode(Tree<WildcardNodeMatcher> parentPatternNode,
@@ -62,20 +81,8 @@ public class PatternBuilder {
 				throw new RuntimeException(e);
 			}
 		}
+		List<Node> children = ASTModelBridges.getBridge(n).getChildren(n);
 		return addPatternNode(parentPatternNode, new DefaultNodeMatcher(n));
 	}
 
-	public static void main(String[] args) {
-		ClassLoader builtProjectClassLoader = Thread.currentThread().getContextClassLoader();
-		WildcardDictionary wildcardDictionary = new WildcardDictionary();
-		WildcardDictionaryFromFile.addWildcardsFromFile(wildcardDictionary, builtProjectClassLoader, new File(
-				"../default-wildcards/src/main/java/org/bugby/wildcard/Wildcards.java"));
-		// here add more custom wildcards by dynamic discovery
-
-		PatternBuilder patternBuilder = new PatternBuilder();
-		patternBuilder.setWildcardDictionary(wildcardDictionary);
-		patternBuilder.buildFromFile(builtProjectClassLoader, new File(
-				"../default-examples/src/main/java/org/bugby/bugs/pmd/CollapsibleIfStatements.java"));
-		System.out.println(patternBuilder.root.toString());
-	}
 }

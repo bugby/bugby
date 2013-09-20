@@ -8,20 +8,6 @@ import java.util.Stack;
 public class OneLevelMatcher<T, W> {
 	private final NodeMatch<T, W> nodeMatch;
 
-	/**
-	 * means next node must match
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static final Wildcard<?> BEGIN = new DefaultWildcard(null);
-	/**
-	 * means the last match should've been on the last position
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static final Wildcard<?> END = new DefaultWildcard(null);
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static final Wildcard<?> EMPTY = new DefaultWildcard(null);
-
 	private class MatchPosition {
 		private final int node;
 		private final int wildcard;
@@ -56,7 +42,7 @@ public class OneLevelMatcher<T, W> {
 		Stack<MatchPosition> matchingStack = new Stack<MatchPosition>();
 		List<List<T>> matchings = new ArrayList<List<T>>();
 		// special case - EMPTY
-		if (wildcards.size() == 1 && wildcards.get(0) == EMPTY) {
+		if (wildcards.size() == 1 && nodeMatch.getMatchingType(wildcards.get(0)) == MatchingType.empty) {
 			// assert w == 0 && w == wildcards.size() - 1
 			if (nodes.isEmpty()) {
 				matchings.add(new ArrayList<T>());
@@ -90,14 +76,14 @@ public class OneLevelMatcher<T, W> {
 		while (n < nodes.size() && w < wildcards.size()) {
 			W wildcard = wildcards.get(w);
 
-			if (wildcard == BEGIN) {
+			if (nodeMatch.getMatchingType(wildcard) == MatchingType.begin) {
 				// assert w == 0
 				nextMustMatch = true;
 				w++;
 				continue;
 			}
 			// check END match - look ahead
-			if (w == wildcards.size() - 2 && wildcards.get(w + 1) == OneLevelMatcher.END) {
+			if (w == wildcards.size() - 2 && nodeMatch.getMatchingType(wildcards.get(w + 1)) == MatchingType.end) {
 				matchingStack.push(new MatchPosition(nodes.size() - 1, w));
 				return nodeMatch.match(wildcard, nodes.get(nodes.size() - 1));
 			}

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bugby.matcher.tree.Tree;
 
-abstract class DefaultTreeModel<V> implements TreeModel<Tree<V>, V> {
+abstract public class DefaultTreeModel<V> implements TreeModel<Tree<V>, V> {
 
 	@Override
 	public int getChildrenCount(Tree<V> parent) {
