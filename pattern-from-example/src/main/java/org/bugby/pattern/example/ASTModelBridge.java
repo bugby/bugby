@@ -10,4 +10,6 @@ public interface ASTModelBridge {
 	public boolean isOrdered(Node node);
 
 	public String getMatcherName(Node node);
+
+	public boolean areSimilar(Node patternNode, Node sourceNode);
 }

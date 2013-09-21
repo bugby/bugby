@@ -153,7 +153,14 @@ public class CommonMatcherTest {
 				new IndexedValue(root, 0)));
 		for (int i = 0; i < children.length; ++i) {
 			if (children[i] instanceof String) {
-				parent.newChild(new DefaultWildcard<IndexedValue>(new IndexedValue((String) children[i], i)));
+				String s = (String) children[i];
+				if (s.equals("^")) {
+					parent.newChild((DefaultWildcard<IndexedValue>) DefaultWildcard.BEGIN);
+				} else if (s.equals("$")) {
+					parent.newChild((DefaultWildcard<IndexedValue>) DefaultWildcard.END);
+				} else {
+					parent.newChild(new DefaultWildcard<IndexedValue>(new IndexedValue(s, i)));
+				}
 			} else {
 				Tree<Wildcard<IndexedValue>> child = (Tree<Wildcard<IndexedValue>>) children[i];
 				Tree<Wildcard<IndexedValue>> newChild = parent.newChild(new DefaultWildcard<IndexedValue>(

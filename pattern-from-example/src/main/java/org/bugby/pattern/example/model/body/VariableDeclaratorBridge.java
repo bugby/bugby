@@ -16,7 +16,8 @@ public class VariableDeclaratorBridge implements ASTModelBridge {
 	public List<Node> getChildren(Node parent) {
 		VariableDeclarator decl = (VariableDeclarator) parent;
 
-		return (List) ListUtils.asList(VirtualNode.of("id", decl.getId()), VirtualNode.of("init", decl.getInit()));
+		return (List) ListUtils.asList(VirtualNode.of(parent, "id", decl.getId(), true),
+				VirtualNode.of(parent, "init", decl.getInit(), true));
 	}
 
 	@Override
@@ -30,4 +31,9 @@ public class VariableDeclaratorBridge implements ASTModelBridge {
 		return decl.getId().getName();
 	}
 
+	@Override
+	public boolean areSimilar(Node patternNode, Node sourceNode) {
+		// send the check to children
+		return true;
+	}
 }

@@ -32,4 +32,12 @@ public class MethodDeclarationBridge implements ASTModelBridge {
 		MethodDeclaration decl = (MethodDeclaration) node;
 		return decl.getName();
 	}
+
+	@Override
+	public boolean areSimilar(Node patternNode, Node sourceNode) {
+		MethodDeclaration patternDecl = (MethodDeclaration) patternNode;
+		MethodDeclaration sourceDecl = (MethodDeclaration) sourceNode;
+		// TODO add other checks on parameters
+		return patternDecl.getName().equals(sourceDecl.getName());
+	}
 }

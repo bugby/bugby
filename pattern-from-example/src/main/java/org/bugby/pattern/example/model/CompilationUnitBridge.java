@@ -26,4 +26,10 @@ public class CompilationUnitBridge implements ASTModelBridge {
 	public String getMatcherName(Node node) {
 		return "";
 	}
+
+	@Override
+	public boolean areSimilar(Node patternNode, Node sourceNode) {
+		return true;
+	}
+
 }

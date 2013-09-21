@@ -15,8 +15,14 @@ public class FieldAccessExprBridge extends ExpressionBridge {
 	public List<Node> getChildren(Node parent) {
 		FieldAccessExpr expr = (FieldAccessExpr) parent;
 
-		return (List) ListUtils.asList(VirtualNode.of("scope", expr.getScope()),
-				VirtualNode.of("typeArgs", expr.getTypeArgs()));
+		return (List) ListUtils.asList(VirtualNode.of(parent, "scope", expr.getScope(), true),
+				VirtualNode.of(parent, "typeArgs", expr.getTypeArgs(), true));
 	}
 
+	@Override
+	public boolean areSimilar(Node patternNode, Node sourceNode) {
+		FieldAccessExpr patternExpr = (FieldAccessExpr) patternNode;
+		FieldAccessExpr sourceExpr = (FieldAccessExpr) sourceNode;
+		return patternExpr.getField().equals(sourceExpr.getField());
+	}
 }

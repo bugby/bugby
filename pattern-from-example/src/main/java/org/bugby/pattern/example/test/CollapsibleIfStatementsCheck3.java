@@ -1,15 +1,16 @@
 package org.bugby.pattern.example.test;
 
-public class CollapsibleIfStatementsCheck {
+public class CollapsibleIfStatementsCheck3 {
 
-	public CollapsibleIfStatementsCheck() {
+	public CollapsibleIfStatementsCheck3() {
 		myMethod();
 	}
 
 	public void myMethod() {
 		int n = 100;
 
-		if (n < 10 && n % 2 != 1) {
+		if (n < 10) {
+			System.out.println("additional code");
 			if (n > 2) {
 				System.out.println("found a good number");
 			}

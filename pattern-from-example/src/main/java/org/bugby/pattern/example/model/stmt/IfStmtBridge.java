@@ -14,12 +14,19 @@ public class IfStmtBridge extends StatementBridge {
 	@Override
 	public List<Node> getChildren(Node parent) {
 		IfStmt stmt = (IfStmt) parent;
-		return (List) ListUtils.asList(VirtualNode.of("condition", stmt.getCondition()),
-				VirtualNode.of("then", stmt.getThenStmt()), VirtualNode.of("else", stmt.getElseStmt()));
+		return (List) ListUtils.asList(VirtualNode.of(parent, "condition", stmt.getCondition(), true),
+				VirtualNode.of(parent, "then", stmt.getThenStmt(), true),
+				VirtualNode.of(parent, "else", stmt.getElseStmt(), true));
 	}
 
 	@Override
 	public String getMatcherName(Node node) {
 		return "";
+	}
+
+	@Override
+	public boolean areSimilar(Node patternNode, Node sourceNode) {
+		// let the children decide
+		return true;
 	}
 }

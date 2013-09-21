@@ -22,6 +22,16 @@ public class TestOneLevelMatcher extends CommonMatcherTest {
 					public MatchingType getMatchingType(Wildcard<IndexedValue> wildcard) {
 						return wildcard.getMatchingType();
 					}
+
+					@Override
+					public boolean isFirstChild(List<IndexedValue> nodes, int index) {
+						return index == 0;
+					}
+
+					@Override
+					public boolean isLastChild(List<IndexedValue> nodes, int index) {
+						return index == nodes.size() - 1;
+					}
 				});
 	}
 

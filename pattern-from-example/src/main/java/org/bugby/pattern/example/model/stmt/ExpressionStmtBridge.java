@@ -15,4 +15,10 @@ public class ExpressionStmtBridge extends StatementBridge {
 		ExpressionStmt stmt = (ExpressionStmt) parent;
 		return ListUtils.singletonListOrEmpty((Node) stmt.getExpression());
 	}
+
+	@Override
+	public boolean areSimilar(Node patternNode, Node sourceNode) {
+		// let the children decide
+		return true;
+	}
 }

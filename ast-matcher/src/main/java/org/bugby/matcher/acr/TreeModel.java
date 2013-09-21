@@ -12,4 +12,20 @@ public interface TreeModel<T, V> {
 	public V getValue(T node);
 
 	public boolean isOrdered(T node);
+
+	/**
+	 * for ordered node only
+	 * 
+	 * @param node
+	 * @return
+	 */
+	public boolean isFirstChild(T node);
+
+	/**
+	 * for ordered node only
+	 * 
+	 * @param node
+	 * @return
+	 */
+	public boolean isLastChild(T node);
 }

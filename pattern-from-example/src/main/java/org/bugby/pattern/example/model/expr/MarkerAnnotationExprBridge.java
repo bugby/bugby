@@ -14,4 +14,9 @@ public class MarkerAnnotationExprBridge extends ExpressionBridge {
 		return ListUtils.singletonListOrEmpty((Node) ((MarkerAnnotationExpr) parent).getName());
 	}
 
+	@Override
+	public boolean areSimilar(Node patternNode, Node sourceNode) {
+		// let the children decide
+		return true;
+	}
 }

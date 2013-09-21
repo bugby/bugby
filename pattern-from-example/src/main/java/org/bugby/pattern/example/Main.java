@@ -26,17 +26,32 @@ public class Main {
 
 	}
 
-	private static NodeMatch<Node, WildcardNodeMatcher> nodeMatch() {
+	private static NodeMatch<Node, WildcardNodeMatcher> nodeMatch(final ASTTreeModel astTreeModel) {
 		return new NodeMatch<Node, WildcardNodeMatcher>() {
 			@Override
 			public boolean match(WildcardNodeMatcher wildcard, Node node) {
-				System.out.println(wildcard + " on " + node.toString() + " =  " + wildcard.matches(node));
-				return wildcard.matches(node);
+				boolean ok = wildcard.matches(node);
+				if (ok) {
+					System.err.println(wildcard + " on " + node.toString() + " = OK");
+				} else {
+					System.out.println(wildcard + " on " + node.toString());
+				}
+				return ok;
 			}
 
 			@Override
 			public MatchingType getMatchingType(WildcardNodeMatcher wildcard) {
 				return wildcard.getMatchingType();
+			}
+
+			@Override
+			public boolean isFirstChild(List<Node> nodes, int index) {
+				return astTreeModel.isFirstChild(nodes.get(index));
+			}
+
+			@Override
+			public boolean isLastChild(List<Node> nodes, int index) {
+				return astTreeModel.isLastChild(nodes.get(index));
 			}
 		};
 	}
@@ -47,6 +62,10 @@ public class Main {
 		WildcardDictionary wildcardDictionary = new WildcardDictionary();
 		WildcardDictionaryFromFile.addWildcardsFromFile(wildcardDictionary, builtProjectClassLoader, new File(
 				"../default-wildcards/src/main/java/org/bugby/wildcard/Wildcards.java"));
+		WildcardDictionaryFromFile.addWildcardsFromFile(wildcardDictionary, builtProjectClassLoader, new File(
+				"../default-wildcards/src/main/java/org/bugby/wildcard/SomeType.java"));
+		WildcardDictionaryFromFile.addWildcardsFromFile(wildcardDictionary, builtProjectClassLoader, new File(
+				"../default-wildcards/src/main/java/org/bugby/wildcard/SomeTypeDeclaration.java"));
 		// here add more custom wildcards by dynamic discovery
 
 		// 2. read patterns
@@ -58,15 +77,17 @@ public class Main {
 		System.out.println("-------------------------");
 
 		// 3. parse source file to be checked
-		File sourceFile = new File("src/main/java/org/bugby/pattern/example/test/CollapsibleIfStatementsCheck.java");
+		File sourceFile = new File("src/main/java/org/bugby/pattern/example/test/CollapsibleIfStatementsCheck4.java");
 		CompilationUnit sourceRootNode = parseSource(builtProjectClassLoader, sourceFile);
 
 		// 4. apply matcher
+		ASTTreeModel astTreeModel = new ASTTreeModel();
 		MultiLevelMatcher<Node, WildcardNodeMatcher, Node, Tree<WildcardNodeMatcher>> matcher = new MultiLevelMatcher<Node, WildcardNodeMatcher, Node, Tree<WildcardNodeMatcher>>(
-				nodeMatch(), new ASTTreeModel(), new PatternTreeModel());
+				nodeMatch(astTreeModel), astTreeModel, new PatternTreeModel());
 		List<Node> matches = matcher.match(sourceRootNode, patternRoot);
+		// TODO order by line
 		for (Node match : matches) {
-			System.out.println("Found match at: " + sourceFile.getPath() + ":" + match.getBeginLine());
+			System.out.println("Found match at: " + sourceFile.getPath() + ":" + match.getBeginLine() + "->" + match);
 		}
 		if (matches.isEmpty()) {
 			System.out.println("No match was found");

@@ -15,7 +15,15 @@ public class BinaryExprBridge extends ExpressionBridge {
 	public List<Node> getChildren(Node parent) {
 		BinaryExpr expr = (BinaryExpr) parent;
 
-		return (List) ListUtils.asList(VirtualNode.of("left", expr.getLeft()), VirtualNode.of("right", expr.getRight()));
+		// TODO here the order depends on the type of the operator
+		return (List) ListUtils.asList(VirtualNode.of(parent, "left", expr.getLeft(), true),
+				VirtualNode.of(parent, "right", expr.getRight(), true));
 	}
 
+	@Override
+	public boolean areSimilar(Node patternNode, Node sourceNode) {
+		BinaryExpr patternExpr = (BinaryExpr) patternNode;
+		BinaryExpr sourceExpr = (BinaryExpr) sourceNode;
+		return patternExpr.getOperator().equals(sourceExpr.getOperator());
+	}
 }

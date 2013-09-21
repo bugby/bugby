@@ -42,4 +42,28 @@ abstract public class DefaultTreeModel<V> implements TreeModel<Tree<V>, V> {
 		return descendants;
 	}
 
+	/**
+	 * for ordered node only
+	 * 
+	 * @param node
+	 * @return
+	 */
+	public boolean isFirstChild(Tree<V> node) {
+		// TODO optimize here
+		List<Tree<V>> children = getChildren(node.getParent(), true);
+		return children.get(0) == node;
+	}
+
+	/**
+	 * for ordered node only
+	 * 
+	 * @param node
+	 * @return
+	 */
+	public boolean isLastChild(Tree<V> node) {
+		// TODO optimize here
+		List<Tree<V>> children = getChildren(node.getParent(), true);
+		return children.get(children.size() - 1) == node;
+	}
+
 }

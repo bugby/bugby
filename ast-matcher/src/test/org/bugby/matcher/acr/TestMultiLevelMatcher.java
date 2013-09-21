@@ -2,6 +2,7 @@ package org.bugby.matcher.acr;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import junit.framework.Assert;
 
@@ -21,8 +22,12 @@ public class TestMultiLevelMatcher extends CommonMatcherTest {
 	private static class TestWildcardDefaultTreeModel extends DefaultTreeModel<Wildcard<IndexedValue>> {
 		@Override
 		public boolean isOrdered(Tree<Wildcard<IndexedValue>> node) {
+			if (((DefaultWildcard<IndexedValue>) node.getValue()).getValue() == null) {
+				return true;
+			}
 			// ordered if only lower case, unorderder otherwise
 			String v = ((DefaultWildcard<IndexedValue>) node.getValue()).getValue().getValue();
+
 			return v.equals(v.toLowerCase());
 		}
 	}
@@ -39,6 +44,18 @@ public class TestMultiLevelMatcher extends CommonMatcherTest {
 					@Override
 					public MatchingType getMatchingType(Wildcard<IndexedValue> wildcard) {
 						return wildcard.getMatchingType();
+					}
+
+					@Override
+					public boolean isFirstChild(List<IndexedValue> nodes, int index) {
+						// is ignored
+						return false;
+					}
+
+					@Override
+					public boolean isLastChild(List<IndexedValue> nodes, int index) {
+						// is ignored
+						return false;
 					}
 				}, new TestNodeDefaultTreeModel(), new TestWildcardDefaultTreeModel());
 	}
@@ -121,5 +138,21 @@ public class TestMultiLevelMatcher extends CommonMatcherTest {
 		Tree<IndexedValue> nodes = tree("a", tree("b", tree("d", "g", "h"), tree("e", "h")));
 		Tree<Wildcard<IndexedValue>> wildcards = wtree("a", "h");
 		assertTerminalPositions(Arrays.asList(4, 6), matcher.match(nodes, wildcards));
+	}
+
+	@Test
+	public void testBeginEndWithDescendants() {
+		MultiLevelMatcher<IndexedValue, Wildcard<IndexedValue>, Tree<IndexedValue>, Tree<Wildcard<IndexedValue>>> matcher = matcher();
+		Tree<IndexedValue> nodes = tree("a", tree("b", tree("x", "c", "d")));
+		Tree<Wildcard<IndexedValue>> wildcards = wtree("a", "^", "x", "$");
+		assertTerminalPositions(Arrays.asList(2), matcher.match(nodes, wildcards));
+	}
+
+	@Test
+	public void testBeginEndWithDescendantsWrong() {
+		MultiLevelMatcher<IndexedValue, Wildcard<IndexedValue>, Tree<IndexedValue>, Tree<Wildcard<IndexedValue>>> matcher = matcher();
+		Tree<IndexedValue> nodes = tree("a", tree("b", tree("x", "c", "d"), "y"));
+		Tree<Wildcard<IndexedValue>> wildcards = wtree("a", "^", "x", "$");
+		Assert.assertEquals(Collections.emptyList(), matcher.match(nodes, wildcards));
 	}
 }

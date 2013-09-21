@@ -2,6 +2,9 @@ package org.bugby.matcher.acr;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import com.google.common.collect.Sets;
 
 /**
  * 
@@ -22,43 +25,45 @@ public class MultiLevelMatcher<T, W, TT, TW> {
 	private final OneLevelMatcher<TT, TW> oneLevelMatcher;
 
 	private final TreeModel<TT, T> nodeTreeModel;
-	private final TreeModel<TW, W> wildcaldTreeModel;
+	private final TreeModel<TW, W> wildcardTreeModel;
 
 	private TW terminalWildcard;
-	private List<T> currentResult;
+	private Set<T> currentResult;
 
 	public MultiLevelMatcher(NodeMatch<T, W> nodeMatch, TreeModel<TT, T> nodeTreeModel,
 			TreeModel<TW, W> wildcaldTreeModel) {
 		this.nodeMatch = nodeMatch;
 		this.nodeTreeModel = nodeTreeModel;
-		this.wildcaldTreeModel = wildcaldTreeModel;
+		this.wildcardTreeModel = wildcaldTreeModel;
 
 		treeNodeMatch = new NodeMatch<TT, TW>() {
 			@Override
 			public boolean match(TW wildcard, TT node) {
 				// match first the node itself
 				boolean ok = MultiLevelMatcher.this.nodeMatch.match(
-						MultiLevelMatcher.this.wildcaldTreeModel.getValue(wildcard),
+						MultiLevelMatcher.this.wildcardTreeModel.getValue(wildcard),
 						MultiLevelMatcher.this.nodeTreeModel.getValue(node));
 				if (!ok) {
 					return false;
 				}
-				if (MultiLevelMatcher.this.wildcaldTreeModel.getChildrenCount(wildcard) > 0) {
+				if (MultiLevelMatcher.this.wildcardTreeModel.getChildrenCount(wildcard) > 0) {
 					// if the wildcard has children continue the matching to the children
-					List<TW> unorderedWildcards = MultiLevelMatcher.this.wildcaldTreeModel.getChildren(wildcard, false);
+					List<TW> unorderedWildcards = MultiLevelMatcher.this.wildcardTreeModel.getChildren(wildcard, false);
 					if (unorderedWildcards.size() > 0
 							&& oneLevelMatcher.matchUnordered(
 									MultiLevelMatcher.this.nodeTreeModel.getDescendants(node, false),
 									unorderedWildcards).isEmpty()) {
 						return false;
 					}
-					List<TW> orderedWildcards = MultiLevelMatcher.this.wildcaldTreeModel.getChildren(wildcard, true);
+					List<TW> orderedWildcards = MultiLevelMatcher.this.wildcardTreeModel.getChildren(wildcard, true);
 					if (orderedWildcards.size() > 0) {
 						return !oneLevelMatcher.matchOrdered(
 								MultiLevelMatcher.this.nodeTreeModel.getDescendants(node, true), orderedWildcards)
 								.isEmpty();
 					}
 				} else {
+					// TODO it's problematic if the really last wildcard is a not normal one. must make sure all the
+					// constraints passed
 					if (wildcard == terminalWildcard) {
 						// found a terminal result
 						currentResult.add(MultiLevelMatcher.this.nodeTreeModel.getValue(node));
@@ -69,8 +74,18 @@ public class MultiLevelMatcher<T, W, TT, TW> {
 
 			@Override
 			public MatchingType getMatchingType(TW wildcard) {
-				return MultiLevelMatcher.this.nodeMatch.getMatchingType(MultiLevelMatcher.this.wildcaldTreeModel
+				return MultiLevelMatcher.this.nodeMatch.getMatchingType(MultiLevelMatcher.this.wildcardTreeModel
 						.getValue(wildcard));
+			}
+
+			@Override
+			public boolean isFirstChild(List<TT> nodes, int index) {
+				return MultiLevelMatcher.this.nodeTreeModel.isFirstChild(nodes.get(index));
+			}
+
+			@Override
+			public boolean isLastChild(List<TT> nodes, int index) {
+				return MultiLevelMatcher.this.nodeTreeModel.isLastChild(nodes.get(index));
 			}
 		};
 		oneLevelMatcher = new OneLevelMatcher<TT, TW>(treeNodeMatch);
@@ -84,19 +99,27 @@ public class MultiLevelMatcher<T, W, TT, TW> {
 	 *         wildcard tree)
 	 */
 	public List<T> match(TT parentNode, TW wildcardParent) {
-		currentResult = new ArrayList<T>();
+		currentResult = Sets.newIdentityHashSet();
 		terminalWildcard = findTerminal(wildcardParent);
 		treeNodeMatch.match(wildcardParent, parentNode);
-		return currentResult;
+		return new ArrayList<T>(currentResult);
 	}
 
 	private TW findTerminal(TW wildcardParent) {
 		TW terminal = null;
-		List<TW> descendants = wildcaldTreeModel.getDescendants(wildcardParent, true);
+		List<TW> descendants = wildcardTreeModel.getDescendants(wildcardParent, true);
 		if (!descendants.isEmpty()) {
-			terminal = descendants.get(descendants.size() - 1);
+			// last normal wildcard
+			for (int i = descendants.size() - 1; i >= 0; --i) {
+				terminal = descendants.get(i);
+				if (treeNodeMatch.getMatchingType(terminal) == MatchingType.normal) {
+					break;
+				}
+			}
+			// TODO skip virtual nodes and begin/end
+			System.out.println("TERMINAL is " + terminal);
 		} else {
-			descendants = wildcaldTreeModel.getDescendants(wildcardParent, false);
+			descendants = wildcardTreeModel.getDescendants(wildcardParent, false);
 			if (!descendants.isEmpty()) {
 				// XXX not sure this is ok (when only unordered descendants exist)
 				terminal = descendants.get(descendants.size() - 1);

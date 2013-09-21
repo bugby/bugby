@@ -1,6 +1,7 @@
 package org.bugby.pattern.example.model.body;
 
 import japa.parser.ast.Node;
+import japa.parser.ast.body.VariableDeclaratorId;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,6 +23,13 @@ public class VariableDeclaratorIdBridge implements ASTModelBridge {
 	@Override
 	public String getMatcherName(Node node) {
 		return null;
+	}
+
+	@Override
+	public boolean areSimilar(Node patternNode, Node sourceNode) {
+		VariableDeclaratorId patternDecl = (VariableDeclaratorId) patternNode;
+		VariableDeclaratorId sourceDecl = (VariableDeclaratorId) sourceNode;
+		return patternDecl.getName().equals(sourceDecl.getName());
 	}
 
 }

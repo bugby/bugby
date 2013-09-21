@@ -8,6 +8,8 @@ import java.util.List;
 import org.bugby.pattern.example.VirtualNode;
 import org.bugby.pattern.example.model.ListUtils;
 
+import com.google.common.base.Objects;
+
 public class MethodCallExprBridge extends ExpressionBridge {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -15,14 +17,23 @@ public class MethodCallExprBridge extends ExpressionBridge {
 	public List<Node> getChildren(Node parent) {
 		MethodCallExpr expr = (MethodCallExpr) parent;
 
-		return (List) ListUtils.asList(VirtualNode.of("scope", expr.getScope()),
-				VirtualNode.of("typeArgs", expr.getTypeArgs()), VirtualNode.of("args", expr.getArgs()));
+		return (List) ListUtils.asList(VirtualNode.of(parent, "scope", expr.getScope(), true),
+				VirtualNode.of(parent, "typeArgs", expr.getTypeArgs(), true),
+				VirtualNode.of(parent, "args", expr.getArgs(), true));
 	}
 
 	@Override
 	public String getMatcherName(Node node) {
 		MethodCallExpr expr = (MethodCallExpr) node;
 		return expr.getName();
+	}
+
+	@Override
+	public boolean areSimilar(Node patternNode, Node sourceNode) {
+		MethodCallExpr patternExpr = (MethodCallExpr) patternNode;
+		MethodCallExpr sourceExpr = (MethodCallExpr) sourceNode;
+		// TODO i need to check also the parameters
+		return Objects.equal(patternExpr.getName(), sourceExpr.getName());
 	}
 
 }

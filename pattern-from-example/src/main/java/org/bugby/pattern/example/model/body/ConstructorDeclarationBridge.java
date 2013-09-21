@@ -17,9 +17,11 @@ public class ConstructorDeclarationBridge implements ASTModelBridge {
 
 		ConstructorDeclaration decl = (ConstructorDeclaration) parent;
 
-		return (List) ListUtils.asList(VirtualNode.of("typeParameters", decl.getTypeParameters()), VirtualNode.of(
-				"parameters", decl.getParameters()), VirtualNode.of("throws", decl.getThrows()), VirtualNode.of(
-				"block", decl.getBlock()), VirtualNode.of("annotations", decl.getAnnotations()));
+		return (List) ListUtils.asList(VirtualNode.of(parent, "typeParameters", decl.getTypeParameters(), false),
+				VirtualNode.of(parent, "parameters", decl.getParameters(), false),
+				VirtualNode.of(parent, "throws", decl.getThrows(), false),
+				VirtualNode.of(parent, "block", decl.getBlock(), false),
+				VirtualNode.of(parent, "annotations", decl.getAnnotations(), false));
 	}
 
 	@Override
@@ -30,5 +32,13 @@ public class ConstructorDeclarationBridge implements ASTModelBridge {
 	@Override
 	public String getMatcherName(Node node) {
 		return "";
+	}
+
+	@Override
+	public boolean areSimilar(Node patternNode, Node sourceNode) {
+		ConstructorDeclaration patternDecl = (ConstructorDeclaration) patternNode;
+		ConstructorDeclaration sourceDecl = (ConstructorDeclaration) sourceNode;
+		// TODO add other checks on parameters
+		return patternDecl.getName().equals(sourceDecl.getName());
 	}
 }

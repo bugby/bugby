@@ -5,7 +5,6 @@ import japa.parser.ast.Node;
 
 import java.io.File;
 import java.util.Collections;
-import java.util.List;
 
 import org.bugby.matcher.tree.Tree;
 import org.bugby.wildcard.WildcardNodeMatcherFromExample;
@@ -81,7 +80,6 @@ public class PatternBuilder {
 				throw new RuntimeException(e);
 			}
 		}
-		List<Node> children = ASTModelBridges.getBridge(n).getChildren(n);
 		return addPatternNode(parentPatternNode, new DefaultNodeMatcher(n));
 	}
 

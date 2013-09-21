@@ -16,8 +16,14 @@ public class VariableDeclarationExprBridge extends ExpressionBridge {
 
 		VariableDeclarationExpr expr = (VariableDeclarationExpr) parent;
 
-		return (List) ListUtils.asList(VirtualNode.of("annotations", expr.getAnnotations()),
-				VirtualNode.of("type", expr.getType()), VirtualNode.of("vars", expr.getVars()));
+		return (List) ListUtils.asList(VirtualNode.of(parent, "annotations", expr.getAnnotations(), false),
+				VirtualNode.of(parent, "type", expr.getType(), true),
+				VirtualNode.of(parent, "vars", expr.getVars(), true));
 	}
 
+	@Override
+	public boolean areSimilar(Node patternNode, Node sourceNode) {
+		// i may check the modifiers !?
+		return true;
+	}
 }

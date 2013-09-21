@@ -15,4 +15,10 @@ public class BlockStmtBridge extends StatementBridge {
 		BlockStmt stmt = (BlockStmt) parent;
 		return ListUtils.notNull((List) stmt.getStmts());
 	}
+
+	@Override
+	public boolean areSimilar(Node patternNode, Node sourceNode) {
+		// let the children decide
+		return true;
+	}
 }

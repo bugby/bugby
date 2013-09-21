@@ -1,9 +1,12 @@
 package org.bugby.pattern.example.model.expr;
 
 import japa.parser.ast.Node;
+import japa.parser.ast.expr.NameExpr;
 
 import java.util.Collections;
 import java.util.List;
+
+import com.google.common.base.Objects;
 
 public class NameExprBridge extends ExpressionBridge {
 
@@ -12,4 +15,10 @@ public class NameExprBridge extends ExpressionBridge {
 		return Collections.emptyList();
 	}
 
+	@Override
+	public boolean areSimilar(Node patternNode, Node sourceNode) {
+		NameExpr patternExpr = (NameExpr) patternNode;
+		NameExpr sourceExpr = (NameExpr) sourceNode;
+		return Objects.equal(patternExpr.getName(), sourceExpr.getName());
+	}
 }

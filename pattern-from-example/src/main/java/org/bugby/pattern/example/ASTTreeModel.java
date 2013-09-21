@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bugby.matcher.acr.TreeModel;
+import org.richast.node.ASTNodeData;
 
 public class ASTTreeModel implements TreeModel<Node, Node> {
 
@@ -49,6 +50,22 @@ public class ASTTreeModel implements TreeModel<Node, Node> {
 	public boolean isOrdered(Node node) {
 		// TODO optimize here
 		return ASTModelBridges.getBridge(node).isOrdered(node);
+	}
+
+	@Override
+	public boolean isFirstChild(Node node) {
+		// TODO optimize here
+		Node parent = ASTNodeData.parent(node);
+		List<Node> children = getChildren(parent, true);
+		return children.get(0) == node;
+	}
+
+	@Override
+	public boolean isLastChild(Node node) {
+		// TODO optimize here
+		Node parent = ASTNodeData.parent(node);
+		List<Node> children = getChildren(parent, true);
+		return children.get(children.size() - 1) == node;
 	}
 
 }

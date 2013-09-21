@@ -72,32 +72,86 @@ public class OneLevelMatcher<T, W> {
 	private boolean matchOrderedOne(List<T> nodes, List<W> wildcards, int startN, int startW,
 			Stack<MatchPosition> matchingStack) {
 		int n = startN, w = startW;
-		boolean nextMustMatch = false;
+		List<Constraint<T, W>> constraints = new ArrayList<Constraint<T, W>>();
+
+		w = advanceWildcardIndex(wildcards, startW - 1, constraints);
+
 		while (n < nodes.size() && w < wildcards.size()) {
 			W wildcard = wildcards.get(w);
 
-			if (nodeMatch.getMatchingType(wildcard) == MatchingType.begin) {
-				// assert w == 0
-				nextMustMatch = true;
-				w++;
-				continue;
-			}
-			// check END match - look ahead
-			if (w == wildcards.size() - 2 && nodeMatch.getMatchingType(wildcards.get(w + 1)) == MatchingType.end) {
-				matchingStack.push(new MatchPosition(nodes.size() - 1, w));
-				return nodeMatch.match(wildcard, nodes.get(nodes.size() - 1));
-			}
-			if (nodeMatch.match(wildcard, nodes.get(n))) {
+			// !!!XXX the order of conditions check affects how the terminals are chosen in MultiLevelMatcher
+			if (validateConstraints(constraints, wildcard, nodes, n) && nodeMatch.match(wildcard, nodes.get(n))) {
 				matchingStack.push(new MatchPosition(n, w));
-				w++;
-				nextMustMatch = false;
-			} else if (nextMustMatch) {
-				// a match was expected here
-				return false;
+				w = advanceWildcardIndex(wildcards, w, constraints);
 			}
 			n++;
 		}
 		return (w == wildcards.size());
+	}
+
+	private int advanceWildcardIndex(List<W> wildcards, int currentW, List<Constraint<T, W>> constraints) {
+		int w = currentW + 1;
+		constraints.clear();
+		// pre-constraints
+		while (w < wildcards.size()) {
+			W wildcard = wildcards.get(w);
+			if (nodeMatch.getMatchingType(wildcard) != MatchingType.normal) {
+				constraints.add(constraintOf(nodeMatch.getMatchingType(wildcard), true));
+			} else {
+				break;
+			}
+			w++;
+		}
+
+		// post constraints - look ahead
+		for (int i = w + 1; i < wildcards.size(); ++i) {
+			W wildcard = wildcards.get(i);
+			if (nodeMatch.getMatchingType(wildcard) != MatchingType.normal) {
+				constraints.add(constraintOf(nodeMatch.getMatchingType(wildcard), false));
+			} else {
+				break;
+			}
+		}
+
+		return w;
+	}
+
+	private boolean validateConstraints(List<Constraint<T, W>> constraints, W wildcard, List<T> nodes, int n) {
+		for (Constraint<T, W> constraint : constraints) {
+			if (!constraint.validate(wildcard, nodes, n)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private interface Constraint<T, W> {
+		public boolean validate(W w, List<T> nodes, int nodeIndex);
+	}
+
+	private class BeginConstraint implements Constraint<T, W> {
+		@Override
+		public boolean validate(W w, List<T> nodes, int nodeIndex) {
+			return nodeMatch.isFirstChild(nodes, nodeIndex);
+		}
+	}
+
+	private class EndConstraint implements Constraint<T, W> {
+		@Override
+		public boolean validate(W w, List<T> nodes, int nodeIndex) {
+			return nodeMatch.isLastChild(nodes, nodeIndex);
+		}
+	}
+
+	private Constraint<T, W> constraintOf(MatchingType type, boolean before) {
+		switch (type) {
+		case begin:
+			return new BeginConstraint();
+		case end:
+			return new EndConstraint();
+		default:
+			return null;
+		}
 	}
 
 	/**
