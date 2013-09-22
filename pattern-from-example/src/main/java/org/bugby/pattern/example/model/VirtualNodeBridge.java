@@ -31,8 +31,7 @@ public class VirtualNodeBridge implements ASTModelBridge {
 	public boolean areSimilar(Node patternNode, Node sourceNode) {
 		VirtualNode pattern = (VirtualNode) patternNode;
 		VirtualNode source = (VirtualNode) sourceNode;
-		return Objects.equal(pattern.getName(), source.getName())
-				&& Objects.equal(pattern.getParent().getClass(), source.getParent().getClass());
+		return Objects.equal(pattern.getName(), source.getName());
 	}
 
 }

@@ -5,13 +5,13 @@ import org.bugby.annotation.GoodExample;
 @GoodExample
 public class AmbiguousInvocationOfOuterOrInner {
 
-	public void method() {
+	public void someMethod() {
 
 	}
 
-	public class InnerType extends BaseType {
+	public class SomeType2 extends SomeType1 {
 		public void someCode() {
-			super.method();
+			super.someMethod();
 		}
 	}
 }

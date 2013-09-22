@@ -56,7 +56,7 @@ public class Main {
 		};
 	}
 
-	public static void main(String[] args) {
+	public static void check(String patternSource, String source) {
 		// 1. read wildcards
 		ClassLoader builtProjectClassLoader = Thread.currentThread().getContextClassLoader();
 		WildcardDictionary wildcardDictionary = new WildcardDictionary();
@@ -64,20 +64,18 @@ public class Main {
 				"../default-wildcards/src/main/java/org/bugby/wildcard/Wildcards.java"));
 		WildcardDictionaryFromFile.addWildcardsFromFile(wildcardDictionary, builtProjectClassLoader, new File(
 				"../default-wildcards/src/main/java/org/bugby/wildcard/SomeType.java"));
-		WildcardDictionaryFromFile.addWildcardsFromFile(wildcardDictionary, builtProjectClassLoader, new File(
-				"../default-wildcards/src/main/java/org/bugby/wildcard/SomeTypeDeclaration.java"));
 		// here add more custom wildcards by dynamic discovery
 
 		// 2. read patterns
 		PatternBuilder patternBuilder = new PatternBuilder();
 		patternBuilder.setWildcardDictionary(wildcardDictionary);
 		Tree<WildcardNodeMatcher> patternRoot = patternBuilder.buildFromFile(builtProjectClassLoader, new File(
-				"../default-examples/src/main/java/org/bugby/bugs/pmd/CollapsibleIfStatements.java"));
+				patternSource));
 		System.out.println("PATTERN:\n" + patternRoot);
 		System.out.println("-------------------------");
 
 		// 3. parse source file to be checked
-		File sourceFile = new File("src/main/java/org/bugby/pattern/example/test/CollapsibleIfStatementsCheck4.java");
+		File sourceFile = new File(source);
 		CompilationUnit sourceRootNode = parseSource(builtProjectClassLoader, sourceFile);
 
 		// 4. apply matcher
@@ -87,7 +85,8 @@ public class Main {
 		List<Node> matches = matcher.match(sourceRootNode, patternRoot);
 		// TODO order by line
 		for (Node match : matches) {
-			System.out.println("Found match at: " + sourceFile.getPath() + ":" + match.getBeginLine() + "->" + match);
+			System.err
+					.println("Found match at: (" + sourceFile.getName() + ":" + match.getBeginLine() + ") ->" + match);
 		}
 		if (matches.isEmpty()) {
 			System.out.println("No match was found");
@@ -100,5 +99,12 @@ public class Main {
 			return node.getValue().isOrdered();
 		}
 
+	}
+
+	public static void main(String[] args) {
+		// check("../default-examples/src/main/java/org/bugby/bugs/pmd/CollapsibleIfStatements.java",
+		// "src/main/java/org/bugby/pattern/example/test/CollapsibleIfStatementsCheck4.java");
+		check("../default-examples/src/main/java/org/bugby/bugs/findbugs/AmbiguousInvocationOfOuterOrInner.java",
+				"src/main/java/org/bugby/pattern/example/test/AmbiguousInvocationOfOuterOrInnerCheck1.java");
 	}
 }

@@ -1,23 +1,23 @@
 package org.bugby.wildcard.matcher;
 
 import japa.parser.ast.Node;
-import japa.parser.ast.body.ClassOrInterfaceDeclaration;
-import japa.parser.ast.type.ClassOrInterfaceType;
+import japa.parser.ast.body.MethodDeclaration;
+import japa.parser.ast.expr.MethodCallExpr;
 
 import org.bugby.matcher.acr.MatchingType;
 import org.bugby.wildcard.WildcardNodeMatcherFromExample;
 
-public class SomeTypeMatcher implements WildcardNodeMatcherFromExample {
+public class SomeMethodMatcher implements WildcardNodeMatcherFromExample {
 	private boolean ordered;
 
 	@Override
 	public void init(Node nodeFromExample) {
-		ordered = (nodeFromExample instanceof ClassOrInterfaceType);
+		ordered = (nodeFromExample instanceof MethodCallExpr);
 	}
 
 	@Override
 	public boolean matches(Node node) {
-		return node instanceof ClassOrInterfaceType || node instanceof ClassOrInterfaceDeclaration;
+		return node instanceof MethodCallExpr || node instanceof MethodDeclaration;
 	}
 
 	@Override
@@ -29,4 +29,5 @@ public class SomeTypeMatcher implements WildcardNodeMatcherFromExample {
 	public MatchingType getMatchingType() {
 		return MatchingType.normal;
 	}
+
 }

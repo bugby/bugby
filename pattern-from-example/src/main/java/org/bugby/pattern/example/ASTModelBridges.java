@@ -8,17 +8,23 @@ import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.body.VariableDeclarator;
 import japa.parser.ast.body.VariableDeclaratorId;
 import japa.parser.ast.expr.BinaryExpr;
+import japa.parser.ast.expr.ClassExpr;
 import japa.parser.ast.expr.FieldAccessExpr;
 import japa.parser.ast.expr.IntegerLiteralExpr;
 import japa.parser.ast.expr.MarkerAnnotationExpr;
+import japa.parser.ast.expr.MemberValuePair;
 import japa.parser.ast.expr.MethodCallExpr;
 import japa.parser.ast.expr.NameExpr;
+import japa.parser.ast.expr.NormalAnnotationExpr;
 import japa.parser.ast.expr.StringLiteralExpr;
+import japa.parser.ast.expr.SuperExpr;
 import japa.parser.ast.expr.VariableDeclarationExpr;
 import japa.parser.ast.stmt.BlockStmt;
 import japa.parser.ast.stmt.ExpressionStmt;
 import japa.parser.ast.stmt.IfStmt;
+import japa.parser.ast.type.ClassOrInterfaceType;
 import japa.parser.ast.type.PrimitiveType;
+import japa.parser.ast.type.ReferenceType;
 import japa.parser.ast.type.VoidType;
 
 import java.util.HashMap;
@@ -32,17 +38,23 @@ import org.bugby.pattern.example.model.body.MethodDeclarationBridge;
 import org.bugby.pattern.example.model.body.VariableDeclaratorBridge;
 import org.bugby.pattern.example.model.body.VariableDeclaratorIdBridge;
 import org.bugby.pattern.example.model.expr.BinaryExprBridge;
+import org.bugby.pattern.example.model.expr.ClassExprBridge;
 import org.bugby.pattern.example.model.expr.FieldAccessExprBridge;
 import org.bugby.pattern.example.model.expr.IntegerLiteralExprBridge;
 import org.bugby.pattern.example.model.expr.MarkerAnnotationExprBridge;
+import org.bugby.pattern.example.model.expr.MemberValuePairBridge;
 import org.bugby.pattern.example.model.expr.MethodCallExprBridge;
 import org.bugby.pattern.example.model.expr.NameExprBridge;
+import org.bugby.pattern.example.model.expr.NormalAnnotationExprBridge;
 import org.bugby.pattern.example.model.expr.StringLiteralExprBridge;
+import org.bugby.pattern.example.model.expr.SuperExprBridge;
 import org.bugby.pattern.example.model.expr.VariableDeclarationExprBridge;
 import org.bugby.pattern.example.model.stmt.BlockStmtBridge;
 import org.bugby.pattern.example.model.stmt.ExpressionStmtBridge;
 import org.bugby.pattern.example.model.stmt.IfStmtBridge;
+import org.bugby.pattern.example.model.type.ClassOrInterfaceTypeBridge;
 import org.bugby.pattern.example.model.type.PrimitiveTypeBridge;
+import org.bugby.pattern.example.model.type.ReferenceTypeBridge;
 import org.bugby.pattern.example.model.type.VoidTypeBridge;
 
 public class ASTModelBridges {
@@ -59,6 +71,8 @@ public class ASTModelBridges {
 		bridges.put(VariableDeclaratorId.class, new VariableDeclaratorIdBridge());
 
 		bridges.put(MarkerAnnotationExpr.class, new MarkerAnnotationExprBridge());
+		bridges.put(NormalAnnotationExpr.class, new NormalAnnotationExprBridge());
+		bridges.put(MemberValuePair.class, new MemberValuePairBridge());
 		bridges.put(NameExpr.class, new NameExprBridge());
 		bridges.put(MethodCallExpr.class, new MethodCallExprBridge());
 		bridges.put(VariableDeclarationExpr.class, new VariableDeclarationExprBridge());
@@ -66,9 +80,13 @@ public class ASTModelBridges {
 		bridges.put(StringLiteralExpr.class, new StringLiteralExprBridge());
 		bridges.put(BinaryExpr.class, new BinaryExprBridge());
 		bridges.put(FieldAccessExpr.class, new FieldAccessExprBridge());
+		bridges.put(SuperExpr.class, new SuperExprBridge());
+		bridges.put(ClassExpr.class, new ClassExprBridge());
 
 		bridges.put(VoidType.class, new VoidTypeBridge());
 		bridges.put(PrimitiveType.class, new PrimitiveTypeBridge());
+		bridges.put(ClassOrInterfaceType.class, new ClassOrInterfaceTypeBridge());
+		bridges.put(ReferenceType.class, new ReferenceTypeBridge());
 
 		bridges.put(IfStmt.class, new IfStmtBridge());
 		bridges.put(ExpressionStmt.class, new ExpressionStmtBridge());

@@ -15,7 +15,7 @@ public class MethodDeclarationBridge implements ASTModelBridge {
 	public List<Node> getChildren(Node parent) {
 
 		MethodDeclaration decl = (MethodDeclaration) parent;
-
+		// TODO fix this using factories and annotations
 		// return (List) ListUtils.asList(VirtualNode.of("typeParameters", decl.getTypeParameters()), VirtualNode.of(
 		// "parameters", decl.getParameters()), VirtualNode.of("throws", decl.getThrows()), VirtualNode.of(
 		// "body", decl.getBody()), VirtualNode.of("annotations", decl.getAnnotations()));

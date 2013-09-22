@@ -1,4 +1,4 @@
-package org.bugby.pattern.example.test;
+package org.bugby.pattern.example.pmd;
 
 public class CollapsibleIfStatementsCheck4 {
 
@@ -27,4 +27,5 @@ public class CollapsibleIfStatementsCheck4 {
 		}
 		System.out.println("finished test2");
 	}
+
 }

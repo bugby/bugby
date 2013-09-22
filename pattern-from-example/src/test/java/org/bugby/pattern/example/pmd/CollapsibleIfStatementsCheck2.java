@@ -1,8 +1,8 @@
-package org.bugby.pattern.example.test;
+package org.bugby.pattern.example.pmd;
 
-public class CollapsibleIfStatementsCheck3 {
+public class CollapsibleIfStatementsCheck2 {
 
-	public CollapsibleIfStatementsCheck3() {
+	public CollapsibleIfStatementsCheck2() {
 		myMethod();
 	}
 
@@ -10,10 +10,10 @@ public class CollapsibleIfStatementsCheck3 {
 		int n = 100;
 
 		if (n < 10) {
-			System.out.println("additional code");
 			if (n > 2) {
 				System.out.println("found a good number");
 			}
+			System.out.println("additional code");
 		}
 		System.out.println("finished test");
 	}

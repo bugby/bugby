@@ -9,8 +9,7 @@ import org.bugby.wildcard.matcher.SomeTypeMatcher;
  * @author acraciun
  * 
  */
-@Wildcard(
-		matcher = SomeTypeMatcher.class)
+@Wildcard(matcher = SomeTypeMatcher.class)
 public class SomeType {
 
 }

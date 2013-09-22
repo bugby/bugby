@@ -2,17 +2,16 @@ package org.bugby.bugs.findbugs;
 
 import org.bugby.annotation.GoodExampleTrigger;
 
-@GoodExampleTrigger(
-		forExample = AmbiguousInvocationOfOuterOrInner.class)
+@GoodExampleTrigger(forExample = AmbiguousInvocationOfOuterOrInner.class)
 public class AmbiguousInvocationOfOuterOrInnerTrigger {
 
-	public void method() {
+	public void someMethod() {
 
 	}
 
-	public class InnerType extends BaseType {
+	public class SomeType2 extends SomeType1 {
 		public void someCode() {
-			method();
+			someMethod();
 		}
 	}
 }

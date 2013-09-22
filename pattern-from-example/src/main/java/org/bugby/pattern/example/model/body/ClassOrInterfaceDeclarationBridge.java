@@ -11,7 +11,7 @@ import org.bugby.annotation.GoodExampleTrigger;
 import org.bugby.pattern.example.ASTModelBridge;
 import org.bugby.pattern.example.VirtualNode;
 import org.bugby.pattern.example.model.ListUtils;
-import org.bugby.wildcard.SomeTypeDeclaration;
+import org.bugby.wildcard.SomeType;
 import org.richast.node.ASTNodeData;
 import org.richast.type.TypeWrapper;
 
@@ -26,8 +26,9 @@ public class ClassOrInterfaceDeclarationBridge implements ASTModelBridge {
 		return (List) ListUtils.asList(VirtualNode.of(parent, "typeParameters", decl.getTypeParameters(), false),
 				VirtualNode.of(parent, "extends", decl.getExtends(), false),
 				VirtualNode.of(parent, "implements", decl.getImplements(), false),
-				VirtualNode.of(parent, "members", decl.getMembers(), false),
-				VirtualNode.of(parent, "annotations", decl.getAnnotations(), false));
+				VirtualNode.of(parent, "members", decl.getMembers(), false));
+		// TODO should exclude @Example annotations and SuppressWarnings
+		// VirtualNode.of(parent, "annotations", decl.getAnnotations(), false));
 	}
 
 	@Override
@@ -40,7 +41,7 @@ public class ClassOrInterfaceDeclarationBridge implements ASTModelBridge {
 		TypeWrapper type = ASTNodeData.resolvedType(node);
 		if (type.hasAnnotation(BadExample.class) || type.hasAnnotation(GoodExample.class)
 				|| type.hasAnnotation(GoodExampleTrigger.class)) {
-			return SomeTypeDeclaration.class.getSimpleName();
+			return SomeType.class.getSimpleName();
 		}
 		ClassOrInterfaceDeclaration decl = (ClassOrInterfaceDeclaration) node;
 		return decl.getName();

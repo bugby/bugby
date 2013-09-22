@@ -9,6 +9,7 @@ import org.bugby.wildcard.matcher.SomeConditionMatcher;
 import org.bugby.wildcard.matcher.SomeConditionUsingMatcher;
 import org.bugby.wildcard.matcher.SomeExpressionUsingMatcher;
 import org.bugby.wildcard.matcher.SomeFieldMatcher;
+import org.bugby.wildcard.matcher.SomeMethodMatcher;
 import org.bugby.wildcard.matcher.SomeParamMatcher;
 import org.bugby.wildcard.matcher.SomeValueMatcher;
 import org.bugby.wildcard.matcher.SomeVariableMatcher;
@@ -87,4 +88,8 @@ public class Wildcards {
 		//
 	}
 
+	@Wildcard(matcher = SomeMethodMatcher.class)
+	public static void someMethod() {
+		//
+	}
 }
