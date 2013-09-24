@@ -1,12 +1,16 @@
 package org.bugby.matcher.acr;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.bugby.matcher.tree.Tree;
+
+import com.google.common.collect.Multimap;
 
 public class CommonMatcherTest {
 	protected static final int EOL = -1;
@@ -87,11 +91,18 @@ public class CommonMatcherTest {
 		}
 	}
 
-	protected void assertTerminalPositions(List<Integer> positions, List<IndexedValue> match) {
-		assertEquals(positions.size(), match.size());
+	protected void assertTerminalPositions(List<Integer> positions, String value,
+			Multimap<Tree<Wildcard<IndexedValue>>, Tree<IndexedValue>> match) {
+		List<IndexedValue> terminalMatch = new ArrayList<IndexedValue>();
+		for (Map.Entry<Tree<Wildcard<IndexedValue>>, Tree<IndexedValue>> entry : match.entries()) {
+			if (((DefaultWildcard<IndexedValue>) entry.getKey().getValue()).getValue().getValue().equals(value)) {
+				terminalMatch.add(entry.getValue().getValue());
+			}
+		}
+		assertEquals(positions.size(), terminalMatch.size());
 
-		for (int j = 0; j < positions.size(); ++j) {
-			assertEquals(positions.get(j).intValue(), match.get(j).getIndex());
+		for (IndexedValue tm : terminalMatch) {
+			assertTrue(positions.contains(tm.getIndex()));
 		}
 
 	}

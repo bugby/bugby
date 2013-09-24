@@ -13,7 +13,7 @@ abstract public class DefaultMatcherFactory implements WildcardNodeMatcherFactor
 			Node currentPatternSourceNode, Tree<WildcardNodeMatcher> parentPatternNode,
 			WildcardNodeMatcherFactory defaultFactory);
 
-	protected boolean skip(Node node) {
+	protected boolean skipChild(Node node) {
 		return false;
 	}
 
@@ -26,13 +26,13 @@ abstract public class DefaultMatcherFactory implements WildcardNodeMatcherFactor
 		Tree<WildcardNodeMatcher> newParentPatternNode = parentPatternNode.newChild(newMatcher);
 
 		for (Node child : patternSourceTreeNodeModel.getChildren(currentPatternSourceNode, false)) {
-			if (!skip(child)) {
+			if (!skipChild(child)) {
 				defaultFactory
 						.buildPatternNode(patternSourceTreeNodeModel, child, newParentPatternNode, defaultFactory);
 			}
 		}
 		for (Node child : patternSourceTreeNodeModel.getChildren(currentPatternSourceNode, true)) {
-			if (!skip(child)) {
+			if (!skipChild(child)) {
 				defaultFactory
 						.buildPatternNode(patternSourceTreeNodeModel, child, newParentPatternNode, defaultFactory);
 			}

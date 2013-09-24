@@ -24,4 +24,9 @@ public class NormalAnnotationExprBridge extends ExpressionBridge {
 		// let the children decide
 		return true;
 	}
+
+	@Override
+	public String getMatcherName(Node node) {
+		return null;
+	}
 }

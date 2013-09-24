@@ -23,4 +23,5 @@ public class MarkerAnnotationExprBridge extends ExpressionBridge {
 		// let the children decide
 		return true;
 	}
+
 }

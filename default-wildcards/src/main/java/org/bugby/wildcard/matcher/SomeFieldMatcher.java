@@ -1,7 +1,7 @@
 package org.bugby.wildcard.matcher;
 
 import japa.parser.ast.Node;
-import japa.parser.ast.body.FieldDeclaration;
+import japa.parser.ast.body.VariableDeclarator;
 
 import org.bugby.matcher.acr.MatchingType;
 import org.bugby.wildcard.api.WildcardNodeMatcher;
@@ -10,7 +10,7 @@ public class SomeFieldMatcher implements WildcardNodeMatcher {
 
 	@Override
 	public boolean matches(Node node) {
-		return node instanceof FieldDeclaration;
+		return node instanceof VariableDeclarator;
 	}
 
 	@Override

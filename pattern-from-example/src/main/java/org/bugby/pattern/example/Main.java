@@ -17,6 +17,8 @@ import org.richast.GenerationContext;
 import org.richast.RichASTParser;
 import org.richast.type.ClassLoaderWrapper;
 
+import com.google.common.collect.Multimap;
+
 public class Main {
 	private static CompilationUnit parseSource(ClassLoader builtProjectClassLoader, File file) {
 		ClassLoaderWrapper classLoaderWrapper = new ClassLoaderWrapper(builtProjectClassLoader,
@@ -82,13 +84,21 @@ public class Main {
 		ASTTreeModel astTreeModel = new ASTTreeModel();
 		MultiLevelMatcher<Node, WildcardNodeMatcher, Node, Tree<WildcardNodeMatcher>> matcher = new MultiLevelMatcher<Node, WildcardNodeMatcher, Node, Tree<WildcardNodeMatcher>>(
 				nodeMatch(astTreeModel), astTreeModel, new PatternTreeModel());
-		List<Node> matches = matcher.match(sourceRootNode, patternRoot);
-		// TODO order by line
-		for (Node match : matches) {
-			System.err
-					.println("Found match at: (" + sourceFile.getName() + ":" + match.getBeginLine() + ") ->" + match);
+		Multimap<Tree<WildcardNodeMatcher>, Node> matches = matcher.match(sourceRootNode, patternRoot);
+		// TODO find a good report here
+		int maxLine = -1;
+		Node maxNode = null;
+		for (Node node : matches.values()) {
+			if (node.getBeginLine() >= maxLine) {
+				maxLine = node.getBeginLine();
+				maxNode = node;
+			}
+
 		}
-		if (matches.isEmpty()) {
+		if (maxNode != null) {
+			System.err.println("Found match at: (" + sourceFile.getName() + ":" + maxNode.getBeginLine() + ") ->"
+					+ maxNode);
+		} else {
 			System.out.println("No match was found");
 		}
 	}

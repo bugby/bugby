@@ -12,6 +12,6 @@ abstract public class ExpressionBridge implements ASTModelBridge {
 
 	@Override
 	public String getMatcherName(Node node) {
-		return null;
+		return "";
 	}
 }

@@ -21,4 +21,10 @@ public class NameExprBridge extends ExpressionBridge {
 		NameExpr sourceExpr = (NameExpr) sourceNode;
 		return Objects.equal(patternExpr.getName(), sourceExpr.getName());
 	}
+
+	@Override
+	public String getMatcherName(Node node) {
+		NameExpr patternExpr = (NameExpr) node;
+		return patternExpr.getName();
+	}
 }

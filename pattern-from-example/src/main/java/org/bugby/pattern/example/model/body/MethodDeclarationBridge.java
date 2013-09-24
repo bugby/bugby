@@ -16,13 +16,11 @@ public class MethodDeclarationBridge implements ASTModelBridge {
 	public List<Node> getChildren(Node parent) {
 
 		MethodDeclaration decl = (MethodDeclaration) parent;
-		// TODO fix this using factories and annotations
 		return (List) ListUtils.asList(VirtualNode.of(decl, "typeParameters", decl.getTypeParameters(), true),
 				VirtualNode.of(decl, "parameters", decl.getParameters(), true),
 				VirtualNode.of(decl, "throws", decl.getThrows(), true),
 				VirtualNode.of(decl, "body", decl.getBody(), true),
 				VirtualNode.of(decl, "annotations", decl.getAnnotations(), true));
-		// return (List) ListUtils.singletonListOrEmpty(decl.getBody());
 	}
 
 	@Override
@@ -40,7 +38,8 @@ public class MethodDeclarationBridge implements ASTModelBridge {
 	public boolean areSimilar(Node patternNode, Node sourceNode) {
 		MethodDeclaration patternDecl = (MethodDeclaration) patternNode;
 		MethodDeclaration sourceDecl = (MethodDeclaration) sourceNode;
-		// TODO add other checks on parameters
-		return patternDecl.getName().equals(sourceDecl.getName());
+		// TODO skip or not the modifiers
+		return patternDecl.getName().equals(sourceDecl.getName())
+				&& patternDecl.getArrayCount() == sourceDecl.getArrayCount();
 	}
 }

@@ -9,9 +9,11 @@ import org.bugby.wildcard.api.WildcardNodeMatcher;
 
 public class SomeTypeMatcher implements WildcardNodeMatcher {
 	private final boolean ordered;
+	private final Node nodeFromExample;
 
 	public SomeTypeMatcher(Node nodeFromExample) {
 		ordered = (nodeFromExample instanceof Type);
+		this.nodeFromExample = nodeFromExample;
 	}
 
 	@Override
@@ -27,5 +29,10 @@ public class SomeTypeMatcher implements WildcardNodeMatcher {
 	@Override
 	public MatchingType getMatchingType() {
 		return MatchingType.normal;
+	}
+
+	@Override
+	public String toString() {
+		return "SomeTypeMatcher on " + nodeFromExample.getClass();
 	}
 }

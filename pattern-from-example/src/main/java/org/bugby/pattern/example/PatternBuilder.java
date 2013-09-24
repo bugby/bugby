@@ -2,14 +2,18 @@ package org.bugby.pattern.example;
 
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.Node;
+import japa.parser.ast.body.BodyDeclaration;
 import japa.parser.ast.expr.AnnotationExpr;
 
 import java.io.File;
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.bugby.annotation.IgnoreFromMatching;
 import org.bugby.matcher.acr.TreeModel;
 import org.bugby.matcher.tree.Tree;
 import org.bugby.wildcard.api.WildcardNodeMatcher;
@@ -37,8 +41,7 @@ public class PatternBuilder implements WildcardNodeMatcherFactory {
 				Collections.<String>emptyList(), Collections.<String>emptyList());
 		GenerationContext context = new GenerationContext(file);
 		CompilationUnit cu = RichASTParser.parseAndResolve(classLoaderWrapper, file, context, "UTF-8");
-		// cu.accept(new PatternFromExampleVisitor(), this);
-		// System.out.println(matchers);
+
 		ASTTreeModel treeModel = new ASTTreeModel();
 		return buildPatternNode(treeModel, cu, null, this);
 	}
@@ -47,9 +50,13 @@ public class PatternBuilder implements WildcardNodeMatcherFactory {
 	public Tree<WildcardNodeMatcher> buildPatternNode(TreeModel<Node, Node> patternSourceTreeNodeModel,
 			Node currentPatternSourceNode, Tree<WildcardNodeMatcher> parentPatternNode,
 			WildcardNodeMatcherFactory defaultFactory) {
-		String name = ASTModelBridges.getBridge(currentPatternSourceNode).getMatcherName(currentPatternSourceNode);
 		Tree<WildcardNodeMatcher> newParentPatternNode = parentPatternNode;
 
+		if (skip(currentPatternSourceNode)) {
+			return newParentPatternNode;
+		}
+
+		String name = ASTModelBridges.getBridge(currentPatternSourceNode).getMatcherName(currentPatternSourceNode);
 		if (name != null) {
 			// remove the ending digits
 			String baseName = name.replaceAll("\\d+$", "");
@@ -81,14 +88,10 @@ public class PatternBuilder implements WildcardNodeMatcherFactory {
 
 		// continue with the children
 		for (Node child : patternSourceTreeNodeModel.getChildren(currentPatternSourceNode, false)) {
-			if (!skip(child)) {
-				buildPatternNode(patternSourceTreeNodeModel, child, newParentPatternNode, defaultFactory);
-			}
+			buildPatternNode(patternSourceTreeNodeModel, child, newParentPatternNode, defaultFactory);
 		}
 		for (Node child : patternSourceTreeNodeModel.getChildren(currentPatternSourceNode, true)) {
-			if (!skip(child)) {
-				buildPatternNode(patternSourceTreeNodeModel, child, newParentPatternNode, defaultFactory);
-			}
+			buildPatternNode(patternSourceTreeNodeModel, child, newParentPatternNode, defaultFactory);
 		}
 		// remove empty virtual nodes
 		if (currentPatternSourceNode instanceof VirtualNode && newParentPatternNode.getChildrenCount() == 0) {
@@ -114,6 +117,24 @@ public class PatternBuilder implements WildcardNodeMatcherFactory {
 	private boolean skip(Node node) {
 		if (node instanceof AnnotationExpr) {
 			return skip((AnnotationExpr) node);
+		}
+		if (hasAnnotation(node, IgnoreFromMatching.class)) {
+			return true;
+		}
+		return false;
+	}
+
+	private boolean hasAnnotation(Node node, Class<? extends Annotation> annotationClass) {
+		if (node instanceof BodyDeclaration) {
+			List<AnnotationExpr> annotations = ((BodyDeclaration) node).getAnnotations();
+			if (annotations != null) {
+				for (AnnotationExpr ann : annotations) {
+					// TODO do this using the actual full type names
+					if (ann.getName().toString().equals(annotationClass.getSimpleName())) {
+						return true;
+					}
+				}
+			}
 		}
 		return false;
 	}
