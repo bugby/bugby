@@ -5,9 +5,9 @@ import static org.bugby.wildcard.Wildcards.someValue;
 import org.bugby.annotation.GoodExample;
 
 @GoodExample
-public class ClonableWithoutClone implements Cloneable {
+public class CloneableWithoutClone implements Cloneable {
 	@Override
-	public ClonableWithoutClone clone() {
+	public Object clone() {
 		return someValue();
 	}
 }

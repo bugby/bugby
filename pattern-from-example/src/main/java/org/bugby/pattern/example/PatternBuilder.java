@@ -2,9 +2,13 @@ package org.bugby.pattern.example;
 
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.Node;
+import japa.parser.ast.expr.AnnotationExpr;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.bugby.matcher.acr.TreeModel;
 import org.bugby.matcher.tree.Tree;
@@ -15,6 +19,9 @@ import org.richast.RichASTParser;
 import org.richast.type.ClassLoaderWrapper;
 
 public class PatternBuilder implements WildcardNodeMatcherFactory {
+	private static Set<String> skipAnnotations = new HashSet<String>(Arrays.asList("GoodExample", "GoodExampleTrigger",
+			"BadExample", "SuppressWarnings", "Override"));
+
 	private WildcardDictionary wildcardDictionary;
 
 	public WildcardDictionary getWildcardDictionary() {
@@ -74,11 +81,21 @@ public class PatternBuilder implements WildcardNodeMatcherFactory {
 
 		// continue with the children
 		for (Node child : patternSourceTreeNodeModel.getChildren(currentPatternSourceNode, false)) {
-			buildPatternNode(patternSourceTreeNodeModel, child, newParentPatternNode, defaultFactory);
+			if (!skip(child)) {
+				buildPatternNode(patternSourceTreeNodeModel, child, newParentPatternNode, defaultFactory);
+			}
 		}
 		for (Node child : patternSourceTreeNodeModel.getChildren(currentPatternSourceNode, true)) {
-			buildPatternNode(patternSourceTreeNodeModel, child, newParentPatternNode, defaultFactory);
+			if (!skip(child)) {
+				buildPatternNode(patternSourceTreeNodeModel, child, newParentPatternNode, defaultFactory);
+			}
 		}
+		// remove empty virtual nodes
+		if (currentPatternSourceNode instanceof VirtualNode && newParentPatternNode.getChildrenCount() == 0) {
+			parentPatternNode.removeChild(newParentPatternNode);
+			newParentPatternNode = parentPatternNode;
+		}
+
 		return newParentPatternNode;
 	}
 
@@ -90,4 +107,14 @@ public class PatternBuilder implements WildcardNodeMatcherFactory {
 		return parentPatternNode.newChild(matcher);
 	}
 
+	protected boolean skip(AnnotationExpr ann) {
+		return skipAnnotations.contains(ann.getName().toString());
+	}
+
+	private boolean skip(Node node) {
+		if (node instanceof AnnotationExpr) {
+			return skip((AnnotationExpr) node);
+		}
+		return false;
+	}
 }

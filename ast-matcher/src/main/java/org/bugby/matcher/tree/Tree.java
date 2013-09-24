@@ -61,6 +61,10 @@ public class Tree<T> {
 		return child;
 	}
 
+	public void removeChild(Tree<T> node) {
+		children.remove(node);
+	}
+
 	@Override
 	public String toString() {
 		Integer pid = parent == null ? null : Integer.valueOf(parent.id);
@@ -85,4 +89,5 @@ public class Tree<T> {
 		}
 		return sb.toString();
 	}
+
 }
