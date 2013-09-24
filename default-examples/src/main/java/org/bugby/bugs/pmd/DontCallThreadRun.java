@@ -1,16 +1,12 @@
 package org.bugby.bugs.pmd;
 
-import static org.bugby.wildcard.Wildcards.someValue;
+import static org.bugby.wildcard.Wildcards.someTypedValue;
 
 import org.bugby.annotation.BadExample;
-import org.bugby.annotation.IgnoreFromMatching;
 
 @BadExample
 public class DontCallThreadRun {
 	public void someCode() {
-		@IgnoreFromMatching
-		Thread t = someValue();
-
-		t.run();
+		someTypedValue(Thread.class).run();
 	}
 }
