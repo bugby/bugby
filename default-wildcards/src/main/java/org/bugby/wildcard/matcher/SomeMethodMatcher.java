@@ -5,13 +5,12 @@ import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.expr.MethodCallExpr;
 
 import org.bugby.matcher.acr.MatchingType;
-import org.bugby.wildcard.WildcardNodeMatcherFromExample;
+import org.bugby.wildcard.api.WildcardNodeMatcher;
 
-public class SomeMethodMatcher implements WildcardNodeMatcherFromExample {
-	private boolean ordered;
+public class SomeMethodMatcher implements WildcardNodeMatcher {
+	private final boolean ordered;
 
-	@Override
-	public void init(Node nodeFromExample) {
+	public SomeMethodMatcher(Node nodeFromExample) {
 		ordered = (nodeFromExample instanceof MethodCallExpr);
 	}
 

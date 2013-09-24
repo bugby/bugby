@@ -6,16 +6,16 @@ import japa.parser.ast.Node;
 import java.io.File;
 import java.util.Collections;
 
+import org.bugby.matcher.acr.TreeModel;
 import org.bugby.matcher.tree.Tree;
-import org.bugby.wildcard.WildcardNodeMatcherFromExample;
 import org.bugby.wildcard.api.WildcardNodeMatcher;
+import org.bugby.wildcard.api.WildcardNodeMatcherFactory;
 import org.richast.GenerationContext;
 import org.richast.RichASTParser;
 import org.richast.type.ClassLoaderWrapper;
 
-public class PatternBuilder {
+public class PatternBuilder implements WildcardNodeMatcherFactory {
 	private WildcardDictionary wildcardDictionary;
-	private Tree<WildcardNodeMatcher> root;
 
 	public WildcardDictionary getWildcardDictionary() {
 		return wildcardDictionary;
@@ -33,54 +33,61 @@ public class PatternBuilder {
 		// cu.accept(new PatternFromExampleVisitor(), this);
 		// System.out.println(matchers);
 		ASTTreeModel treeModel = new ASTTreeModel();
-		addWildcards(treeModel, null, cu);
-		return root;
+		return buildPatternNode(treeModel, cu, null, this);
 	}
 
-	private void addWildcards(ASTTreeModel treeModel, Tree<WildcardNodeMatcher> parentPatternNode, Node node) {
-		String name = ASTModelBridges.getBridge(node).getMatcherName(node);
+	@Override
+	public Tree<WildcardNodeMatcher> buildPatternNode(TreeModel<Node, Node> patternSourceTreeNodeModel,
+			Node currentPatternSourceNode, Tree<WildcardNodeMatcher> parentPatternNode,
+			WildcardNodeMatcherFactory defaultFactory) {
+		String name = ASTModelBridges.getBridge(currentPatternSourceNode).getMatcherName(currentPatternSourceNode);
 		Tree<WildcardNodeMatcher> newParentPatternNode = parentPatternNode;
+
 		if (name != null) {
-			newParentPatternNode = addMatcher(parentPatternNode, name, node);
-		}
-		for (Node child : treeModel.getChildren(node, false)) {
-			addWildcards(treeModel, newParentPatternNode, child);
-		}
-		for (Node child : treeModel.getChildren(node, true)) {
-			addWildcards(treeModel, newParentPatternNode, child);
+			// remove the ending digits
+			String baseName = name.replaceAll("\\d+$", "");
+			// try first the factory
+			WildcardNodeMatcherFactory matcherFactory = wildcardDictionary.findMatcherFactory(baseName);
+			if (matcherFactory != null) {
+				return matcherFactory.buildPatternNode(patternSourceTreeNodeModel, currentPatternSourceNode,
+						parentPatternNode, this);
+			}
+
+			// find the matcher
+			WildcardNodeMatcher matcher;
+			Class<? extends WildcardNodeMatcher> matcherClass = wildcardDictionary.findMatcherClass(baseName);
+			if (matcherClass != null) {
+				try {
+					matcher = matcherClass.newInstance();
+				}
+				catch (InstantiationException e) {
+					throw new RuntimeException(e);
+				}
+				catch (IllegalAccessException e) {
+					throw new RuntimeException(e);
+				}
+			} else {
+				matcher = new DefaultNodeMatcher(currentPatternSourceNode);
+			}
+			newParentPatternNode = addPatternNode(parentPatternNode, matcher);
 		}
 
+		// continue with the children
+		for (Node child : patternSourceTreeNodeModel.getChildren(currentPatternSourceNode, false)) {
+			buildPatternNode(patternSourceTreeNodeModel, child, newParentPatternNode, defaultFactory);
+		}
+		for (Node child : patternSourceTreeNodeModel.getChildren(currentPatternSourceNode, true)) {
+			buildPatternNode(patternSourceTreeNodeModel, child, newParentPatternNode, defaultFactory);
+		}
+		return newParentPatternNode;
 	}
 
 	private Tree<WildcardNodeMatcher> addPatternNode(Tree<WildcardNodeMatcher> parentPatternNode,
 			WildcardNodeMatcher matcher) {
 		if (parentPatternNode == null) {
-			root = new Tree<WildcardNodeMatcher>(matcher);
-			return root;
+			return new Tree<WildcardNodeMatcher>(matcher);
 		}
 		return parentPatternNode.newChild(matcher);
-	}
-
-	public Tree<WildcardNodeMatcher> addMatcher(Tree<WildcardNodeMatcher> parentPatternNode, String name, Node n) {
-		// remove the ending digits
-		String simpleMethodeName = name.replaceAll("\\d+$", "");
-		Class<? extends WildcardNodeMatcher> matcherClass = wildcardDictionary.findMatcherClass(simpleMethodeName);
-		if (matcherClass != null) {
-			try {
-				WildcardNodeMatcher matcher = matcherClass.newInstance();
-				if (matcher instanceof WildcardNodeMatcherFromExample) {
-					((WildcardNodeMatcherFromExample) matcher).init(n);
-				}
-				return addPatternNode(parentPatternNode, matcher);
-			}
-			catch (InstantiationException e) {
-				throw new RuntimeException(e);
-			}
-			catch (IllegalAccessException e) {
-				throw new RuntimeException(e);
-			}
-		}
-		return addPatternNode(parentPatternNode, new DefaultNodeMatcher(n));
 	}
 
 }

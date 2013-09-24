@@ -6,6 +6,7 @@ import japa.parser.ast.body.MethodDeclaration;
 import java.util.List;
 
 import org.bugby.pattern.example.ASTModelBridge;
+import org.bugby.pattern.example.VirtualNode;
 import org.bugby.pattern.example.model.ListUtils;
 
 public class MethodDeclarationBridge implements ASTModelBridge {
@@ -16,10 +17,12 @@ public class MethodDeclarationBridge implements ASTModelBridge {
 
 		MethodDeclaration decl = (MethodDeclaration) parent;
 		// TODO fix this using factories and annotations
-		// return (List) ListUtils.asList(VirtualNode.of("typeParameters", decl.getTypeParameters()), VirtualNode.of(
-		// "parameters", decl.getParameters()), VirtualNode.of("throws", decl.getThrows()), VirtualNode.of(
-		// "body", decl.getBody()), VirtualNode.of("annotations", decl.getAnnotations()));
-		return (List) ListUtils.singletonListOrEmpty(decl.getBody());
+		return (List) ListUtils.asList(VirtualNode.of(decl, "typeParameters", decl.getTypeParameters(), true),
+				VirtualNode.of(decl, "parameters", decl.getParameters(), true),
+				VirtualNode.of(decl, "throws", decl.getThrows(), true),
+				VirtualNode.of(decl, "body", decl.getBody(), true),
+				VirtualNode.of(decl, "annotations", decl.getAnnotations(), true));
+		// return (List) ListUtils.singletonListOrEmpty(decl.getBody());
 	}
 
 	@Override

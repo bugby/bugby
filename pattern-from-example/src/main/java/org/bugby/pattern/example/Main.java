@@ -102,9 +102,12 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		// check("../default-examples/src/main/java/org/bugby/bugs/pmd/CollapsibleIfStatements.java",
-		// "src/main/java/org/bugby/pattern/example/test/CollapsibleIfStatementsCheck4.java");
-		check("../default-examples/src/main/java/org/bugby/bugs/findbugs/AmbiguousInvocationOfOuterOrInner.java",
-				"src/main/java/org/bugby/pattern/example/test/AmbiguousInvocationOfOuterOrInnerCheck1.java");
+		if (args.length < 2) {
+			System.out.println("Usage: Main <pathToPatternFile> <pathToSourceFileToCheck>");
+			return;
+		}
+
+		// see MainTest for some examples
+		check(args[0], args[1]);
 	}
 }

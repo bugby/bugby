@@ -1,15 +1,16 @@
 package org.bugby.wildcard;
 
 import org.bugby.wildcard.api.Wildcard;
+import org.bugby.wildcard.api.WildcardFactory;
 import org.bugby.wildcard.matcher.BeginMatcher;
 import org.bugby.wildcard.matcher.EndMatcher;
 import org.bugby.wildcard.matcher.NoCodeMatcher;
-import org.bugby.wildcard.matcher.SomeCodeMatcher;
+import org.bugby.wildcard.matcher.SomeCodeMatcherFactory;
 import org.bugby.wildcard.matcher.SomeConditionMatcher;
 import org.bugby.wildcard.matcher.SomeConditionUsingMatcher;
 import org.bugby.wildcard.matcher.SomeExpressionUsingMatcher;
 import org.bugby.wildcard.matcher.SomeFieldMatcher;
-import org.bugby.wildcard.matcher.SomeMethodMatcher;
+import org.bugby.wildcard.matcher.SomeMethodMatcherFactory;
 import org.bugby.wildcard.matcher.SomeParamMatcher;
 import org.bugby.wildcard.matcher.SomeValueMatcher;
 import org.bugby.wildcard.matcher.SomeVariableMatcher;
@@ -24,19 +25,19 @@ public class Wildcards {
 	/**
 	 * matches any field
 	 */
-	@Wildcard(matcher = SomeFieldMatcher.class)
+	@Wildcard(SomeFieldMatcher.class)
 	public static SomeType someField;
 
 	/**
 	 * matches any parameter
 	 */
-	@Wildcard(matcher = SomeParamMatcher.class)
+	@Wildcard(SomeParamMatcher.class)
 	public static SomeType someParameter;
 
 	/**
 	 * matches any variable
 	 */
-	@Wildcard(matcher = SomeVariableMatcher.class)
+	@Wildcard(SomeVariableMatcher.class)
 	public static SomeType someVar;
 
 	/**
@@ -44,51 +45,51 @@ public class Wildcards {
 	 * 
 	 * @return
 	 */
-	@Wildcard(matcher = SomeValueMatcher.class)
+	@Wildcard(SomeValueMatcher.class)
 	public static <T> T someValue() {
 		return null;
 	}
 
-	@Wildcard(matcher = SomeValueMatcher.class)
+	@Wildcard(SomeValueMatcher.class)
 	public static <T> T someTypedValue(Class<T> type) {
 		return null;
 	}
 
-	@Wildcard(matcher = SomeCodeMatcher.class)
+	@WildcardFactory(SomeCodeMatcherFactory.class)
 	public static void someCode() {//
 	}
 
-	@Wildcard(matcher = SomeConditionMatcher.class)
+	@Wildcard(SomeConditionMatcher.class)
 	public static boolean someCondition() {
 		return true;
 	}
 
-	@Wildcard(matcher = SomeExpressionUsingMatcher.class)
+	@Wildcard(SomeExpressionUsingMatcher.class)
 	public static <T> T someExpressionUsing(Object value) {
 		return null;
 	}
 
-	@Wildcard(matcher = SomeConditionUsingMatcher.class)
+	@Wildcard(SomeConditionUsingMatcher.class)
 	public static boolean someConditionUsing(Object value) {
 		return true;
 	}
 
-	@Wildcard(matcher = BeginMatcher.class)
+	@Wildcard(BeginMatcher.class)
 	public static void begin() {
 		//
 	}
 
-	@Wildcard(matcher = EndMatcher.class)
+	@Wildcard(EndMatcher.class)
 	public static void end() {
 		//
 	}
 
-	@Wildcard(matcher = NoCodeMatcher.class)
+	@Wildcard(NoCodeMatcher.class)
 	public static void noCode() {
 		//
 	}
 
-	@Wildcard(matcher = SomeMethodMatcher.class)
+	@WildcardFactory(SomeMethodMatcherFactory.class)
 	public static void someMethod() {
 		//
 	}

@@ -4,12 +4,12 @@ import japa.parser.ast.Node;
 import japa.parser.ast.expr.Expression;
 
 import org.bugby.matcher.acr.MatchingType;
-import org.bugby.wildcard.WildcardNodeMatcherFromExample;
+import org.bugby.wildcard.api.WildcardNodeMatcher;
 import org.richast.node.ASTNodeData;
 import org.richast.type.TypeWrapper;
 import org.richast.type.TypeWrappers;
 
-public class SomeTypedValueMatcher implements WildcardNodeMatcherFromExample {
+public class SomeTypedValueMatcher implements WildcardNodeMatcher {
 	private Class<?> checkType;
 
 	@Override
@@ -19,12 +19,6 @@ public class SomeTypedValueMatcher implements WildcardNodeMatcherFromExample {
 			return TypeWrappers.wrap(checkType).equals(type);
 		}
 		return false;
-	}
-
-	@Override
-	public void init(Node nodeFromExample) {
-		// TODO Auto-generated method stub
-		// Class<?> checkType
 	}
 
 	@Override

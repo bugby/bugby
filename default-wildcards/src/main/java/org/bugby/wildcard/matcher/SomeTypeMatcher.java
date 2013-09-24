@@ -5,13 +5,12 @@ import japa.parser.ast.body.ClassOrInterfaceDeclaration;
 import japa.parser.ast.type.ClassOrInterfaceType;
 
 import org.bugby.matcher.acr.MatchingType;
-import org.bugby.wildcard.WildcardNodeMatcherFromExample;
+import org.bugby.wildcard.api.WildcardNodeMatcher;
 
-public class SomeTypeMatcher implements WildcardNodeMatcherFromExample {
-	private boolean ordered;
+public class SomeTypeMatcher implements WildcardNodeMatcher {
+	private final boolean ordered;
 
-	@Override
-	public void init(Node nodeFromExample) {
+	public SomeTypeMatcher(Node nodeFromExample) {
 		ordered = (nodeFromExample instanceof ClassOrInterfaceType);
 	}
 

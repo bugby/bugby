@@ -4,19 +4,13 @@ import japa.parser.ast.Node;
 import japa.parser.ast.expr.Expression;
 
 import org.bugby.matcher.acr.MatchingType;
-import org.bugby.wildcard.WildcardNodeMatcherFromExample;
+import org.bugby.wildcard.api.WildcardNodeMatcher;
 
-public class SomeExpressionUsingMatcher implements WildcardNodeMatcherFromExample {
+public class SomeExpressionUsingMatcher implements WildcardNodeMatcher {
 
 	@Override
 	public boolean matches(Node node) {
 		return node instanceof Expression;
-	}
-
-	@Override
-	public void init(Node nodeFromExample) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package org.bugby.wildcard;
 
-import org.bugby.wildcard.api.Wildcard;
-import org.bugby.wildcard.matcher.SomeTypeMatcher;
+import org.bugby.wildcard.api.WildcardFactory;
+import org.bugby.wildcard.matcher.SomeTypeMatcherFactory;
 
 /**
  * matches any type
@@ -9,7 +9,7 @@ import org.bugby.wildcard.matcher.SomeTypeMatcher;
  * @author acraciun
  * 
  */
-@Wildcard(matcher = SomeTypeMatcher.class)
+@WildcardFactory(SomeTypeMatcherFactory.class)
 public class SomeType {
 
 }

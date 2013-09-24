@@ -108,10 +108,10 @@ public class PatternFromExampleVisitor extends ForEachNodeVisitor<PatternBuilder
 	}
 
 	private void addMatcher(PatternBuilder builder, String name, Node node) {
-		Tree<WildcardNodeMatcher> parentPatternNode = parents.isEmpty() ? null : parents.peek();
-		Tree<WildcardNodeMatcher> newNode = builder.addMatcher(parentPatternNode, name, node);
-		parents.push(newNode);
-		addedNodes.push(node);
+		// Tree<WildcardNodeMatcher> parentPatternNode = parents.isEmpty() ? null : parents.peek();
+		// // Tree<WildcardNodeMatcher> newNode = builder.addMatcher(parentPatternNode, name, node);
+		// parents.push(newNode);
+		// addedNodes.push(node);
 	}
 
 	private void dontAdd(Node n) {
