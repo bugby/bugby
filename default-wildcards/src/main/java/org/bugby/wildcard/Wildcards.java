@@ -12,7 +12,7 @@ import org.bugby.wildcard.matcher.SomeExpressionUsingMatcher;
 import org.bugby.wildcard.matcher.SomeFieldMatcher;
 import org.bugby.wildcard.matcher.SomeMethodMatcherFactory;
 import org.bugby.wildcard.matcher.SomeParamMatcher;
-import org.bugby.wildcard.matcher.SomeValueMatcher;
+import org.bugby.wildcard.matcher.SomeValueMatcherFactory;
 import org.bugby.wildcard.matcher.SomeVariableMatcher;
 
 @SuppressWarnings("unused")
@@ -45,12 +45,12 @@ public class Wildcards {
 	 * 
 	 * @return
 	 */
-	@Wildcard(SomeValueMatcher.class)
+	@WildcardFactory(SomeValueMatcherFactory.class)
 	public static <T> T someValue() {
 		return null;
 	}
 
-	@Wildcard(SomeValueMatcher.class)
+	@WildcardFactory(SomeValueMatcherFactory.class)
 	public static <T> T someTypedValue(Class<T> type) {
 		return null;
 	}
