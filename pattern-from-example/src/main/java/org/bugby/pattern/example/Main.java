@@ -12,6 +12,7 @@ import org.bugby.matcher.acr.MatchingType;
 import org.bugby.matcher.acr.MultiLevelMatcher;
 import org.bugby.matcher.acr.NodeMatch;
 import org.bugby.matcher.tree.Tree;
+import org.bugby.wildcard.api.MatchingContext;
 import org.bugby.wildcard.api.WildcardNodeMatcher;
 import org.richast.GenerationContext;
 import org.richast.RichASTParser;
@@ -28,11 +29,12 @@ public class Main {
 
 	}
 
-	private static NodeMatch<Node, WildcardNodeMatcher> nodeMatch(final ASTTreeModel astTreeModel) {
+	private static NodeMatch<Node, WildcardNodeMatcher> nodeMatch(final ASTTreeModel astTreeModel,
+			final MatchingContext context) {
 		return new NodeMatch<Node, WildcardNodeMatcher>() {
 			@Override
 			public boolean match(WildcardNodeMatcher wildcard, Node node) {
-				boolean ok = wildcard.matches(node);
+				boolean ok = wildcard.matches(node, context);
 				if (ok) {
 					System.err.println(wildcard + " on " + node.toString() + " = OK");
 				} else {
@@ -82,8 +84,9 @@ public class Main {
 
 		// 4. apply matcher
 		ASTTreeModel astTreeModel = new ASTTreeModel();
+		MatchingContext context = new DefaultMatchingContext();
 		MultiLevelMatcher<Node, WildcardNodeMatcher, Node, Tree<WildcardNodeMatcher>> matcher = new MultiLevelMatcher<Node, WildcardNodeMatcher, Node, Tree<WildcardNodeMatcher>>(
-				nodeMatch(astTreeModel), astTreeModel, new PatternTreeModel());
+				nodeMatch(astTreeModel, context), astTreeModel, new PatternTreeModel());
 		Multimap<Tree<WildcardNodeMatcher>, Node> matches = matcher.match(sourceRootNode, patternRoot);
 		// TODO find a good report here
 		int maxLine = -1;

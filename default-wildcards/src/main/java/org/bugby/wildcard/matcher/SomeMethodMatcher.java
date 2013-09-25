@@ -5,6 +5,7 @@ import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.expr.MethodCallExpr;
 
 import org.bugby.matcher.acr.MatchingType;
+import org.bugby.wildcard.api.MatchingContext;
 import org.bugby.wildcard.api.WildcardNodeMatcher;
 
 public class SomeMethodMatcher implements WildcardNodeMatcher {
@@ -15,7 +16,7 @@ public class SomeMethodMatcher implements WildcardNodeMatcher {
 	}
 
 	@Override
-	public boolean matches(Node node) {
+	public boolean matches(Node node, MatchingContext context) {
 		return node instanceof MethodCallExpr || node instanceof MethodDeclaration;
 	}
 

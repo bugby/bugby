@@ -5,6 +5,7 @@ import japa.parser.ast.Node;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.bugby.matcher.acr.MatchingType;
+import org.bugby.wildcard.api.MatchingContext;
 import org.bugby.wildcard.api.WildcardNodeMatcher;
 
 public class DefaultNodeMatcher implements WildcardNodeMatcher {
@@ -17,7 +18,7 @@ public class DefaultNodeMatcher implements WildcardNodeMatcher {
 	}
 
 	@Override
-	public boolean matches(Node node) {
+	public boolean matches(Node node, MatchingContext context) {
 		// TOOD here is VEEERY complicated. because it's not the simple recursive equals. i.e.
 		// if statements should match, if they both have else
 		// method call if they refer to the same method, with the same parameters !?

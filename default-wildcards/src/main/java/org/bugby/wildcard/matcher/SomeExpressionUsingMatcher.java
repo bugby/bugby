@@ -4,12 +4,13 @@ import japa.parser.ast.Node;
 import japa.parser.ast.expr.Expression;
 
 import org.bugby.matcher.acr.MatchingType;
+import org.bugby.wildcard.api.MatchingContext;
 import org.bugby.wildcard.api.WildcardNodeMatcher;
 
 public class SomeExpressionUsingMatcher implements WildcardNodeMatcher {
 
 	@Override
-	public boolean matches(Node node) {
+	public boolean matches(Node node, MatchingContext context) {
 		return node instanceof Expression;
 	}
 

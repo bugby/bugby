@@ -8,12 +8,12 @@ import org.bugby.wildcard.matcher.NoCodeMatcher;
 import org.bugby.wildcard.matcher.SomeCodeMatcherFactory;
 import org.bugby.wildcard.matcher.SomeConditionMatcher;
 import org.bugby.wildcard.matcher.SomeConditionUsingMatcher;
-import org.bugby.wildcard.matcher.SomeExpressionUsingMatcher;
+import org.bugby.wildcard.matcher.SomeExpressionUsingMatcherFactory;
 import org.bugby.wildcard.matcher.SomeFieldMatcher;
 import org.bugby.wildcard.matcher.SomeMethodMatcherFactory;
 import org.bugby.wildcard.matcher.SomeParamMatcher;
 import org.bugby.wildcard.matcher.SomeValueMatcherFactory;
-import org.bugby.wildcard.matcher.SomeVariableMatcher;
+import org.bugby.wildcard.matcher.SomeVariableMatcherFactory;
 
 @SuppressWarnings("unused")
 public class Wildcards {
@@ -37,7 +37,7 @@ public class Wildcards {
 	/**
 	 * matches any variable
 	 */
-	@Wildcard(SomeVariableMatcher.class)
+	@WildcardFactory(SomeVariableMatcherFactory.class)
 	public static SomeType someVar;
 
 	/**
@@ -64,13 +64,13 @@ public class Wildcards {
 		return true;
 	}
 
-	@Wildcard(SomeExpressionUsingMatcher.class)
-	public static <T> T someExpressionUsing(Object value) {
+	@WildcardFactory(SomeExpressionUsingMatcherFactory.class)
+	public static <T> T someExpressionUsing(Object... value) {
 		return null;
 	}
 
 	@Wildcard(SomeConditionUsingMatcher.class)
-	public static boolean someConditionUsing(Object value) {
+	public static boolean someConditionUsing(Object... value) {
 		return true;
 	}
 

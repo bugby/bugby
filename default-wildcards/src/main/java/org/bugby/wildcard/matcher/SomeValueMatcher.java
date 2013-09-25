@@ -4,6 +4,7 @@ import japa.parser.ast.Node;
 import japa.parser.ast.expr.Expression;
 
 import org.bugby.matcher.acr.MatchingType;
+import org.bugby.wildcard.api.MatchingContext;
 import org.bugby.wildcard.api.WildcardNodeMatcher;
 import org.richast.node.ASTNodeData;
 import org.richast.type.TypeWrapper;
@@ -16,7 +17,7 @@ public class SomeValueMatcher implements WildcardNodeMatcher {
 	}
 
 	@Override
-	public boolean matches(Node node) {
+	public boolean matches(Node node, MatchingContext context) {
 		if (!(node instanceof Expression)) {
 			return false;
 		}
