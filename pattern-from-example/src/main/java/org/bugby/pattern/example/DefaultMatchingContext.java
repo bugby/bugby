@@ -72,7 +72,7 @@ public class DefaultMatchingContext implements MatchingContext {
 	public boolean setVariableMapping(String nameInPatternAST, Scope scopeInPatternAST, Variable var) {
 		NameAndScope key = new NameAndScope(scopeInPatternAST, nameInPatternAST);
 		TypeWrapper typeRestriction = typeRestrictions.get(key);
-		if (typeRestriction == null || var.getType().isAssignableFrom(typeRestriction)) {
+		if (typeRestriction == null || typeRestriction.isAssignableFrom(var.getType())) {
 			variables.put(key, var);
 			return true;
 		}

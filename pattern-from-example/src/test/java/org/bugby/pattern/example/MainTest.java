@@ -28,7 +28,11 @@ public class MainTest {
 		// Main.check("../default-examples/src/main/java/org/bugby/bugs/pmd/JumbledIncrementer.java",
 		// "src/test/java/org/bugby/pattern/example/pmd/JumbledIncrementerCheck3.java");
 
-		Main.check("../default-examples/src/main/java/org/bugby/bugs/findbugs/CollectionRemoveAll.java",
-				"src/test/java/org/bugby/pattern/example/findbugs/CollectionRemoveAllCheck4.java");
+		// Main.check("../default-examples/src/main/java/org/bugby/bugs/findbugs/CollectionRemoveAll.java",
+		// "src/test/java/org/bugby/pattern/example/findbugs/CollectionRemoveAllCheck1.java");
+
+		Main.check("../default-examples/src/main/java/org/bugby/bugs/pmd/MisplacedNullCheckOr.java",
+				"src/test/java/org/bugby/pattern/example/pmd/MisplacedNullCheckOrCheck1.java");
+
 	}
 }

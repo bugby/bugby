@@ -8,7 +8,7 @@ import org.bugby.wildcard.matcher.EndMatcher;
 import org.bugby.wildcard.matcher.NoCodeMatcher;
 import org.bugby.wildcard.matcher.SomeCodeMatcherFactory;
 import org.bugby.wildcard.matcher.SomeConditionMatcher;
-import org.bugby.wildcard.matcher.SomeConditionUsingMatcher;
+import org.bugby.wildcard.matcher.SomeConditionUsingMatcherFactory;
 import org.bugby.wildcard.matcher.SomeExpressionUsingMatcherFactory;
 import org.bugby.wildcard.matcher.SomeFieldMatcher;
 import org.bugby.wildcard.matcher.SomeMethodMatcherFactory;
@@ -76,7 +76,7 @@ public class Wildcards {
 		return null;
 	}
 
-	@Wildcard(SomeConditionUsingMatcher.class)
+	@WildcardFactory(SomeConditionUsingMatcherFactory.class)
 	public static boolean someConditionUsing(Object... value) {
 		return true;
 	}
