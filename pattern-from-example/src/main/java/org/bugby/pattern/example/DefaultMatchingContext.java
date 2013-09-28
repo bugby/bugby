@@ -5,10 +5,12 @@ import java.util.Map;
 
 import org.bugby.wildcard.api.MatchingContext;
 import org.richast.scope.Scope;
+import org.richast.type.TypeWrapper;
 import org.richast.variable.Variable;
 
 public class DefaultMatchingContext implements MatchingContext {
-	private final Map<NameAndScope, Variable> variables = new HashMap<DefaultMatchingContext.NameAndScope, Variable>();
+	private final Map<NameAndScope, Variable> variables = new HashMap<NameAndScope, Variable>();
+	private final Map<NameAndScope, TypeWrapper> typeRestrictions = new HashMap<NameAndScope, TypeWrapper>();
 
 	private static class NameAndScope {
 		private final Scope scope;
@@ -62,13 +64,24 @@ public class DefaultMatchingContext implements MatchingContext {
 	}
 
 	@Override
-	public Variable getVariableMapping(String nameInPatternAST, Scope scopeInSourceAST) {
-		return variables.get(new NameAndScope(scopeInSourceAST, nameInPatternAST));
+	public Variable getVariableMapping(String nameInPatternAST, Scope scopeInPatternAST) {
+		return variables.get(new NameAndScope(scopeInPatternAST, nameInPatternAST));
 	}
 
 	@Override
-	public void setVariableMapping(String nameInPatternAST, Scope scopeInSourceAST, Variable var) {
-		variables.put(new NameAndScope(scopeInSourceAST, nameInPatternAST), var);
+	public boolean setVariableMapping(String nameInPatternAST, Scope scopeInPatternAST, Variable var) {
+		NameAndScope key = new NameAndScope(scopeInPatternAST, nameInPatternAST);
+		TypeWrapper typeRestriction = typeRestrictions.get(key);
+		if (typeRestriction == null || var.getType().isAssignableFrom(typeRestriction)) {
+			variables.put(key, var);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void addTypeRestriction(String nameInPatternAST, Scope scopeInPatternAST, TypeWrapper type) {
+		typeRestrictions.put(new NameAndScope(scopeInPatternAST, nameInPatternAST), type);
 	}
 
 }

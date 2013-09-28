@@ -25,7 +25,10 @@ public class MainTest {
 		// Main.check("../default-examples/src/main/java/org/bugby/bugs/pmd/DontCallThreadRun.java",
 		// "src/test/java/org/bugby/pattern/example/pmd/DontCallThreadRunCheck3.java");
 
-		Main.check("../default-examples/src/main/java/org/bugby/bugs/pmd/JumbledIncrementer.java",
-				"src/test/java/org/bugby/pattern/example/pmd/JumbledIncrementerCheck3.java");
+		// Main.check("../default-examples/src/main/java/org/bugby/bugs/pmd/JumbledIncrementer.java",
+		// "src/test/java/org/bugby/pattern/example/pmd/JumbledIncrementerCheck3.java");
+
+		Main.check("../default-examples/src/main/java/org/bugby/bugs/findbugs/CollectionRemoveAll.java",
+				"src/test/java/org/bugby/pattern/example/findbugs/CollectionRemoveAllCheck4.java");
 	}
 }

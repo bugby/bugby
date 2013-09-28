@@ -1,6 +1,7 @@
 package org.bugby.wildcard;
 
 import org.bugby.wildcard.api.Wildcard;
+import org.bugby.wildcard.api.WildcardAnnotation;
 import org.bugby.wildcard.api.WildcardFactory;
 import org.bugby.wildcard.matcher.BeginMatcher;
 import org.bugby.wildcard.matcher.EndMatcher;
@@ -17,6 +18,12 @@ import org.bugby.wildcard.matcher.SomeVariableMatcherFactory;
 
 @SuppressWarnings("unused")
 public class Wildcards {
+	// annotations
+	@WildcardAnnotation
+	public @interface IgnoreInitialization {
+
+	}
+
 	// LITERALS
 	public static int someInteger = 0;
 	public static long someLong = 0;

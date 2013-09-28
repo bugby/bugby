@@ -1,6 +1,7 @@
 package org.bugby.pattern.example;
 
 import japa.parser.ast.CompilationUnit;
+import japa.parser.ast.body.AnnotationDeclaration;
 import japa.parser.ast.body.ClassOrInterfaceDeclaration;
 import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.body.VariableDeclarator;
@@ -75,6 +76,12 @@ public class WildcardDictionaryFromFile {
 				WildcardFactory wildcardFactoryAnnotation = ClassUtils.getAnnotation(type, WildcardFactory.class);
 				addMatcher(dictionary, n.getName(), wildcardAnnotation, wildcardFactoryAnnotation);
 			}
+			super.visit(n, dictionary);
+		}
+
+		@Override
+		public void visit(AnnotationDeclaration n, WildcardDictionary dictionary) {
+			dictionary.addAnnotation(n.getName());
 			super.visit(n, dictionary);
 		}
 	}

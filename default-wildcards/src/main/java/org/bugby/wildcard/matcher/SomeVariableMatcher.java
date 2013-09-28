@@ -30,7 +30,9 @@ public class SomeVariableMatcher implements WildcardNodeMatcher {
 		Variable currentVar = context.getVariableMapping(name, scopeInPattern);
 		if (currentVar == null) {
 			// no assignment made yet
-			context.setVariableMapping(name, scopeInPattern, varInSource);
+			if (!context.setVariableMapping(name, scopeInPattern, varInSource)) {
+				return false;
+			}
 			System.out.println("!!!!!!!!! ASSIGN " + name + " to " + varInSource.getName());
 			return true;
 		}

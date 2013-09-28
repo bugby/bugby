@@ -2,20 +2,18 @@ package org.bugby.pattern.example;
 
 import japa.parser.ast.CompilationUnit;
 import japa.parser.ast.Node;
-import japa.parser.ast.body.BodyDeclaration;
 import japa.parser.ast.expr.AnnotationExpr;
 
 import java.io.File;
-import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.bugby.annotation.IgnoreFromMatching;
 import org.bugby.matcher.acr.TreeModel;
 import org.bugby.matcher.tree.Tree;
+import org.bugby.pattern.example.model.NodeUtils;
 import org.bugby.wildcard.api.WildcardNodeMatcher;
 import org.bugby.wildcard.api.WildcardNodeMatcherFactory;
 import org.richast.GenerationContext;
@@ -111,31 +109,18 @@ public class PatternBuilder implements WildcardNodeMatcherFactory {
 	}
 
 	protected boolean skip(AnnotationExpr ann) {
-		return skipAnnotations.contains(ann.getName().toString());
+		return skipAnnotations.contains(ann.getName().toString())
+				|| wildcardDictionary.isAnnotation(ann.getName().toString());
 	}
 
 	private boolean skip(Node node) {
 		if (node instanceof AnnotationExpr) {
 			return skip((AnnotationExpr) node);
 		}
-		if (hasAnnotation(node, IgnoreFromMatching.class)) {
+		if (NodeUtils.hasAnnotation(node, IgnoreFromMatching.class)) {
 			return true;
 		}
 		return false;
 	}
 
-	private boolean hasAnnotation(Node node, Class<? extends Annotation> annotationClass) {
-		if (node instanceof BodyDeclaration) {
-			List<AnnotationExpr> annotations = ((BodyDeclaration) node).getAnnotations();
-			if (annotations != null) {
-				for (AnnotationExpr ann : annotations) {
-					// TODO do this using the actual full type names
-					if (ann.getName().toString().equals(annotationClass.getSimpleName())) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
 }
