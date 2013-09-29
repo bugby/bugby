@@ -12,7 +12,7 @@ public class AmbiguousInvocationOfOuterOrInner2 {
 
 	}
 
-	public class SomeType2 extends SomeType1 {
+	public class SomeType2 {
 
 		@Correlation(key = "sameOuterAndInner", comparator = SameMethodSignature.class)
 		public void someMethod2() {
