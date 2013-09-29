@@ -26,13 +26,16 @@ public class MainTest {
 		// "src/test/java/org/bugby/pattern/example/pmd/DontCallThreadRunCheck3.java");
 
 		// Main.check("../default-examples/src/main/java/org/bugby/bugs/pmd/JumbledIncrementer.java",
-		// "src/test/java/org/bugby/pattern/example/pmd/JumbledIncrementerCheck3.java");
+		// "src/test/java/org/bugby/pattern/example/pmd/JumbledIncrementerCheck1.java");
 
 		// Main.check("../default-examples/src/main/java/org/bugby/bugs/findbugs/CollectionRemoveAll.java",
 		// "src/test/java/org/bugby/pattern/example/findbugs/CollectionRemoveAllCheck1.java");
 
-		Main.check("../default-examples/src/main/java/org/bugby/bugs/pmd/MisplacedNullCheckOr.java",
-				"src/test/java/org/bugby/pattern/example/pmd/MisplacedNullCheckOrCheck1.java");
+		// Main.check("../default-examples/src/main/java/org/bugby/bugs/pmd/MisplacedNullCheckOr.java",
+		// "src/test/java/org/bugby/pattern/example/pmd/MisplacedNullCheckOrCheck1.java");$
+
+		Main.check("../default-examples/src/main/java/org/bugby/bugs/findbugs/AmbiguousInvocationOfOuterOrInner2.java",
+				"src/test/java/org/bugby/pattern/example/findbugs/AmbiguousInvocationOfOuterOrInner2Check2.java");
 
 	}
 }

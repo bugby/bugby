@@ -22,7 +22,7 @@ import org.richast.type.ClassLoaderWrapper;
 
 public class PatternBuilder implements WildcardNodeMatcherFactory {
 	private static Set<String> skipAnnotations = new HashSet<String>(Arrays.asList("GoodExample", "GoodExampleTrigger",
-			"BadExample", "SuppressWarnings", "Override"));
+			"BadExample", "SuppressWarnings", "Override", "Correlation"));
 
 	private WildcardDictionary wildcardDictionary;
 

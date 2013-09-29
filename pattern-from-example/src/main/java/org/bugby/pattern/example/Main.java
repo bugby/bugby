@@ -57,6 +57,11 @@ public class Main {
 			public boolean isLastChild(List<Node> nodes, int index) {
 				return astTreeModel.isLastChild(nodes.get(index));
 			}
+
+			@Override
+			public void removedNodeFromMatch(Node node) {
+				context.clearDataForNode(node);
+			}
 		};
 	}
 

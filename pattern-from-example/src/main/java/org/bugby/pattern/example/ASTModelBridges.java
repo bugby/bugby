@@ -25,6 +25,7 @@ import japa.parser.ast.expr.NameExpr;
 import japa.parser.ast.expr.NormalAnnotationExpr;
 import japa.parser.ast.expr.NullLiteralExpr;
 import japa.parser.ast.expr.ObjectCreationExpr;
+import japa.parser.ast.expr.SingleMemberAnnotationExpr;
 import japa.parser.ast.expr.StringLiteralExpr;
 import japa.parser.ast.expr.SuperExpr;
 import japa.parser.ast.expr.ThisExpr;
@@ -71,6 +72,7 @@ import org.bugby.pattern.example.model.expr.NameExprBridge;
 import org.bugby.pattern.example.model.expr.NormalAnnotationExprBridge;
 import org.bugby.pattern.example.model.expr.NullLiteralExprBridge;
 import org.bugby.pattern.example.model.expr.ObjectCreationExprBridge;
+import org.bugby.pattern.example.model.expr.SingleMemberAnnotationExprBridge;
 import org.bugby.pattern.example.model.expr.StringLiteralExprBridge;
 import org.bugby.pattern.example.model.expr.SuperExprBridge;
 import org.bugby.pattern.example.model.expr.ThisExprBridge;
@@ -106,6 +108,7 @@ public class ASTModelBridges {
 
 		bridges.put(MarkerAnnotationExpr.class, new MarkerAnnotationExprBridge());
 		bridges.put(NormalAnnotationExpr.class, new NormalAnnotationExprBridge());
+		bridges.put(SingleMemberAnnotationExpr.class, new SingleMemberAnnotationExprBridge());
 		bridges.put(MemberValuePair.class, new MemberValuePairBridge());
 		bridges.put(NameExpr.class, new NameExprBridge());
 		bridges.put(MethodCallExpr.class, new MethodCallExprBridge());

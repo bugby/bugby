@@ -10,4 +10,7 @@ public interface NodeMatch<T, W> {
 	public boolean isFirstChild(List<T> nodes, int index);
 
 	public boolean isLastChild(List<T> nodes, int index);
+
+	public void removedNodeFromMatch(T node);
+
 }

@@ -56,6 +56,12 @@ public class TestMultiLevelMatcher extends CommonMatcherTest {
 						// is ignored
 						return false;
 					}
+
+					@Override
+					public void removedNodeFromMatch(IndexedValue node) {
+						//
+
+					}
 				}, new TestNodeDefaultTreeModel(), new TestWildcardDefaultTreeModel());
 	}
 

@@ -1,11 +1,14 @@
 package org.bugby.matcher.acr;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Set;
 
+import com.google.common.base.Supplier;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 
 /**
  * 
@@ -28,10 +31,13 @@ public class MultiLevelMatcher<T, W, TT, TW> {
 	private final TreeModel<TT, T> nodeTreeModel;
 	private final TreeModel<TW, W> wildcardTreeModel;
 
-	private TW terminalWildcard;
-	private Set<T> currentResult;
-
-	private Multimap<TW, TT> currentMatch = HashMultimap.create();
+	private Multimap<TW, TT> currentMatch = Multimaps.newListMultimap(new IdentityHashMap<TW, Collection<TT>>(),
+			new Supplier<List<TT>>() {
+				@Override
+				public List<TT> get() {
+					return new ArrayList<TT>();
+				}
+			});
 
 	public MultiLevelMatcher(NodeMatch<T, W> nodeMatch, TreeModel<TT, T> nodeTreeModel,
 			TreeModel<TW, W> wildcaldTreeModel) {
@@ -54,7 +60,7 @@ public class MultiLevelMatcher<T, W, TT, TW> {
 					List<TW> unorderedWildcards = MultiLevelMatcher.this.wildcardTreeModel.getChildren(wildcard, false);
 					if (unorderedWildcards.size() > 0) {
 						List<List<TT>> unorderedMatch = oneLevelMatcher.matchUnordered(
-								MultiLevelMatcher.this.nodeTreeModel.getDescendants(node, false), unorderedWildcards);
+								MultiLevelMatcher.this.nodeTreeModel.getChildren(node, false), unorderedWildcards);
 
 						if (unorderedMatch.isEmpty()) {
 							return false;
@@ -87,6 +93,13 @@ public class MultiLevelMatcher<T, W, TT, TW> {
 			public boolean isLastChild(List<TT> nodes, int index) {
 				return MultiLevelMatcher.this.nodeTreeModel.isLastChild(nodes.get(index));
 			}
+
+			@Override
+			public void removedNodeFromMatch(TT node) {
+				MultiLevelMatcher.this.nodeMatch.removedNodeFromMatch(MultiLevelMatcher.this.nodeTreeModel
+						.getValue(node));
+
+			}
 		};
 		oneLevelMatcher = new OneLevelMatcher<TT, TW>(treeNodeMatch);
 	}
@@ -104,38 +117,4 @@ public class MultiLevelMatcher<T, W, TT, TW> {
 		return fullMatch ? currentMatch : HashMultimap.<TW, TT>create();
 	}
 
-	private List<T> saveLastPositions(List<List<TT>> match) {
-		List<T> ret = new ArrayList<T>();
-		for (List<TT> list : match) {
-			if (!list.isEmpty()) {
-				ret.add(nodeTreeModel.getValue(list.get(list.size() - 1)));
-			}
-		}
-		return ret;
-	}
-
-	private TW findTerminal(TW wildcardParent) {
-		TW terminal = null;
-		List<TW> descendants = wildcardTreeModel.getDescendants(wildcardParent, true);
-		if (!descendants.isEmpty()) {
-			// last normal wildcard
-			for (int i = descendants.size() - 1; i >= 0; --i) {
-				terminal = descendants.get(i);
-				if (treeNodeMatch.getMatchingType(terminal) == MatchingType.normal) {
-					break;
-				}
-			}
-			// TODO skip virtual nodes and begin/end
-			System.out.println("TERMINAL is " + terminal);
-		} else {
-			descendants = wildcardTreeModel.getDescendants(wildcardParent, false);
-			if (!descendants.isEmpty()) {
-				// XXX not sure this is ok (when only unordered descendants exist)
-				terminal = descendants.get(descendants.size() - 1);
-			} else {
-				terminal = wildcardParent;
-			}
-		}
-		return terminal;
-	}
 }

@@ -32,6 +32,12 @@ public class TestOneLevelMatcher extends CommonMatcherTest {
 					public boolean isLastChild(List<IndexedValue> nodes, int index) {
 						return index == nodes.size() - 1;
 					}
+
+					@Override
+					public void removedNodeFromMatch(IndexedValue node) {
+						//
+
+					}
 				});
 	}
 

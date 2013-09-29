@@ -23,11 +23,11 @@ public class ClassOrInterfaceDeclarationBridge implements ASTModelBridge {
 	@Override
 	public List<Node> getChildren(Node parent) {
 		ClassOrInterfaceDeclaration decl = (ClassOrInterfaceDeclaration) parent;
-		return (List) ListUtils.asList(VirtualNode.of(parent, "annotations", decl.getAnnotations(), true),
-				VirtualNode.of(parent, "typeParameters", decl.getTypeParameters(), true),
-				VirtualNode.of(parent, "extends", decl.getExtends(), true),
-				VirtualNode.of(parent, "implements", decl.getImplements(), true),
-				VirtualNode.of(parent, "members", decl.getMembers(), true));
+		return (List) ListUtils.asList(VirtualNode.of(parent, "annotations", decl.getAnnotations(), false),
+				VirtualNode.of(parent, "typeParameters", decl.getTypeParameters(), false),
+				VirtualNode.of(parent, "extends", decl.getExtends(), false),
+				VirtualNode.of(parent, "implements", decl.getImplements(), false),
+				VirtualNode.of(parent, "members", decl.getMembers(), false));
 	}
 
 	@Override

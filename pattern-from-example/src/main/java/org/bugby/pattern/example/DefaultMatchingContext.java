@@ -1,6 +1,10 @@
 package org.bugby.pattern.example;
 
+import japa.parser.ast.Node;
+
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.bugby.wildcard.api.MatchingContext;
@@ -11,6 +15,7 @@ import org.richast.variable.Variable;
 public class DefaultMatchingContext implements MatchingContext {
 	private final Map<NameAndScope, Variable> variables = new HashMap<NameAndScope, Variable>();
 	private final Map<NameAndScope, TypeWrapper> typeRestrictions = new HashMap<NameAndScope, TypeWrapper>();
+	private final Map<String, CorrelationInfo> correlations = new HashMap<String, CorrelationInfo>();
 
 	private static class NameAndScope {
 		private final Scope scope;
@@ -63,6 +68,25 @@ public class DefaultMatchingContext implements MatchingContext {
 
 	}
 
+	private static class CorrelationInfo {
+		private final Comparator<Node> comparator;
+		private final Node node;
+
+		public CorrelationInfo(Comparator<Node> comparator, Node node) {
+			this.comparator = comparator;
+			this.node = node;
+		}
+
+		public Comparator<Node> getComparator() {
+			return comparator;
+		}
+
+		public Node getNode() {
+			return node;
+		}
+
+	}
+
 	@Override
 	public Variable getVariableMapping(String nameInPatternAST, Scope scopeInPatternAST) {
 		return variables.get(new NameAndScope(scopeInPatternAST, nameInPatternAST));
@@ -84,4 +108,28 @@ public class DefaultMatchingContext implements MatchingContext {
 		typeRestrictions.put(new NameAndScope(scopeInPatternAST, nameInPatternAST), type);
 	}
 
+	@Override
+	public boolean checkCorrelation(String key, Node nodeInSourceAST, Comparator<Node> comparator) {
+		CorrelationInfo correlation = correlations.get(key);
+		if (correlation == null) {
+			correlations.put(key, new CorrelationInfo(comparator, nodeInSourceAST));
+			return true;
+		}
+
+		return correlation.getComparator().compare(correlation.getNode(), nodeInSourceAST) == 0;
+	}
+
+	@Override
+	public void clearDataForNode(Node nodeInSourceAST) {
+		// clear correlations
+		Iterator<Map.Entry<String, CorrelationInfo>> it = correlations.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<String, CorrelationInfo> entry = it.next();
+			if (nodeInSourceAST == entry.getValue().getNode()) {
+				it.remove();
+			}
+		}
+
+		// TODO clear all the other maps
+	}
 }

@@ -19,10 +19,6 @@ public class DefaultNodeMatcher implements WildcardNodeMatcher {
 
 	@Override
 	public boolean matches(Node node, MatchingContext context) {
-		// TOOD here is VEEERY complicated. because it's not the simple recursive equals. i.e.
-		// if statements should match, if they both have else
-		// method call if they refer to the same method, with the same parameters !?
-		// etc
 		if (!node.getClass().equals(targetNode.getClass())) {
 			return false;
 		}

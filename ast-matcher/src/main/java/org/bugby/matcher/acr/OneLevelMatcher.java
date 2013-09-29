@@ -55,6 +55,10 @@ public class OneLevelMatcher<T, W> {
 		while (!matchingStack.isEmpty()) {
 			// look for a next start
 			MatchPosition start = matchingStack.pop();
+			// notice that the node is no longer part of the ongoing match, so context can be cleaned
+			if (start.node >= 0) {
+				nodeMatch.removedNodeFromMatch(nodes.get(start.node));
+			}
 			if (start.getNode() < nodes.size() - 1) {
 				if (matchOrderedOne(nodes, wildcards, start.getNode() + 1, start.getWildcard(), matchingStack)) {
 					// dump the stack in a result
@@ -184,6 +188,8 @@ public class OneLevelMatcher<T, W> {
 							result.add(oneResult);
 						}
 					}
+					// TODO not 100% sure that is here i should put this
+					nodeMatch.removedNodeFromMatch(nodes.get(i));
 				}
 			}
 		}
