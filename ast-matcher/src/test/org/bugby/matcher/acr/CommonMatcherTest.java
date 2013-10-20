@@ -82,6 +82,7 @@ public class CommonMatcherTest {
 	}
 
 	protected void assertPositions(List<List<Integer>> positions, List<List<IndexedValue>> match) {
+		System.out.println(match);
 		assertEquals(positions.size(), match.size());
 		for (int i = 0; i < positions.size(); ++i) {
 			assertEquals(positions.get(i).size(), match.get(i).size());

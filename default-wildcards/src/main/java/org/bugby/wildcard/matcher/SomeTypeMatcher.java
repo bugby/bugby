@@ -34,6 +34,6 @@ public class SomeTypeMatcher implements WildcardNodeMatcher {
 
 	@Override
 	public String toString() {
-		return "SomeTypeMatcher on " + nodeFromExample.getClass();
+		return "SomeTypeMatcher@" + System.identityHashCode(this) + " on " + nodeFromExample.getClass();
 	}
 }

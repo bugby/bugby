@@ -109,6 +109,12 @@ public class Main {
 		} else {
 			System.out.println("No match was found");
 		}
+
+		// System.out.println("FULLMATCH:------------");
+		//
+		// for (Map.Entry<Tree<WildcardNodeMatcher>, Collection<Node>> entry : matches.asMap().entrySet()) {
+		// System.out.println(entry.getKey().getValue() + " on " + entry.getValue());
+		// }
 	}
 
 	private static class PatternTreeModel extends DefaultTreeModel<WildcardNodeMatcher> {

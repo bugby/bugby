@@ -194,4 +194,12 @@ public class TestOneLevelMatcher extends CommonMatcherTest {
 		List<Wildcard<IndexedValue>> wildcards = DefaultWildcard.build(array("a", "a"));
 		assertPositions(positionsMore(0, 1, EOL, 1, 0), matcher.matchUnordered(nodes, wildcards));
 	}
+
+	@Test
+	public void testUnorderedWithPermutations2() {
+		OneLevelMatcher<IndexedValue, Wildcard<IndexedValue>> matcher = matcher();
+		List<IndexedValue> nodes = values("a", "b", "b");
+		List<Wildcard<IndexedValue>> wildcards = DefaultWildcard.build(array("a", "b", "b"));
+		assertPositions(positionsMore(0, 1, 2, EOL, 0, 2, 1), matcher.matchUnordered(nodes, wildcards));
+	}
 }

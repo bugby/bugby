@@ -6,11 +6,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.bugby.wildcard.api.MatchingContext;
 import org.richast.scope.Scope;
 import org.richast.type.TypeWrapper;
 import org.richast.variable.Variable;
+
+import com.google.common.collect.Sets;
 
 public class DefaultMatchingContext implements MatchingContext {
 	private final Map<NameAndScope, Variable> variables = new HashMap<NameAndScope, Variable>();
@@ -70,19 +73,36 @@ public class DefaultMatchingContext implements MatchingContext {
 
 	private static class CorrelationInfo {
 		private final Comparator<Node> comparator;
-		private final Node node;
+		private final Set<Node> nodes = Sets.newIdentityHashSet();
 
 		public CorrelationInfo(Comparator<Node> comparator, Node node) {
 			this.comparator = comparator;
-			this.node = node;
+			this.nodes.add(node);
 		}
 
 		public Comparator<Node> getComparator() {
 			return comparator;
 		}
 
-		public Node getNode() {
-			return node;
+		public Node getFirstNode() {
+			return nodes.iterator().next();
+		}
+
+		public void addNode(Node n) {
+			nodes.add(n);
+		}
+
+		public void removeNode(Node n) {
+			nodes.remove(n);
+		}
+
+		public int getNodeCount() {
+			return nodes.size();
+		}
+
+		@Override
+		public String toString() {
+			return "CI:" + nodes;
 		}
 
 	}
@@ -116,7 +136,11 @@ public class DefaultMatchingContext implements MatchingContext {
 			return true;
 		}
 
-		return correlation.getComparator().compare(correlation.getNode(), nodeInSourceAST) == 0;
+		if (correlation.getComparator().compare(correlation.getFirstNode(), nodeInSourceAST) == 0) {
+			correlation.addNode(nodeInSourceAST);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -125,7 +149,8 @@ public class DefaultMatchingContext implements MatchingContext {
 		Iterator<Map.Entry<String, CorrelationInfo>> it = correlations.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<String, CorrelationInfo> entry = it.next();
-			if (nodeInSourceAST == entry.getValue().getNode()) {
+			entry.getValue().removeNode(nodeInSourceAST);
+			if (entry.getValue().getNodeCount() == 0) {
 				it.remove();
 			}
 		}

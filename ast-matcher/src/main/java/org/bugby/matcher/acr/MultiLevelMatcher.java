@@ -1,14 +1,15 @@
 package org.bugby.matcher.acr;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
+import com.google.common.collect.Sets;
 
 /**
  * 
@@ -31,11 +32,11 @@ public class MultiLevelMatcher<T, W, TT, TW> {
 	private final TreeModel<TT, T> nodeTreeModel;
 	private final TreeModel<TW, W> wildcardTreeModel;
 
-	private Multimap<TW, TT> currentMatch = Multimaps.newListMultimap(new IdentityHashMap<TW, Collection<TT>>(),
-			new Supplier<List<TT>>() {
+	private Multimap<TW, TT> currentMatch = Multimaps.newSetMultimap(new IdentityHashMap<TW, Collection<TT>>(),
+			new Supplier<Set<TT>>() {
 				@Override
-				public List<TT> get() {
-					return new ArrayList<TT>();
+				public Set<TT> get() {
+					return Sets.newIdentityHashSet();
 				}
 			});
 
@@ -71,10 +72,14 @@ public class MultiLevelMatcher<T, W, TT, TW> {
 						List<List<TT>> orderedMatch = oneLevelMatcher.matchOrdered(
 								MultiLevelMatcher.this.nodeTreeModel.getDescendants(node, true), orderedWildcards);
 
-						return !orderedMatch.isEmpty();
+						if (orderedMatch.isEmpty()) {
+							return false;
+						}
 					}
 				}
-				currentMatch.put(wildcard, node);
+				if (!currentMatch.containsEntry(wildcard, node)) {
+					currentMatch.put(wildcard, node);
+				}
 				return true;
 			}
 

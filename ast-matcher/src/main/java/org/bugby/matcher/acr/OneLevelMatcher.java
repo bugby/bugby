@@ -169,31 +169,35 @@ public class OneLevelMatcher<T, W> {
 		if (nodes.isEmpty() || wildcards.isEmpty()) {
 			return Collections.emptyList();
 		}
-		List<List<T>> result = new ArrayList<List<T>>();
-		for (int i = 0; i < nodes.size(); ++i) {
-			for (int j = 0; j < wildcards.size(); ++j) {
-				if (nodeMatch.match(wildcards.get(j), nodes.get(i))) {
-					if (wildcards.size() == 1) {
-						// single result
-						result.add(Collections.singletonList(nodes.get(i)));
-					} else {
-						// add the current result to each of the results when matching the remaining nodes and wildcards
-						List<T> nodesWithoutCurrent = listWithout(nodes, i);
-						List<W> nextWildcards = wildcards.subList(j + 1, wildcards.size());
-						List<List<T>> subresult = matchUnordered(nodesWithoutCurrent, nextWildcards);
-						for (List<T> s : subresult) {
-							List<T> oneResult = new ArrayList<T>(s.size() + 1);
-							oneResult.add(nodes.get(i));
-							oneResult.addAll(s);
-							result.add(oneResult);
-						}
-					}
-					// TODO not 100% sure that is here i should put this
-					nodeMatch.removedNodeFromMatch(nodes.get(i));
-				}
-			}
+		if (nodes.size() < wildcards.size()) {
+			return Collections.emptyList();
 		}
 
+		List<List<T>> result = new ArrayList<List<T>>();
+		// the solution is the match for the first wildcard plus the match of the rest wildcards
+		W firstWildcard = wildcards.get(0);
+		List<W> nextWildcards = wildcards.subList(1, wildcards.size());
+
+		for (int n = 0; n < nodes.size(); ++n) {
+			if (nodeMatch.match(firstWildcard, nodes.get(n))) {
+				if (wildcards.size() == 1) {
+					// single result
+					result.add(Collections.singletonList(nodes.get(n)));
+				} else {
+					// add the current result to each of the results when matching the remaining nodes and wildcards
+					List<T> nodesWithoutCurrent = listWithout(nodes, n);
+
+					List<List<T>> subresult = matchUnordered(nodesWithoutCurrent, nextWildcards);
+					for (List<T> s : subresult) {
+						List<T> oneResult = new ArrayList<T>(s.size() + 1);
+						oneResult.add(nodes.get(n));
+						oneResult.addAll(s);
+						result.add(oneResult);
+					}
+				}
+				nodeMatch.removedNodeFromMatch(nodes.get(n));
+			}
+		}
 		return result;
 	}
 
