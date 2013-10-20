@@ -16,6 +16,7 @@ import org.bugby.matcher.tree.Tree;
 import org.bugby.pattern.example.model.NodeUtils;
 import org.bugby.wildcard.api.WildcardNodeMatcher;
 import org.bugby.wildcard.api.WildcardNodeMatcherFactory;
+import org.bugby.wildcard.api.WildcardPatternBuildContext;
 import org.richast.GenerationContext;
 import org.richast.RichASTParser;
 import org.richast.type.ClassLoaderWrapper;
@@ -41,13 +42,13 @@ public class PatternBuilder implements WildcardNodeMatcherFactory {
 		CompilationUnit cu = RichASTParser.parseAndResolve(classLoaderWrapper, file, context, "UTF-8");
 
 		ASTTreeModel treeModel = new ASTTreeModel();
-		return buildPatternNode(treeModel, cu, null, this);
+		return buildPatternNode(treeModel, cu, null, this, new WildcardPatternBuildContext());
 	}
 
 	@Override
 	public Tree<WildcardNodeMatcher> buildPatternNode(TreeModel<Node, Node> patternSourceTreeNodeModel,
 			Node currentPatternSourceNode, Tree<WildcardNodeMatcher> parentPatternNode,
-			WildcardNodeMatcherFactory defaultFactory) {
+			WildcardNodeMatcherFactory defaultFactory, WildcardPatternBuildContext buildContext) {
 		Tree<WildcardNodeMatcher> newParentPatternNode = parentPatternNode;
 
 		if (skip(currentPatternSourceNode)) {
@@ -61,8 +62,9 @@ public class PatternBuilder implements WildcardNodeMatcherFactory {
 			// try first the factory
 			WildcardNodeMatcherFactory matcherFactory = wildcardDictionary.findMatcherFactory(baseName);
 			if (matcherFactory != null) {
-				return matcherFactory.buildPatternNode(patternSourceTreeNodeModel, currentPatternSourceNode,
-						parentPatternNode, this);
+				newParentPatternNode = matcherFactory.buildPatternNode(patternSourceTreeNodeModel,
+						currentPatternSourceNode, parentPatternNode, this, buildContext);
+				return newParentPatternNode;
 			}
 
 			// find the matcher
@@ -79,17 +81,17 @@ public class PatternBuilder implements WildcardNodeMatcherFactory {
 					throw new RuntimeException(e);
 				}
 			} else {
-				matcher = new DefaultNodeMatcher(currentPatternSourceNode);
+				matcher = new DefaultNodeMatcher(currentPatternSourceNode, buildContext.retrieveAnnotations());
 			}
 			newParentPatternNode = addPatternNode(parentPatternNode, matcher);
 		}
 
 		// continue with the children
 		for (Node child : patternSourceTreeNodeModel.getChildren(currentPatternSourceNode, false)) {
-			buildPatternNode(patternSourceTreeNodeModel, child, newParentPatternNode, defaultFactory);
+			buildPatternNode(patternSourceTreeNodeModel, child, newParentPatternNode, defaultFactory, buildContext);
 		}
 		for (Node child : patternSourceTreeNodeModel.getChildren(currentPatternSourceNode, true)) {
-			buildPatternNode(patternSourceTreeNodeModel, child, newParentPatternNode, defaultFactory);
+			buildPatternNode(patternSourceTreeNodeModel, child, newParentPatternNode, defaultFactory, buildContext);
 		}
 		// remove empty virtual nodes
 		if (currentPatternSourceNode instanceof VirtualNode && newParentPatternNode.getChildrenCount() == 0) {

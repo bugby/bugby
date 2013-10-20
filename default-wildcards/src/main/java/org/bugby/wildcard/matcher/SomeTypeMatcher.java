@@ -5,6 +5,7 @@ import japa.parser.ast.body.ClassOrInterfaceDeclaration;
 import japa.parser.ast.type.Type;
 
 import org.bugby.matcher.acr.MatchingType;
+import org.bugby.matcher.acr.TreeModel;
 import org.bugby.wildcard.api.MatchingContext;
 import org.bugby.wildcard.api.WildcardNodeMatcher;
 
@@ -18,7 +19,7 @@ public class SomeTypeMatcher implements WildcardNodeMatcher {
 	}
 
 	@Override
-	public boolean matches(Node node, MatchingContext context) {
+	public boolean matches(TreeModel<Node, Node> treeModel, Node node, MatchingContext context) {
 		return node instanceof Type || node instanceof ClassOrInterfaceDeclaration;
 	}
 

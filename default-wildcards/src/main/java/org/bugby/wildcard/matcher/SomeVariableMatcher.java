@@ -3,6 +3,7 @@ package org.bugby.wildcard.matcher;
 import japa.parser.ast.Node;
 
 import org.bugby.matcher.acr.MatchingType;
+import org.bugby.matcher.acr.TreeModel;
 import org.bugby.wildcard.api.MatchingContext;
 import org.bugby.wildcard.api.WildcardNodeMatcher;
 import org.richast.node.ASTNodeData;
@@ -21,7 +22,7 @@ public class SomeVariableMatcher implements WildcardNodeMatcher {
 	}
 
 	@Override
-	public boolean matches(Node node, MatchingContext context) {
+	public boolean matches(TreeModel<Node, Node> treeModel, Node node, MatchingContext context) {
 		Variable varInSource = ASTNodeData.resolvedVariable(node);
 		if (varInSource == null) {
 			// not a variable node

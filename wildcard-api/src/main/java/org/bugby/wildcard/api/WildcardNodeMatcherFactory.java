@@ -24,9 +24,10 @@ public interface WildcardNodeMatcherFactory {
 	 *            - the parent node where this factory should attach the nodes it creates
 	 * @param defaultFactory
 	 *            - the default node factory that will create if needed the children and descendants pattern node
+	 * @param buildContext TODO
 	 * @return
 	 */
 	public Tree<WildcardNodeMatcher> buildPatternNode(TreeModel<Node, Node> patternSourceTreeNodeModel,
 			Node currentPatternSourceNode, Tree<WildcardNodeMatcher> parentPatternNode,
-			WildcardNodeMatcherFactory defaultFactory);
+			WildcardNodeMatcherFactory defaultFactory, WildcardPatternBuildContext buildContext);
 }

@@ -1,18 +1,19 @@
 package org.bugby.bugs.pmd;
 
-import static org.bugby.wildcard.WildcardAnnotations.$AnyLoop;
-import static org.bugby.wildcard.WildcardAnnotations.$Last;
+import static org.bugby.wildcard.Wildcards.anyBranch;
+import static org.bugby.wildcard.Wildcards.someCondition;
 
-import org.bugby.annotation.BadExample;
+import org.bugby.annotation.GoodExample;
 
-@BadExample
+@GoodExample
 public class AvoidBranchingStatementAsLastInLoop {
 	public void someCode() {
-		$AnyLoop();
+		// I need all combinations of while,for,do and break, continue, return
+		// $AnyLoop();
 		for (;;) {
-			// TODO - this should be the last code line
-			$Last();
-			break;
+			if (someCondition()) {
+				anyBranch();
+			}
 		}
 	}
 }

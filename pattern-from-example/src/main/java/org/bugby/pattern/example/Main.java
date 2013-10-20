@@ -34,7 +34,7 @@ public class Main {
 		return new NodeMatch<Node, WildcardNodeMatcher>() {
 			@Override
 			public boolean match(WildcardNodeMatcher wildcard, Node node) {
-				boolean ok = wildcard.matches(node, context);
+				boolean ok = wildcard.matches(astTreeModel, node, context);
 				if (ok) {
 					System.err.println(wildcard + " on " + node.toString() + " = OK");
 				} else {
@@ -73,6 +73,8 @@ public class Main {
 				"../default-wildcards/src/main/java/org/bugby/wildcard/Wildcards.java"));
 		WildcardDictionaryFromFile.addWildcardsFromFile(wildcardDictionary, builtProjectClassLoader, new File(
 				"../default-wildcards/src/main/java/org/bugby/wildcard/SomeType.java"));
+		WildcardDictionaryFromFile.addWildcardsFromFile(wildcardDictionary, builtProjectClassLoader, new File(
+				"../default-wildcards/src/main/java/org/bugby/wildcard/WildcardAnnotations.java"));
 		// here add more custom wildcards by dynamic discovery
 
 		// 2. read patterns

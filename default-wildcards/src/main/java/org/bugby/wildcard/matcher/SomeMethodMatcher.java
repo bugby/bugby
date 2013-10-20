@@ -7,6 +7,7 @@ import japa.parser.ast.expr.MethodCallExpr;
 import java.util.Comparator;
 
 import org.bugby.matcher.acr.MatchingType;
+import org.bugby.matcher.acr.TreeModel;
 import org.bugby.wildcard.api.MatchingContext;
 import org.bugby.wildcard.api.WildcardNodeMatcher;
 
@@ -22,7 +23,7 @@ public class SomeMethodMatcher implements WildcardNodeMatcher {
 	}
 
 	@Override
-	public boolean matches(Node node, MatchingContext context) {
+	public boolean matches(TreeModel<Node, Node> treeModel, Node node, MatchingContext context) {
 		if (node instanceof MethodDeclaration) {
 			// TODO put this type of code in a generic way - in more places
 			if (correlationKey != null) {

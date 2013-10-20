@@ -35,10 +35,11 @@ public class MainTest {
 		// "src/test/java/org/bugby/pattern/example/pmd/MisplacedNullCheckOrCheck1.java");$
 
 		// Main.check("../default-examples/src/main/java/org/bugby/bugs/findbugs/AmbiguousInvocationOfOuterOrInner2.java",
-		//		"src/test/java/org/bugby/pattern/example/findbugs/AmbiguousInvocationOfOuterOrInner2Check2.java");
+		// "src/test/java/org/bugby/pattern/example/findbugs/AmbiguousInvocationOfOuterOrInner2Check2.java");
 
-		Main.check("../default-examples/src/main/java/org/bugby/bugs/findbugs/AmbiguousInvocationOfOuterOrInner.java",
-				"src/test/java/org/bugby/pattern/example/findbugs/AmbiguousInvocationOfOuterOrInnerCheck1.java");
-
+		// Main.check("../default-examples/src/main/java/org/bugby/bugs/findbugs/AmbiguousInvocationOfOuterOrInner.java",
+		// "src/test/java/org/bugby/pattern/example/findbugs/AmbiguousInvocationOfOuterOrInnerCheck1.java");
+		Main.check("../default-examples/src/main/java/org/bugby/bugs/pmd/AvoidBranchingStatementAsLastInLoop.java",
+				"src/test/java/org/bugby/pattern/example/pmd/AvoidBranchingStatementAsLastInLoopCheck2.java");
 	}
 }

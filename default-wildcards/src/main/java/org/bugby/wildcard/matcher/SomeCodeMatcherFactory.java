@@ -12,6 +12,7 @@ import org.bugby.matcher.acr.TreeModel;
 import org.bugby.matcher.tree.Tree;
 import org.bugby.wildcard.api.WildcardNodeMatcher;
 import org.bugby.wildcard.api.WildcardNodeMatcherFactory;
+import org.bugby.wildcard.api.WildcardPatternBuildContext;
 import org.richast.node.ASTNodeData;
 import org.richast.scope.Scope;
 import org.richast.type.TypeWrapper;
@@ -21,7 +22,7 @@ public class SomeCodeMatcherFactory extends DefaultMatcherFactory {
 	@Override
 	public Tree<WildcardNodeMatcher> buildPatternNode(TreeModel<Node, Node> patternSourceTreeNodeModel,
 			Node currentPatternSourceNode, Tree<WildcardNodeMatcher> parentPatternNode,
-			WildcardNodeMatcherFactory defaultFactory) {
+			WildcardNodeMatcherFactory defaultFactory, WildcardPatternBuildContext buildContext) {
 		if (currentPatternSourceNode instanceof MethodDeclaration) {
 			// when used like this
 			// public void someCode(){
@@ -39,11 +40,12 @@ public class SomeCodeMatcherFactory extends DefaultMatcherFactory {
 			WildcardNodeMatcher matcher = new SomeCodeMatcher(patternScope, typeRestrictions);
 			Tree<WildcardNodeMatcher> newPatternNode = parentPatternNode.newChild(matcher);
 			// delegate directly to the body
-			defaultFactory.buildPatternNode(patternSourceTreeNodeModel, decl.getBody(), newPatternNode, defaultFactory);
+			defaultFactory.buildPatternNode(patternSourceTreeNodeModel, decl.getBody(), newPatternNode, defaultFactory,
+					buildContext);
 			return newPatternNode;
 		}
 		return super.buildPatternNode(patternSourceTreeNodeModel, currentPatternSourceNode, parentPatternNode,
-				defaultFactory);
+				defaultFactory, buildContext);
 	}
 
 	@Override

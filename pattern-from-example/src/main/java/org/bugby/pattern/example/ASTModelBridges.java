@@ -32,7 +32,9 @@ import japa.parser.ast.expr.ThisExpr;
 import japa.parser.ast.expr.UnaryExpr;
 import japa.parser.ast.expr.VariableDeclarationExpr;
 import japa.parser.ast.stmt.BlockStmt;
+import japa.parser.ast.stmt.BreakStmt;
 import japa.parser.ast.stmt.CatchClause;
+import japa.parser.ast.stmt.ContinueStmt;
 import japa.parser.ast.stmt.ExpressionStmt;
 import japa.parser.ast.stmt.ForStmt;
 import japa.parser.ast.stmt.IfStmt;
@@ -79,7 +81,9 @@ import org.bugby.pattern.example.model.expr.ThisExprBridge;
 import org.bugby.pattern.example.model.expr.UnaryExprBridge;
 import org.bugby.pattern.example.model.expr.VariableDeclarationExprBridge;
 import org.bugby.pattern.example.model.stmt.BlockStmtBridge;
+import org.bugby.pattern.example.model.stmt.BreakStmtBridge;
 import org.bugby.pattern.example.model.stmt.CatchClauseBridge;
+import org.bugby.pattern.example.model.stmt.ContinueStmtBridge;
 import org.bugby.pattern.example.model.stmt.ExpressionStmtBridge;
 import org.bugby.pattern.example.model.stmt.ForStmtBridge;
 import org.bugby.pattern.example.model.stmt.IfStmtBridge;
@@ -142,6 +146,8 @@ public class ASTModelBridges {
 		bridges.put(CatchClause.class, new CatchClauseBridge());
 		bridges.put(ThrowStmt.class, new ThrowStmtBridge());
 		bridges.put(ForStmt.class, new ForStmtBridge());
+		bridges.put(BreakStmt.class, new BreakStmtBridge());
+		bridges.put(ContinueStmt.class, new ContinueStmtBridge());
 	}
 
 	public static ASTModelBridge getBridge(Node node) {

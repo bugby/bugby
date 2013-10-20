@@ -3,6 +3,7 @@ package org.bugby.wildcard;
 import org.bugby.wildcard.api.Wildcard;
 import org.bugby.wildcard.api.WildcardAnnotation;
 import org.bugby.wildcard.api.WildcardFactory;
+import org.bugby.wildcard.matcher.AnyBranchMatcher;
 import org.bugby.wildcard.matcher.BeginMatcher;
 import org.bugby.wildcard.matcher.EndMatcher;
 import org.bugby.wildcard.matcher.NoCodeMatcher;
@@ -99,5 +100,10 @@ public class Wildcards {
 	@WildcardFactory(SomeMethodMatcherFactory.class)
 	public static void someMethod() {
 		//
+	}
+
+	@Wildcard(AnyBranchMatcher.class)
+	public static void anyBranch() {
+
 	}
 }
