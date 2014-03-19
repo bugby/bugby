@@ -43,16 +43,14 @@
 	</parent>
 
 	<modules>
-		<module>pattern-api</module>
-		<module>annotation</module>
-		<module>wildcard-api</module>
+		<module>api</module>
 		<module>rich-ast</module>
-		<module>ast-matcher</module>
-		<module>pattern-from-example</module>
-		<module>default-wildcards</module>
-		<module>default-examples</module>
-		<module>maven-plugin</module>
-		<module>maven-plugin-it</module>
+		<module>tree-matcher</module>
+		<module>wildcard-definitions</module>
+		<module>bug-definitions</module>
+		<module>engine</module>
+<!-- 		<module>maven-plugin</module> -->
+<!-- 		<module>maven-plugin-it</module> -->
 	</modules>
 
 	<properties>
