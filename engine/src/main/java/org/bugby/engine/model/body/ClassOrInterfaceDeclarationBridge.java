@@ -25,21 +25,19 @@ public class ClassOrInterfaceDeclarationBridge implements ASTModelBridge {
 		ClassOrInterfaceDeclaration decl = (ClassOrInterfaceDeclaration) parent;
 		return (List) ListUtils.asList(VirtualNode.of(parent, "annotations", decl.getAnnotations(), false),
 				VirtualNode.of(parent, "typeParameters", decl.getTypeParameters(), false),
-				VirtualNode.of(parent, "extends", decl.getExtends(), false),
-				VirtualNode.of(parent, "implements", decl.getImplements(), false),
+				VirtualNode.of(parent, "extends", decl.getExtends(), false), VirtualNode.of(parent, "implements", decl.getImplements(), false),
 				VirtualNode.of(parent, "members", decl.getMembers(), false));
 	}
 
 	@Override
-	public boolean isOrdered(Node node) {
-		return false;
+	public boolean isOrdered(String childType) {
+		return "typeParameters".equals(childType);
 	}
 
 	@Override
 	public String getMatcherName(Node node) {
 		TypeWrapper type = ASTNodeData.resolvedType(node);
-		if (type.hasAnnotation(BadExample.class) || type.hasAnnotation(GoodExample.class)
-				|| type.hasAnnotation(GoodExampleTrigger.class)) {
+		if (type.hasAnnotation(BadExample.class) || type.hasAnnotation(GoodExample.class) || type.hasAnnotation(GoodExampleTrigger.class)) {
 			return SomeType.class.getSimpleName();
 		}
 		ClassOrInterfaceDeclaration decl = (ClassOrInterfaceDeclaration) node;

@@ -24,12 +24,11 @@ public class VariableDeclaratorBridge implements ASTModelBridge {
 			return (List) ListUtils.asList(VirtualNode.of(parent, "id", decl.getId(), true));
 		}
 
-		return (List) ListUtils.asList(VirtualNode.of(parent, "id", decl.getId(), true),
-				VirtualNode.of(parent, "init", decl.getInit(), true));
+		return (List) ListUtils.asList(VirtualNode.of(parent, "id", decl.getId(), true), VirtualNode.of(parent, "init", decl.getInit(), true));
 	}
 
 	@Override
-	public boolean isOrdered(Node node) {
+	public boolean isOrdered(String childType) {
 		return false;
 	}
 

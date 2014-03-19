@@ -21,7 +21,7 @@ public class ParameterBridge implements ASTModelBridge {
 	}
 
 	@Override
-	public boolean isOrdered(Node node) {
+	public boolean isOrdered(String childType) {
 		return true;
 	}
 
@@ -35,7 +35,6 @@ public class ParameterBridge implements ASTModelBridge {
 	public boolean areSimilar(Node patternNode, Node sourceNode) {
 		Parameter patternDecl = (Parameter) patternNode;
 		Parameter sourceDecl = (Parameter) sourceNode;
-		return patternDecl.isVarArgs() == sourceDecl.isVarArgs()
-				&& patternDecl.getModifiers() == sourceDecl.getModifiers();
+		return patternDecl.isVarArgs() == sourceDecl.isVarArgs() && patternDecl.getModifiers() == sourceDecl.getModifiers();
 	}
 }

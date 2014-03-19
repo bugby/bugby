@@ -18,7 +18,7 @@ public class PrimitiveTypeBridge implements ASTModelBridge {
 	}
 
 	@Override
-	public boolean isOrdered(Node node) {
+	public boolean isOrdered(String node) {
 		return true;
 	}
 

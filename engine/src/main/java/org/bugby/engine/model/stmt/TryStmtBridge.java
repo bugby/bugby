@@ -15,8 +15,12 @@ public class TryStmtBridge extends StatementBridge {
 	public List<Node> getChildren(Node parent) {
 		TryStmt stmt = (TryStmt) parent;
 		return (List) ListUtils.asList(VirtualNode.of(parent, "try", stmt.getTryBlock(), true),
-				VirtualNode.of(parent, "catch", stmt.getCatchs(), true),
-				VirtualNode.of(parent, "finally", stmt.getFinallyBlock(), true));
+				VirtualNode.of(parent, "catch", stmt.getCatchs(), true), VirtualNode.of(parent, "finally", stmt.getFinallyBlock(), true));
+	}
+
+	@Override
+	public boolean isOrdered(String childType) {
+		return false;
 	}
 
 	@Override

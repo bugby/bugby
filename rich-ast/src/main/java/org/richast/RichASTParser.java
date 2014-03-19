@@ -7,6 +7,7 @@ import japa.parser.ast.CompilationUnit;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.richast.scope.CompilationUnitScope;
@@ -14,11 +15,9 @@ import org.richast.scope.ScopeBuilder;
 import org.richast.type.ClassLoaderWrapper;
 import org.richast.visitor.SetParentVisitor;
 
-import com.google.common.io.Closeables;
-
 public class RichASTParser {
-	public static CompilationUnit parseAndResolve(ClassLoaderWrapper builtProjectClassLoader, File inputFile,
-			GenerationContext context, String sourceEncoding) {
+	public static CompilationUnit parseAndResolve(ClassLoaderWrapper builtProjectClassLoader, File inputFile, GenerationContext context,
+			String sourceEncoding) {
 		CompilationUnitScope unitScope = new CompilationUnitScope(builtProjectClassLoader, context);
 		CompilationUnit cu = null;
 		InputStream in = null;
@@ -46,7 +45,13 @@ public class RichASTParser {
 		} catch (ParseException e) {
 			throw new JavascriptFileGenerationException(inputFile, null, e);
 		} finally {
-			Closeables.closeQuietly(in);
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					// do nothing
+				}
+			}
 		}
 		return cu;
 	}

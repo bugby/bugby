@@ -18,8 +18,8 @@ public class CompilationUnitBridge implements ASTModelBridge {
 	}
 
 	@Override
-	public boolean isOrdered(Node node) {
-		return true;
+	public boolean isOrdered(String node) {
+		return false;
 	}
 
 	@Override

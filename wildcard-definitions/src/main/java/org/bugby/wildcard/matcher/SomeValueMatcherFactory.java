@@ -15,9 +15,9 @@ import org.richast.type.TypeWrapper;
 public class SomeValueMatcherFactory implements WildcardNodeMatcherFactory {
 
 	@Override
-	public Tree<WildcardNodeMatcher> buildPatternNode(TreeModel<Node, Node> patternSourceTreeNodeModel,
-			Node currentPatternSourceNode, Tree<WildcardNodeMatcher> parentPatternNode,
-			WildcardNodeMatcherFactory defaultFactory, WildcardPatternBuildContext buildContext) {
+	public Tree<WildcardNodeMatcher> buildPatternNode(TreeModel<Node, Node> patternSourceTreeNodeModel, String currentPatternSourceNodeType,
+			Node currentPatternSourceNode, Tree<WildcardNodeMatcher> parentPatternNode, WildcardNodeMatcherFactory defaultFactory,
+			WildcardPatternBuildContext buildContext) {
 		if (currentPatternSourceNode instanceof MethodCallExpr) {
 			MethodCallExpr expr = (MethodCallExpr) currentPatternSourceNode;
 			TypeWrapper nodeType = null;
@@ -29,10 +29,10 @@ public class SomeValueMatcherFactory implements WildcardNodeMatcherFactory {
 				}
 			}
 			WildcardNodeMatcher matcher = new SomeValueMatcher(nodeType);
-			return parentPatternNode.newChild(matcher);
+			return parentPatternNode.newChild(currentPatternSourceNodeType, matcher);
 		}
-		return defaultFactory.buildPatternNode(patternSourceTreeNodeModel, currentPatternSourceNode, parentPatternNode,
-				defaultFactory, buildContext);
+		return defaultFactory.buildPatternNode(patternSourceTreeNodeModel, currentPatternSourceNodeType, currentPatternSourceNode,
+				parentPatternNode, defaultFactory, buildContext);
 	}
 
 }

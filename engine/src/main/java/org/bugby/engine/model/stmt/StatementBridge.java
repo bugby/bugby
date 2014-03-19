@@ -6,7 +6,7 @@ import org.bugby.engine.ASTModelBridge;
 
 abstract public class StatementBridge implements ASTModelBridge {
 	@Override
-	public boolean isOrdered(Node node) {
+	public boolean isOrdered(String childType) {
 		return true;
 	}
 

@@ -22,15 +22,14 @@ import com.google.common.collect.Multimap;
 
 public class Main {
 	private static CompilationUnit parseSource(ClassLoader builtProjectClassLoader, File file) {
-		ClassLoaderWrapper classLoaderWrapper = new ClassLoaderWrapper(builtProjectClassLoader,
-				Collections.<String>emptyList(), Collections.<String>emptyList());
+		ClassLoaderWrapper classLoaderWrapper = new ClassLoaderWrapper(builtProjectClassLoader, Collections.<String> emptyList(),
+				Collections.<String> emptyList());
 		GenerationContext context = new GenerationContext(file);
 		return RichASTParser.parseAndResolve(classLoaderWrapper, file, context, "UTF-8");
 
 	}
 
-	private static NodeMatch<Node, WildcardNodeMatcher> nodeMatch(final ASTTreeModel astTreeModel,
-			final MatchingContext context) {
+	private static NodeMatch<Node, WildcardNodeMatcher> nodeMatch(final ASTTreeModel astTreeModel, final MatchingContext context) {
 		return new NodeMatch<Node, WildcardNodeMatcher>() {
 			@Override
 			public boolean match(WildcardNodeMatcher wildcard, Node node) {
@@ -70,18 +69,17 @@ public class Main {
 		ClassLoader builtProjectClassLoader = Thread.currentThread().getContextClassLoader();
 		WildcardDictionary wildcardDictionary = new WildcardDictionary();
 		WildcardDictionaryFromFile.addWildcardsFromFile(wildcardDictionary, builtProjectClassLoader, new File(
-				"../default-wildcards/src/main/java/org/bugby/wildcard/Wildcards.java"));
+				"../wildcard-definitions/src/main/java/org/bugby/wildcard/Wildcards.java"));
 		WildcardDictionaryFromFile.addWildcardsFromFile(wildcardDictionary, builtProjectClassLoader, new File(
-				"../default-wildcards/src/main/java/org/bugby/wildcard/SomeType.java"));
+				"../wildcard-definitions/src/main/java/org/bugby/wildcard/SomeType.java"));
 		WildcardDictionaryFromFile.addWildcardsFromFile(wildcardDictionary, builtProjectClassLoader, new File(
-				"../default-wildcards/src/main/java/org/bugby/wildcard/WildcardAnnotations.java"));
+				"../wildcard-definitions/src/main/java/org/bugby/wildcard/WildcardAnnotations.java"));
 		// here add more custom wildcards by dynamic discovery
 
 		// 2. read patterns
 		PatternBuilder patternBuilder = new PatternBuilder();
 		patternBuilder.setWildcardDictionary(wildcardDictionary);
-		Tree<WildcardNodeMatcher> patternRoot = patternBuilder.buildFromFile(builtProjectClassLoader, new File(
-				patternSource));
+		Tree<WildcardNodeMatcher> patternRoot = patternBuilder.buildFromFile(builtProjectClassLoader, new File(patternSource));
 		System.out.println("PATTERN:\n" + patternRoot);
 		System.out.println("-------------------------");
 
@@ -106,8 +104,7 @@ public class Main {
 
 		}
 		if (maxNode != null) {
-			System.err.println("Found match at: (" + sourceFile.getName() + ":" + maxNode.getBeginLine() + ") ->"
-					+ maxNode);
+			System.err.println("Found match at: (" + sourceFile.getName() + ":" + maxNode.getBeginLine() + ") ->" + maxNode);
 		} else {
 			System.out.println("No match was found");
 		}
@@ -121,8 +118,8 @@ public class Main {
 
 	private static class PatternTreeModel extends DefaultTreeModel<WildcardNodeMatcher> {
 		@Override
-		public boolean isOrdered(Tree<WildcardNodeMatcher> node) {
-			return node.getValue().isOrdered();
+		public boolean isOrdered(Tree<WildcardNodeMatcher> node, String childType) {
+			return node.getValue().isOrdered(childType);
 		}
 
 	}

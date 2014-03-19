@@ -47,8 +47,8 @@ public class DefaultNodeMatcher implements WildcardNodeMatcher {
 	}
 
 	@Override
-	public boolean isOrdered() {
-		return ASTModelBridges.getBridge(targetNode).isOrdered(targetNode);
+	public boolean isOrdered(String childType) {
+		return ASTModelBridges.getBridge(targetNode).isOrdered(childType);
 	}
 
 	@Override

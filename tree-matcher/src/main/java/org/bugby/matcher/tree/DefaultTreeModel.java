@@ -1,7 +1,13 @@
 package org.bugby.matcher.tree;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 
 abstract public class DefaultTreeModel<V> implements TreeModel<Tree<V>, V> {
 
@@ -11,15 +17,15 @@ abstract public class DefaultTreeModel<V> implements TreeModel<Tree<V>, V> {
 	}
 
 	@Override
-	public List<Tree<V>> getChildren(Tree<V> parent, boolean ordered) {
-		List<Tree<V>> children = new ArrayList<Tree<V>>();
-		for (int i = 0; i < parent.getChildrenCount(); ++i) {
-			Tree<V> child = parent.getChild(i);
-			if (isOrdered(child) == ordered) {
-				children.add(child);
+	public ListMultimap<String, Tree<V>> getChildren(final Tree<V> parent, final boolean ordered) {
+		ListMultimap<String, Tree<V>> children = parent.getChildren();
+
+		return ArrayListMultimap.create(Multimaps.filterKeys(children, new Predicate<String>() {
+			@Override
+			public boolean apply(String childType) {
+				return isOrdered(parent, childType) == ordered;
 			}
-		}
-		return children;
+		}));
 	}
 
 	@Override
@@ -28,14 +34,17 @@ abstract public class DefaultTreeModel<V> implements TreeModel<Tree<V>, V> {
 	}
 
 	@Override
-	public List<Tree<V>> getDescendants(Tree<V> parent, boolean ordered) {
-		List<Tree<V>> descendants = new ArrayList<Tree<V>>();
-		for (int i = 0; i < parent.getChildrenCount(); ++i) {
-			Tree<V> child = parent.getChild(i);
-			if (isOrdered(child) == ordered) {
-				descendants.add(child);
+	public ListMultimap<String, Tree<V>> getDescendants(Tree<V> parent, boolean ordered) {
+		ListMultimap<String, Tree<V>> children = parent.getChildren();
+		ListMultimap<String, Tree<V>> descendants = ArrayListMultimap.create();
+
+		for (Map.Entry<String, Collection<Tree<V>>> entry : children.asMap().entrySet()) {
+			if (isOrdered(parent, entry.getKey()) == ordered) {
+				descendants.putAll(entry.getKey(), entry.getValue());
 			}
-			descendants.addAll(getDescendants(child, ordered));
+			for (Tree<V> child : entry.getValue()) {
+				descendants.putAll(getDescendants(child, ordered));
+			}
 		}
 		return descendants;
 	}
@@ -46,10 +55,17 @@ abstract public class DefaultTreeModel<V> implements TreeModel<Tree<V>, V> {
 	 * @param node
 	 * @return
 	 */
+	@Override
 	public boolean isFirstChild(Tree<V> node) {
 		// TODO optimize here
-		List<Tree<V>> children = getChildren(node.getParent(), true);
-		return children.get(0) == node;
+
+		ListMultimap<String, Tree<V>> childrenByType = getChildren(node.getParent(), true);
+		for (Collection<Tree<V>> children : childrenByType.asMap().values()) {
+			if (((List<Tree<V>>) children).get(0) == node) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -58,10 +74,17 @@ abstract public class DefaultTreeModel<V> implements TreeModel<Tree<V>, V> {
 	 * @param node
 	 * @return
 	 */
+	@Override
 	public boolean isLastChild(Tree<V> node) {
 		// TODO optimize here
-		List<Tree<V>> children = getChildren(node.getParent(), true);
-		return children.get(children.size() - 1) == node;
+
+		ListMultimap<String, Tree<V>> childrenByType = getChildren(node.getParent(), true);
+		for (Collection<Tree<V>> children : childrenByType.asMap().values()) {
+			if (((List<Tree<V>>) children).get(children.size() - 1) == node) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

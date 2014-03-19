@@ -16,7 +16,7 @@ public class VariableDeclaratorIdBridge implements ASTModelBridge {
 	}
 
 	@Override
-	public boolean isOrdered(Node node) {
+	public boolean isOrdered(String childType) {
 		return false;
 	}
 

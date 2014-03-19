@@ -14,7 +14,7 @@ public class SomeTypeMatcher implements WildcardNodeMatcher {
 	private final Node nodeFromExample;
 
 	public SomeTypeMatcher(Node nodeFromExample) {
-		ordered = (nodeFromExample instanceof Type);
+		ordered = nodeFromExample instanceof Type;
 		this.nodeFromExample = nodeFromExample;
 	}
 
@@ -24,8 +24,8 @@ public class SomeTypeMatcher implements WildcardNodeMatcher {
 	}
 
 	@Override
-	public boolean isOrdered() {
-		return ordered;
+	public boolean isOrdered(String childType) {
+		return "typeParameters".equals(childType);
 	}
 
 	@Override

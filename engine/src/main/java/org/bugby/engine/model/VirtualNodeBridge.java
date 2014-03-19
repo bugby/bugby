@@ -19,8 +19,8 @@ public class VirtualNodeBridge implements ASTModelBridge {
 	}
 
 	@Override
-	public boolean isOrdered(Node node) {
-		return ((VirtualNode) node).isOrdered();
+	public boolean isOrdered(String node) {
+		return false;
 	}
 
 	@Override

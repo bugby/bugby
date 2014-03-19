@@ -16,8 +16,8 @@ public class SomeFieldMatcher implements WildcardNodeMatcher {
 	}
 
 	@Override
-	public boolean isOrdered() {
-		return false;
+	public boolean isOrdered(String childType) {
+		return true;
 	}
 
 	@Override

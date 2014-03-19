@@ -1,10 +1,14 @@
 package org.bugby.engine;
 
 import japa.parser.ast.CompilationUnit;
+import japa.parser.ast.ImportDeclaration;
+import japa.parser.ast.LineComment;
 import japa.parser.ast.Node;
+import japa.parser.ast.PackageDeclaration;
 import japa.parser.ast.body.ClassOrInterfaceDeclaration;
 import japa.parser.ast.body.ConstructorDeclaration;
 import japa.parser.ast.body.FieldDeclaration;
+import japa.parser.ast.body.JavadocComment;
 import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.body.Parameter;
 import japa.parser.ast.body.VariableDeclarator;
@@ -25,6 +29,7 @@ import japa.parser.ast.expr.NameExpr;
 import japa.parser.ast.expr.NormalAnnotationExpr;
 import japa.parser.ast.expr.NullLiteralExpr;
 import japa.parser.ast.expr.ObjectCreationExpr;
+import japa.parser.ast.expr.QualifiedNameExpr;
 import japa.parser.ast.expr.SingleMemberAnnotationExpr;
 import japa.parser.ast.expr.StringLiteralExpr;
 import japa.parser.ast.expr.SuperExpr;
@@ -50,6 +55,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bugby.engine.model.CompilationUnitBridge;
+import org.bugby.engine.model.IgnoreBridge;
 import org.bugby.engine.model.VirtualNodeBridge;
 import org.bugby.engine.model.body.ClassOrInterfaceDeclarationBridge;
 import org.bugby.engine.model.body.ConstructorDeclarationBridge;
@@ -148,6 +154,12 @@ public class ASTModelBridges {
 		bridges.put(ForStmt.class, new ForStmtBridge());
 		bridges.put(BreakStmt.class, new BreakStmtBridge());
 		bridges.put(ContinueStmt.class, new ContinueStmtBridge());
+
+		bridges.put(PackageDeclaration.class, new IgnoreBridge());
+		bridges.put(ImportDeclaration.class, new IgnoreBridge());
+		bridges.put(LineComment.class, new IgnoreBridge());
+		bridges.put(QualifiedNameExpr.class, new IgnoreBridge());
+		bridges.put(JavadocComment.class, new IgnoreBridge());
 	}
 
 	public static ASTModelBridge getBridge(Node node) {

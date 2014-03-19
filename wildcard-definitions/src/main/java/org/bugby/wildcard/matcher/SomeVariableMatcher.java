@@ -13,12 +13,10 @@ import org.richast.variable.Variable;
 public class SomeVariableMatcher implements WildcardNodeMatcher {
 	private final String name;
 	private final Scope scopeInPattern;
-	private final boolean ordered;
 
-	public SomeVariableMatcher(String name, Scope scopeInPattern, boolean ordered) {
+	public SomeVariableMatcher(String name, Scope scopeInPattern) {
 		this.name = name;
 		this.scopeInPattern = scopeInPattern;
-		this.ordered = ordered;
 	}
 
 	@Override
@@ -42,8 +40,8 @@ public class SomeVariableMatcher implements WildcardNodeMatcher {
 	}
 
 	@Override
-	public boolean isOrdered() {
-		return ordered;
+	public boolean isOrdered(String childType) {
+		return true;
 	}
 
 	@Override

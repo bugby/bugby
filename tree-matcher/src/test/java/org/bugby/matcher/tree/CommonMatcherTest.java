@@ -5,10 +5,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import org.bugby.matcher.tree.Tree;
 
 import com.google.common.collect.Multimap;
 
@@ -37,7 +36,7 @@ public class CommonMatcherTest {
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + ((value == null) ? 0 : value.hashCode());
+			result = prime * result + (value == null ? 0 : value.hashCode());
 			return result;
 		}
 
@@ -128,15 +127,21 @@ public class CommonMatcherTest {
 		return ret;
 	}
 
+	protected String type(String v) {
+		// ordered if only lower case, unorderder otherwise
+		return v.equals(v.toLowerCase()) ? "order" : "unorder";
+	}
+
 	protected Tree<IndexedValue> tree(String root, Object... children) {
 		Tree<IndexedValue> parent = new Tree<IndexedValue>(new IndexedValue(root, 0));
 		int index = 0;
-		for (int i = 0; i < children.length; ++i) {
-			if (children[i] instanceof String) {
-				parent.newChild(new IndexedValue((String) children[i], ++index));
+		for (Object element : children) {
+			if (element instanceof String) {
+				parent.newChild(type((String) element), new IndexedValue((String) element, ++index));
 			} else {
-				Tree<IndexedValue> child = (Tree<IndexedValue>) children[i];
-				Tree<IndexedValue> newChild = parent.newChild(new IndexedValue(child.getValue().getValue(), ++index));
+				Tree<IndexedValue> child = (Tree<IndexedValue>) element;
+				Tree<IndexedValue> newChild = parent.newChild(type(child.getValue().getValue()), new IndexedValue(child.getValue().getValue(),
+						++index));
 				index = addChildren(newChild, child, index);
 			}
 		}
@@ -144,39 +149,45 @@ public class CommonMatcherTest {
 	}
 
 	private int addChildren(Tree<IndexedValue> newParent, Tree<IndexedValue> oldParent, int index) {
-		for (int i = 0; i < oldParent.getChildrenCount(); ++i) {
-			Tree<IndexedValue> newChild = newParent.newChild(new IndexedValue(oldParent.getChild(i).getValue()
-					.getValue(), ++index));
-			index = addChildren(newChild, oldParent.getChild(i), index);
+		for (Map.Entry<String, Collection<Tree<IndexedValue>>> entry : oldParent.getChildren().asMap().entrySet()) {
+			List<Tree<IndexedValue>> children = (List<Tree<IndexedValue>>) entry.getValue();
+			for (int i = 0; i < children.size(); ++i) {
+				Tree<IndexedValue> newChild = newParent.newChild(entry.getKey(),
+						new IndexedValue(children.get(i).getValue().getValue(), ++index));
+				index = addChildren(newChild, children.get(i), index);
+			}
 		}
+
 		return index;
 	}
 
 	private <T> void addChildren(Tree<T> newParent, Tree<T> oldParent) {
-		for (int i = 0; i < oldParent.getChildrenCount(); ++i) {
-			Tree<T> newChild = newParent.newChild(oldParent.getChild(i).getValue());
-			addChildren(newChild, oldParent.getChild(i));
+		for (Map.Entry<String, Collection<Tree<T>>> entry : oldParent.getChildren().asMap().entrySet()) {
+			List<Tree<T>> children = (List<Tree<T>>) entry.getValue();
+			for (int i = 0; i < children.size(); ++i) {
+				Tree<T> newChild = newParent.newChild(entry.getKey(), children.get(i).getValue());
+				addChildren(newChild, children.get(i));
+			}
 		}
 
 	}
 
 	protected Tree<Wildcard<IndexedValue>> wtree(String root, Object... children) {
-		Tree<Wildcard<IndexedValue>> parent = new Tree<Wildcard<IndexedValue>>(new DefaultWildcard<IndexedValue>(
-				new IndexedValue(root, 0)));
+		Tree<Wildcard<IndexedValue>> parent = new Tree<Wildcard<IndexedValue>>(new DefaultWildcard<IndexedValue>(new IndexedValue(root, 0)));
 		for (int i = 0; i < children.length; ++i) {
 			if (children[i] instanceof String) {
 				String s = (String) children[i];
 				if (s.equals("^")) {
-					parent.newChild((DefaultWildcard<IndexedValue>) DefaultWildcard.BEGIN);
+					parent.newChild("order", (DefaultWildcard<IndexedValue>) DefaultWildcard.BEGIN);
 				} else if (s.equals("$")) {
-					parent.newChild((DefaultWildcard<IndexedValue>) DefaultWildcard.END);
+					parent.newChild("order", (DefaultWildcard<IndexedValue>) DefaultWildcard.END);
 				} else {
-					parent.newChild(new DefaultWildcard<IndexedValue>(new IndexedValue(s, i)));
+					parent.newChild(type(s), new DefaultWildcard<IndexedValue>(new IndexedValue(s, i)));
 				}
 			} else {
 				Tree<Wildcard<IndexedValue>> child = (Tree<Wildcard<IndexedValue>>) children[i];
-				Tree<Wildcard<IndexedValue>> newChild = parent.newChild(new DefaultWildcard<IndexedValue>(
-						new IndexedValue(((DefaultWildcard<IndexedValue>) child.getValue()).getValue().getValue(), i)));
+				String key = ((DefaultWildcard<IndexedValue>) child.getValue()).getValue().getValue();
+				Tree<Wildcard<IndexedValue>> newChild = parent.newChild(type(key), new DefaultWildcard<IndexedValue>(new IndexedValue(key, i)));
 				addChildren(newChild, child);
 			}
 		}

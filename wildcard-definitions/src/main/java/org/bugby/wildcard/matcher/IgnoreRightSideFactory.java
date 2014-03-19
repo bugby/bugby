@@ -11,9 +11,9 @@ import org.bugby.matcher.tree.TreeModel;
 public class IgnoreRightSideFactory implements WildcardNodeMatcherFactory {
 
 	@Override
-	public Tree<WildcardNodeMatcher> buildPatternNode(TreeModel<Node, Node> patternSourceTreeNodeModel,
-			Node currentPatternSourceNode, Tree<WildcardNodeMatcher> parentPatternNode,
-			WildcardNodeMatcherFactory defaultFactory, WildcardPatternBuildContext buildContext) {
+	public Tree<WildcardNodeMatcher> buildPatternNode(TreeModel<Node, Node> patternSourceTreeNodeModel, String currentPatternSourceNodeType,
+			Node currentPatternSourceNode, Tree<WildcardNodeMatcher> parentPatternNode, WildcardNodeMatcherFactory defaultFactory,
+			WildcardPatternBuildContext buildContext) {
 
 		// TODO Auto-generated method stub
 		return null;

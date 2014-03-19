@@ -17,15 +17,13 @@ public class MethodDeclarationBridge implements ASTModelBridge {
 
 		MethodDeclaration decl = (MethodDeclaration) parent;
 		return (List) ListUtils.asList(VirtualNode.of(decl, "typeParameters", decl.getTypeParameters(), true),
-				VirtualNode.of(decl, "parameters", decl.getParameters(), true),
-				VirtualNode.of(decl, "throws", decl.getThrows(), true),
-				VirtualNode.of(decl, "body", decl.getBody(), true),
-				VirtualNode.of(decl, "annotations", decl.getAnnotations(), true));
+				VirtualNode.of(decl, "parameters", decl.getParameters(), true), VirtualNode.of(decl, "throws", decl.getThrows(), true),
+				VirtualNode.of(decl, "body", decl.getBody(), true), VirtualNode.of(decl, "annotations", decl.getAnnotations(), true));
 	}
 
 	@Override
-	public boolean isOrdered(Node node) {
-		return false;
+	public boolean isOrdered(String childType) {
+		return childType.equals("parameters") || childType.equals("typeParameters");
 	}
 
 	@Override
@@ -39,7 +37,6 @@ public class MethodDeclarationBridge implements ASTModelBridge {
 		MethodDeclaration patternDecl = (MethodDeclaration) patternNode;
 		MethodDeclaration sourceDecl = (MethodDeclaration) sourceNode;
 		// TODO skip or not the modifiers
-		return patternDecl.getName().equals(sourceDecl.getName())
-				&& patternDecl.getArrayCount() == sourceDecl.getArrayCount();
+		return patternDecl.getName().equals(sourceDecl.getName()) && patternDecl.getArrayCount() == sourceDecl.getArrayCount();
 	}
 }

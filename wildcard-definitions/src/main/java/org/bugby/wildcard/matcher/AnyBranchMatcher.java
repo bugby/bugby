@@ -18,7 +18,7 @@ public class AnyBranchMatcher implements WildcardNodeMatcher {
 	}
 
 	@Override
-	public boolean isOrdered() {
+	public boolean isOrdered(String childType) {
 		return true;
 	}
 

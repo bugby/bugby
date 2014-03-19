@@ -5,33 +5,20 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.bugby.matcher.tree.DefaultTreeModel;
-import org.bugby.matcher.tree.MatchingType;
-import org.bugby.matcher.tree.MultiLevelMatcher;
-import org.bugby.matcher.tree.NodeMatch;
-import org.bugby.matcher.tree.Tree;
 import org.junit.Test;
 
 public class TestMultiLevelMatcher extends CommonMatcherTest {
 	private static class TestNodeDefaultTreeModel extends DefaultTreeModel<IndexedValue> {
 		@Override
-		public boolean isOrdered(Tree<IndexedValue> node) {
-			// ordered if only lower case, unorderder otherwise
-			String v = node.getValue().getValue();
-			return v.equals(v.toLowerCase());
+		public boolean isOrdered(Tree<IndexedValue> node, String childType) {
+			return "order".equals(childType);
 		}
 	}
 
 	private static class TestWildcardDefaultTreeModel extends DefaultTreeModel<Wildcard<IndexedValue>> {
 		@Override
-		public boolean isOrdered(Tree<Wildcard<IndexedValue>> node) {
-			if (((DefaultWildcard<IndexedValue>) node.getValue()).getValue() == null) {
-				return true;
-			}
-			// ordered if only lower case, unorderder otherwise
-			String v = ((DefaultWildcard<IndexedValue>) node.getValue()).getValue().getValue();
-
-			return v.equals(v.toLowerCase());
+		public boolean isOrdered(Tree<Wildcard<IndexedValue>> node, String childType) {
+			return "order".equals(childType);
 		}
 	}
 
@@ -130,6 +117,9 @@ public class TestMultiLevelMatcher extends CommonMatcherTest {
 		MultiLevelMatcher<IndexedValue, Wildcard<IndexedValue>, Tree<IndexedValue>, Tree<Wildcard<IndexedValue>>> matcher = matcher();
 		Tree<IndexedValue> nodes = tree("a", tree("B", "d"), tree("C", "e"));
 		Tree<Wildcard<IndexedValue>> wildcards = wtree("a", wtree("C", "e"), "B");
+		System.out.println(nodes);
+
+		System.out.println(wildcards);
 		assertTerminalPositions(Arrays.asList(4), "e", matcher.match(nodes, wildcards));
 	}
 

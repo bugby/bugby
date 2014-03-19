@@ -20,9 +20,9 @@ import org.richast.type.TypeWrapper;
 public class SomeCodeMatcherFactory extends DefaultMatcherFactory {
 
 	@Override
-	public Tree<WildcardNodeMatcher> buildPatternNode(TreeModel<Node, Node> patternSourceTreeNodeModel,
-			Node currentPatternSourceNode, Tree<WildcardNodeMatcher> parentPatternNode,
-			WildcardNodeMatcherFactory defaultFactory, WildcardPatternBuildContext buildContext) {
+	public Tree<WildcardNodeMatcher> buildPatternNode(TreeModel<Node, Node> patternSourceTreeNodeModel, String currentPatternSourceNodeType,
+			Node currentPatternSourceNode, Tree<WildcardNodeMatcher> parentPatternNode, WildcardNodeMatcherFactory defaultFactory,
+			WildcardPatternBuildContext buildContext) {
 		if (currentPatternSourceNode instanceof MethodDeclaration) {
 			// when used like this
 			// public void someCode(){
@@ -38,20 +38,19 @@ public class SomeCodeMatcherFactory extends DefaultMatcherFactory {
 				}
 			}
 			WildcardNodeMatcher matcher = new SomeCodeMatcher(patternScope, typeRestrictions);
-			Tree<WildcardNodeMatcher> newPatternNode = parentPatternNode.newChild(matcher);
+			Tree<WildcardNodeMatcher> newPatternNode = parentPatternNode.newChild(currentPatternSourceNodeType, matcher);
 			// delegate directly to the body
-			defaultFactory.buildPatternNode(patternSourceTreeNodeModel, decl.getBody(), newPatternNode, defaultFactory,
-					buildContext);
+			defaultFactory.buildPatternNode(patternSourceTreeNodeModel, currentPatternSourceNodeType, decl.getBody(), newPatternNode,
+					defaultFactory, buildContext);
 			return newPatternNode;
 		}
-		return super.buildPatternNode(patternSourceTreeNodeModel, currentPatternSourceNode, parentPatternNode,
+		return super.buildPatternNode(patternSourceTreeNodeModel, currentPatternSourceNodeType, currentPatternSourceNode, parentPatternNode,
 				defaultFactory, buildContext);
 	}
 
 	@Override
-	protected WildcardNodeMatcher buildPatternNodeOnly(TreeModel<Node, Node> patternSourceTreeNodeModel,
-			Node currentPatternSourceNode, Tree<WildcardNodeMatcher> parentPatternNode,
-			WildcardNodeMatcherFactory defaultFactory) {
-		return new SomeCodeMatcher(null, Collections.<String, TypeWrapper>emptyMap());
+	protected WildcardNodeMatcher buildPatternNodeOnly(TreeModel<Node, Node> patternSourceTreeNodeModel, Node currentPatternSourceNode,
+			Tree<WildcardNodeMatcher> parentPatternNode, WildcardNodeMatcherFactory defaultFactory) {
+		return new SomeCodeMatcher(null, Collections.<String, TypeWrapper> emptyMap());
 	}
 }

@@ -1,17 +1,17 @@
 package org.bugby.matcher.tree;
 
-import java.util.List;
+import com.google.common.collect.ListMultimap;
 
 public interface TreeModel<T, V> {
 	public int getChildrenCount(T parent);
 
-	public List<T> getChildren(T parent, boolean ordered);
+	public ListMultimap<String, T> getChildren(T parent, boolean ordered);
 
-	public List<T> getDescendants(T parent, boolean ordered);
+	public ListMultimap<String, T> getDescendants(T parent, boolean ordered);
 
 	public V getValue(T node);
 
-	public boolean isOrdered(T node);
+	public boolean isOrdered(T node, String childType);
 
 	/**
 	 * for ordered node only

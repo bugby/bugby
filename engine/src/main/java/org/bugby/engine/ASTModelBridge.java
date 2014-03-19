@@ -7,7 +7,7 @@ import java.util.List;
 public interface ASTModelBridge {
 	public List<Node> getChildren(Node parent);
 
-	public boolean isOrdered(Node node);
+	public boolean isOrdered(String childType);
 
 	public String getMatcherName(Node node);
 

@@ -1,17 +1,16 @@
-package org.bugby.engine.model.type;
+package org.bugby.engine.model;
 
 import japa.parser.ast.Node;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.bugby.engine.ASTModelBridge;
 
-public class VoidTypeBridge implements ASTModelBridge {
+public class IgnoreBridge implements ASTModelBridge {
 
 	@Override
 	public List<Node> getChildren(Node parent) {
-		return Collections.emptyList();
+		return null;
 	}
 
 	@Override

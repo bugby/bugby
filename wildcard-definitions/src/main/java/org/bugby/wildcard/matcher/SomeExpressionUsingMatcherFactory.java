@@ -18,23 +18,23 @@ import org.bugby.matcher.tree.TreeModel;
 public class SomeExpressionUsingMatcherFactory implements WildcardNodeMatcherFactory {
 
 	@Override
-	public Tree<WildcardNodeMatcher> buildPatternNode(TreeModel<Node, Node> patternSourceTreeNodeModel,
-			Node currentPatternSourceNode, Tree<WildcardNodeMatcher> parentPatternNode,
-			WildcardNodeMatcherFactory defaultFactory, WildcardPatternBuildContext buildContext) {
+	public Tree<WildcardNodeMatcher> buildPatternNode(TreeModel<Node, Node> patternSourceTreeNodeModel, String currentPatternSourceNodeType,
+			Node currentPatternSourceNode, Tree<WildcardNodeMatcher> parentPatternNode, WildcardNodeMatcherFactory defaultFactory,
+			WildcardPatternBuildContext buildContext) {
 		if (currentPatternSourceNode instanceof MethodCallExpr) {
 			WildcardNodeMatcher matcher = new SomeExpressionUsingMatcher();
-			Tree<WildcardNodeMatcher> newNode = parentPatternNode.newChild(matcher);
+			Tree<WildcardNodeMatcher> newNode = parentPatternNode.newChild(currentPatternSourceNodeType, matcher);
 			MethodCallExpr expr = (MethodCallExpr) currentPatternSourceNode;
 			if (expr.getArgs() != null) {
 				for (Node arg : expr.getArgs()) {
-					defaultFactory.buildPatternNode(patternSourceTreeNodeModel, arg, newNode, defaultFactory,
+					defaultFactory.buildPatternNode(patternSourceTreeNodeModel, currentPatternSourceNodeType, arg, newNode, defaultFactory,
 							buildContext);
 				}
 			}
 			return newNode;
 		}
-		return defaultFactory.buildPatternNode(patternSourceTreeNodeModel, currentPatternSourceNode, parentPatternNode,
-				defaultFactory, null);
+		return defaultFactory.buildPatternNode(patternSourceTreeNodeModel, currentPatternSourceNodeType, currentPatternSourceNode,
+				parentPatternNode, defaultFactory, null);
 	}
 
 }

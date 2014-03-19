@@ -1,8 +1,12 @@
 package org.bugby.matcher.tree;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
 /**
  * Generic tree - we'll use this for matching against the Pattern.
@@ -15,7 +19,7 @@ public class Tree<T> {
 
 	private final T value;
 	private final Tree<T> parent; // null if root
-	private final List<Tree<T>> children;
+	private final ListMultimap<String, Tree<T>> children;
 
 	/** Create the root for a new Tree */
 	public Tree(T value) {
@@ -28,7 +32,7 @@ public class Tree<T> {
 		this.id = idGenerator.incrementAndGet();
 		this.value = value;
 		this.parent = parent;
-		this.children = new ArrayList<Tree<T>>();
+		this.children = ArrayListMultimap.create();
 	}
 
 	public int getId() {
@@ -47,22 +51,23 @@ public class Tree<T> {
 		return children.size();
 	}
 
-	public Tree<T> getChild(int index) {
-		return children.get(index);
+	public Tree<T> getChild(String type, int index) {
+		List<Tree<T>> part = children.get(type);
+		return part != null ? part.get(index) : null;
 	}
 
-	public List<Tree<T>> getChildren() {
-		return new ArrayList<Tree<T>>(children);
+	public ListMultimap<String, Tree<T>> getChildren() {
+		return ArrayListMultimap.create(children);
 	}
 
-	public Tree<T> newChild(T aValue) {
+	public Tree<T> newChild(String type, T aValue) {
 		Tree<T> child = new Tree<T>(aValue, this);
-		children.add(child);
+		children.put(type, child);
 		return child;
 	}
 
-	public void removeChild(Tree<T> node) {
-		children.remove(node);
+	public void removeChild(String type, Tree<T> node) {
+		children.remove(type, node);
 	}
 
 	@Override
@@ -73,9 +78,17 @@ public class Tree<T> {
 		sb.append(", parent=").append(pid);
 		sb.append(", value=").append(value);
 		sb.append("]");
-		for (Tree<T> child : children) {
+		for (Map.Entry<String, Collection<Tree<T>>> entry : children.asMap().entrySet()) {
 			sb.append("\n");
-			sb.append(child.toString());
+			sb.append(getIndent());
+			sb.append("  " + entry.getKey() + " {");
+			for (Tree<T> child : entry.getValue()) {
+				sb.append("\n");
+				sb.append(child.toString());
+			}
+			sb.append("\n");
+			sb.append(getIndent());
+			sb.append("  }");
 		}
 		return sb.toString();
 	}

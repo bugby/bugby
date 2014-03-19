@@ -17,7 +17,7 @@ public class SomeMethodMatcher implements WildcardNodeMatcher {
 	private final Comparator<Node> correlationComparator;
 
 	public SomeMethodMatcher(Node nodeFromExample, String correlationKey, Comparator<Node> correlationComparator) {
-		ordered = (nodeFromExample instanceof MethodCallExpr);
+		ordered = nodeFromExample instanceof MethodCallExpr;
 		this.correlationKey = correlationKey;
 		this.correlationComparator = correlationComparator;
 	}
@@ -35,8 +35,8 @@ public class SomeMethodMatcher implements WildcardNodeMatcher {
 	}
 
 	@Override
-	public boolean isOrdered() {
-		return ordered;
+	public boolean isOrdered(String childType) {
+		return true;
 	}
 
 	@Override

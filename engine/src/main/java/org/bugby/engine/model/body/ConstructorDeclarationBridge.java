@@ -18,15 +18,13 @@ public class ConstructorDeclarationBridge implements ASTModelBridge {
 		ConstructorDeclaration decl = (ConstructorDeclaration) parent;
 
 		return (List) ListUtils.asList(VirtualNode.of(parent, "typeParameters", decl.getTypeParameters(), false),
-				VirtualNode.of(parent, "parameters", decl.getParameters(), false),
-				VirtualNode.of(parent, "throws", decl.getThrows(), false),
-				VirtualNode.of(parent, "block", decl.getBlock(), false),
-				VirtualNode.of(parent, "annotations", decl.getAnnotations(), false));
+				VirtualNode.of(parent, "parameters", decl.getParameters(), false), VirtualNode.of(parent, "throws", decl.getThrows(), false),
+				VirtualNode.of(parent, "block", decl.getBlock(), false), VirtualNode.of(parent, "annotations", decl.getAnnotations(), false));
 	}
 
 	@Override
-	public boolean isOrdered(Node node) {
-		return false;
+	public boolean isOrdered(String childType) {
+		return childType.equals("parameters") || childType.equals("typeParameters");
 	}
 
 	@Override

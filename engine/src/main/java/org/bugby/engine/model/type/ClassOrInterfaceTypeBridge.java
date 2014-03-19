@@ -22,7 +22,7 @@ public class ClassOrInterfaceTypeBridge implements ASTModelBridge {
 	}
 
 	@Override
-	public boolean isOrdered(Node node) {
+	public boolean isOrdered(String childType) {
 		return true;
 	}
 
