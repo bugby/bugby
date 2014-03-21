@@ -43,7 +43,8 @@ abstract public class DefaultTreeModel<V> implements TreeModel<Tree<V>, V> {
 				if (isOrdered(parent, entry.getKey()) == ordered) {
 					descendants.put(entry.getKey(), child);
 				}
-				descendants.putAll(getDescendants(child, ordered));
+				// descendants.putAll(getDescendants(child, ordered));
+				descendants.putAll(entry.getKey(), getDescendants(child, ordered).values());
 			}
 		}
 		return descendants;

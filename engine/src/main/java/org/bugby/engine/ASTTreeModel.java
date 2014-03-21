@@ -47,7 +47,7 @@ public class ASTTreeModel implements TreeModel<Node, Node> {
 				if (isOrdered(parent, entry.getKey()) == ordered) {
 					descendants.put(entry.getKey(), child);
 				}
-				descendants.putAll(getDescendants(child, ordered));
+				descendants.putAll(entry.getKey(), getDescendants(child, ordered).values());
 			}
 		}
 		return descendants;

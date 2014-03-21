@@ -117,9 +117,6 @@ public class TestMultiLevelMatcher extends CommonMatcherTest {
 		MultiLevelMatcher<IndexedValue, Wildcard<IndexedValue>, Tree<IndexedValue>, Tree<Wildcard<IndexedValue>>> matcher = matcher();
 		Tree<IndexedValue> nodes = tree("a", tree("B", "d"), tree("C", "e"));
 		Tree<Wildcard<IndexedValue>> wildcards = wtree("a", wtree("C", "e"), "B");
-		System.out.println(nodes);
-
-		System.out.println(wildcards);
 		assertTerminalPositions(Arrays.asList(4), "e", matcher.match(nodes, wildcards));
 	}
 

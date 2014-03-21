@@ -139,5 +139,6 @@ public class Main {
 
 		// see MainTest for some examples
 		check(args[0], args[1]);
+
 	}
 }
