@@ -39,10 +39,10 @@ abstract public class DefaultTreeModel<V> implements TreeModel<Tree<V>, V> {
 		ListMultimap<String, Tree<V>> descendants = ArrayListMultimap.create();
 
 		for (Map.Entry<String, Collection<Tree<V>>> entry : children.asMap().entrySet()) {
-			if (isOrdered(parent, entry.getKey()) == ordered) {
-				descendants.putAll(entry.getKey(), entry.getValue());
-			}
 			for (Tree<V> child : entry.getValue()) {
+				if (isOrdered(parent, entry.getKey()) == ordered) {
+					descendants.put(entry.getKey(), child);
+				}
 				descendants.putAll(getDescendants(child, ordered));
 			}
 		}

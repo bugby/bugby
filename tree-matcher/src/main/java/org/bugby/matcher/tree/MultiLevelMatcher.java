@@ -110,9 +110,9 @@ public class MultiLevelMatcher<T, W, TT, TW> {
 	}
 
 	private boolean matchUnorderedChildren(TW wildcard, TT node) {
-		ListMultimap<String, TW> unorderedWildcards = MultiLevelMatcher.this.wildcardTreeModel.getChildren(wildcard, false);
+		ListMultimap<String, TW> unorderedWildcards = wildcardTreeModel.getChildren(wildcard, false);
 		if (unorderedWildcards.size() > 0) {
-			ListMultimap<String, TT> nodes = MultiLevelMatcher.this.nodeTreeModel.getChildren(node, false);
+			ListMultimap<String, TT> nodes = nodeTreeModel.getChildren(node, false);
 
 			for (Map.Entry<String, Collection<TW>> wildcardEntry : unorderedWildcards.asMap().entrySet()) {
 				// match the children with the same name
@@ -128,9 +128,9 @@ public class MultiLevelMatcher<T, W, TT, TW> {
 	}
 
 	private boolean matchOrderedChildren(TW wildcard, TT node) {
-		ListMultimap<String, TW> orderedWildcards = MultiLevelMatcher.this.wildcardTreeModel.getChildren(wildcard, true);
+		ListMultimap<String, TW> orderedWildcards = wildcardTreeModel.getChildren(wildcard, true);
 		if (orderedWildcards.size() > 0) {
-			ListMultimap<String, TT> nodes = MultiLevelMatcher.this.nodeTreeModel.getDescendants(node, true);
+			ListMultimap<String, TT> nodes = nodeTreeModel.getDescendants(node, true);
 
 			for (Map.Entry<String, Collection<TW>> wildcardEntry : orderedWildcards.asMap().entrySet()) {
 				// match the children with the same name

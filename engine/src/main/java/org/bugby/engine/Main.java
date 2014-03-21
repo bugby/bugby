@@ -64,7 +64,7 @@ public class Main {
 		};
 	}
 
-	public static void check(String patternSource, String source) {
+	public static Multimap<Tree<WildcardNodeMatcher>, Node> check(String patternSource, String source) {
 		// 1. read wildcards
 		ClassLoader builtProjectClassLoader = Thread.currentThread().getContextClassLoader();
 		WildcardDictionary wildcardDictionary = new WildcardDictionary();
@@ -94,15 +94,8 @@ public class Main {
 				nodeMatch(astTreeModel, context), astTreeModel, new PatternTreeModel());
 		Multimap<Tree<WildcardNodeMatcher>, Node> matches = matcher.match(sourceRootNode, patternRoot);
 		// TODO find a good report here
-		int maxLine = -1;
-		Node maxNode = null;
-		for (Node node : matches.values()) {
-			if (node.getBeginLine() >= maxLine) {
-				maxLine = node.getBeginLine();
-				maxNode = node;
-			}
+		Node maxNode = getBestMatch(matches);
 
-		}
 		if (maxNode != null) {
 			System.err.println("Found match at: (" + sourceFile.getName() + ":" + maxNode.getBeginLine() + ") ->" + maxNode);
 		} else {
@@ -114,6 +107,20 @@ public class Main {
 		// for (Map.Entry<Tree<WildcardNodeMatcher>, Collection<Node>> entry : matches.asMap().entrySet()) {
 		// System.out.println(entry.getKey().getValue() + " on " + entry.getValue());
 		// }
+		return matches;
+	}
+
+	public static Node getBestMatch(Multimap<Tree<WildcardNodeMatcher>, Node> matches) {
+		int maxLine = -1;
+		Node maxNode = null;
+		for (Node node : matches.values()) {
+			if (node.getBeginLine() >= maxLine) {
+				maxLine = node.getBeginLine();
+				maxNode = node;
+			}
+
+		}
+		return maxNode;
 	}
 
 	private static class PatternTreeModel extends DefaultTreeModel<WildcardNodeMatcher> {

@@ -1,6 +1,7 @@
 package org.bugby.wildcard.matcher;
 
 import japa.parser.ast.Node;
+import japa.parser.ast.body.MethodDeclaration;
 import japa.parser.ast.stmt.BlockStmt;
 
 import java.util.Map;
@@ -23,7 +24,7 @@ public class SomeCodeMatcher implements WildcardNodeMatcher {
 
 	@Override
 	public boolean matches(TreeModel<Node, Node> treeModel, Node node, MatchingContext context) {
-		if (node instanceof BlockStmt) {
+		if (node instanceof BlockStmt || node instanceof MethodDeclaration) {
 			for (Map.Entry<String, TypeWrapper> entry : typeRestrictions.entrySet()) {
 				context.addTypeRestriction(entry.getKey(), patternScope, entry.getValue());
 			}

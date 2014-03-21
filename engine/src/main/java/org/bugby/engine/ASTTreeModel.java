@@ -43,10 +43,10 @@ public class ASTTreeModel implements TreeModel<Node, Node> {
 		ListMultimap<String, Node> descendants = ArrayListMultimap.create();
 
 		for (Map.Entry<String, Collection<Node>> entry : children.asMap().entrySet()) {
-			if (isOrdered(parent, entry.getKey()) == ordered) {
-				descendants.putAll(entry.getKey(), entry.getValue());
-			}
 			for (Node child : entry.getValue()) {
+				if (isOrdered(parent, entry.getKey()) == ordered) {
+					descendants.put(entry.getKey(), child);
+				}
 				descendants.putAll(getDescendants(child, ordered));
 			}
 		}
