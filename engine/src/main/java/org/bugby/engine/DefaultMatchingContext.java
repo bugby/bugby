@@ -5,15 +5,19 @@ import japa.parser.ast.Node;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.bugby.api.wildcard.MatchingContext;
+import org.bugby.api.wildcard.TreeMatcher;
 import org.richast.scope.Scope;
 import org.richast.type.TypeWrapper;
 import org.richast.variable.Variable;
 
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
+import com.sun.source.tree.Tree;
 
 public class DefaultMatchingContext implements MatchingContext {
 	private final Map<NameAndScope, Variable> variables = new HashMap<NameAndScope, Variable>();
@@ -156,5 +160,17 @@ public class DefaultMatchingContext implements MatchingContext {
 		}
 
 		// TODO clear all the other maps
+	}
+
+	@Override
+	public Multimap<TreeMatcher, Tree> matchOrdered(List<TreeMatcher> matchers, List<? extends Tree> nodes) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Multimap<TreeMatcher, Tree> matchUnordered(List<TreeMatcher> matchers, List<? extends Tree> nodes) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

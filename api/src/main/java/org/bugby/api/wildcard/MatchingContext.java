@@ -3,10 +3,14 @@ package org.bugby.api.wildcard;
 import japa.parser.ast.Node;
 
 import java.util.Comparator;
+import java.util.List;
 
 import org.richast.scope.Scope;
 import org.richast.type.TypeWrapper;
 import org.richast.variable.Variable;
+
+import com.google.common.collect.Multimap;
+import com.sun.source.tree.Tree;
 
 public interface MatchingContext {
 	public Variable getVariableMapping(String nameInPatternAST, Scope scopeInPatternAST);
@@ -31,4 +35,8 @@ public interface MatchingContext {
 	 * @param node
 	 */
 	public void clearDataForNode(Node nodeInSourceAST);
+
+	public Multimap<TreeMatcher, Tree> matchOrdered(List<TreeMatcher> matchers, List<? extends Tree> nodes);
+
+	public Multimap<TreeMatcher, Tree> matchUnordered(List<TreeMatcher> matchers, List<? extends Tree> nodes);
 }

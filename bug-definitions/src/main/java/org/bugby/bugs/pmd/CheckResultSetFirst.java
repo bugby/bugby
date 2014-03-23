@@ -1,21 +1,16 @@
 package org.bugby.bugs.pmd;
 
-import static org.bugby.wildcard.Wildcards.someValue;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.bugby.annotation.BadExample;
-import org.bugby.annotation.IgnoreFromMatching;
+import org.bugby.annotation.GoodExample;
 
-@BadExample
+@GoodExample
 public class CheckResultSetFirst {
-	// TODO i should tell to ignore the throws
-	public void someCode() throws SQLException {
-		@IgnoreFromMatching
-		ResultSet set = someValue();
-
+	public void someCode(ResultSet someVar) throws SQLException {
 		// TODO i should make sure this does not match if (set.next()) or while(set.next())
-		set.first();
+		if (someVar.first()) {
+
+		}
 	}
 }
