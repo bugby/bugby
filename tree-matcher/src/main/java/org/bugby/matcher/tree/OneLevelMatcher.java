@@ -32,7 +32,7 @@ public class OneLevelMatcher<T, W> {
 	}
 
 	/**
-	 * the wildcards have to be match in order
+	 * the wildcards have to be matched in order
 	 * 
 	 * @param nodes
 	 * @param wildcards
@@ -73,8 +73,7 @@ public class OneLevelMatcher<T, W> {
 		return matchings;
 	}
 
-	private boolean matchOrderedOne(List<T> nodes, List<W> wildcards, int startN, int startW,
-			Stack<MatchPosition> matchingStack) {
+	private boolean matchOrderedOne(List<T> nodes, List<W> wildcards, int startN, int startW, Stack<MatchPosition> matchingStack) {
 		int n = startN, w = startW;
 		List<Constraint<T, W>> constraints = new ArrayList<Constraint<T, W>>();
 

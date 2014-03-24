@@ -11,13 +11,19 @@ import javax.lang.model.type.TypeMirror;
 
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
+import org.bugby.matcher.tree.MatchingType;
+import org.bugby.matcher.tree.NodeMatch;
+import org.bugby.matcher.tree.OneLevelMatcher;
 import org.richast.scope.Scope;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.sun.source.tree.Tree;
 
 public class DefaultMatchingContext implements MatchingContext {
+	private final OneLevelMatcher<Tree, TreeMatcher> oneLevelMatcher = new OneLevelMatcher<Tree, TreeMatcher>(nodeMatch());
+
 	private final Map<String, String> variables = new HashMap<String, String>();
 	private final Map<String, TypeMirror> typeRestrictions = new HashMap<String, TypeMirror>();
 	private final Map<String, CorrelationInfo> correlations = new HashMap<String, CorrelationInfo>();
@@ -109,6 +115,45 @@ public class DefaultMatchingContext implements MatchingContext {
 
 	}
 
+	private NodeMatch<Tree, TreeMatcher> nodeMatch() {
+		return new NodeMatch<Tree, TreeMatcher>() {
+			@Override
+			public boolean match(TreeMatcher wildcard, Tree node) {
+				Multimap<TreeMatcher, Tree> tm = wildcard.matches(node, DefaultMatchingContext.this);
+				if (!tm.isEmpty()) {
+					System.err.println(wildcard + " on " + node.toString() + " = OK");
+				} else {
+					System.out.println(wildcard + " on " + node.toString());
+				}
+				return !tm.isEmpty();
+			}
+
+			@Override
+			public MatchingType getMatchingType(TreeMatcher wildcard) {
+				return wildcard.getMatchingType();
+			}
+
+			@Override
+			public boolean isFirstChild(List<Tree> nodes, int index) {
+				// TODO fix this
+				// return astTreeModel.isFirstChild(nodes.get(index));
+				return false;
+			}
+
+			@Override
+			public boolean isLastChild(List<Tree> nodes, int index) {
+				// TODO fix this
+				// return astTreeModel.isLastChild(nodes.get(index));
+				return false;
+			}
+
+			@Override
+			public void removedNodeFromMatch(Tree node) {
+				DefaultMatchingContext.this.clearDataForNode(node);
+			}
+		};
+	}
+
 	@Override
 	public String getVariableMapping(String nameInPatternAST) {
 		return variables.get(nameInPatternAST);
@@ -117,7 +162,10 @@ public class DefaultMatchingContext implements MatchingContext {
 	@Override
 	public boolean setVariableMapping(String nameInPatternAST, String currentName, TypeMirror typeRestriction) {
 		TypeMirror tr = typeRestrictions.get(nameInPatternAST);
-		if (typeRestriction == null || typeRestriction.isAssignableFrom(var.getType())) {
+		if (typeRestriction == null) {
+			// TODO fix this
+			// || typeRestriction.isAssignableFrom(var.getType())) {
+
 			variables.put(nameInPatternAST, currentName);
 			return true;
 		}
@@ -161,13 +209,23 @@ public class DefaultMatchingContext implements MatchingContext {
 
 	@Override
 	public Multimap<TreeMatcher, Tree> matchOrdered(List<TreeMatcher> matchers, List<? extends Tree> nodes) {
-		// TODO Auto-generated method stub
-		return null;
+		return transformResult(matchers, oneLevelMatcher.matchOrdered((List<Tree>) nodes, matchers));
+	}
+
+	private Multimap<TreeMatcher, Tree> transformResult(List<TreeMatcher> matchers, List<List<Tree>> oneLevelMatch) {
+		Multimap<TreeMatcher, Tree> result = HashMultimap.create();
+		for (List<Tree> solution : oneLevelMatch) {
+			for (int i = 0; i < solution.size(); ++i) {
+				if (!result.containsEntry(matchers.get(i), solution.get(i))) {
+					result.put(matchers.get(i), solution.get(i));
+				}
+			}
+		}
+		return result;
 	}
 
 	@Override
 	public Multimap<TreeMatcher, Tree> matchUnordered(List<TreeMatcher> matchers, List<? extends Tree> nodes) {
-		// TODO Auto-generated method stub
-		return null;
+		return transformResult(matchers, oneLevelMatcher.matchUnordered((List<Tree>) nodes, matchers));
 	}
 }

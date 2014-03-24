@@ -10,11 +10,11 @@ import com.google.common.collect.Multimap;
 import com.sun.source.tree.ParenthesizedTree;
 import com.sun.source.tree.Tree;
 
-public class ParanthesizedMatcher extends DefaultTreeMatcher implements TreeMatcher {
+public class ParenthesizedMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	private final ParenthesizedTree patternNode;
 	private final TreeMatcher expressionMatcher;
 
-	public ParanthesizedMatcher(ParenthesizedTree patternNode, TreeMatcherFactory factory) {
+	public ParenthesizedMatcher(ParenthesizedTree patternNode, TreeMatcherFactory factory) {
 		this.patternNode = patternNode;
 		this.expressionMatcher = factory.build(patternNode.getExpression());
 	}

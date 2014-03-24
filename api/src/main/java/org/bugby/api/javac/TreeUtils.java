@@ -4,6 +4,7 @@ package org.bugby.api.javac;
  import checkers.nullness.quals.*;
  */
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -42,6 +43,7 @@ import com.sun.source.tree.Tree;
 import com.sun.source.tree.TypeCastTree;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.util.TreePath;
+import com.sun.source.util.TreeScanner;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol.MethodSymbol;
 import com.sun.tools.javac.tree.JCTree;
@@ -850,8 +852,24 @@ public final class TreeUtils {
 		return descendantsOfTypes(parent, types);
 	}
 
-	public static List<Tree> descendantsOfTypes(Tree parent, Set<Class<?>> types) {
-		return null;
+	public static List<Tree> descendantsOfTypes(Tree parent, final Set<Class<?>> types) {
+		final List<Tree> descendants = new ArrayList<Tree>();
+		new TreeScanner<Boolean, Boolean>() {
+			@Override
+			public Boolean scan(Tree node, Boolean p) {
+				if (node == null) {
+					return p;
+				}
+				for (Class<?> type : types) {
+					if (type.isAssignableFrom(node.getClass())) {
+						descendants.add(node);
+					}
+				}
+				node.accept(this, p);
+				return p;
+			}
+		}.scan(parent, true);
+		return descendants;
 	}
 }
 // CHECKSTYLE:ON

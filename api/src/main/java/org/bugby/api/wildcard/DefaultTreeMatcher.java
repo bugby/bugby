@@ -13,7 +13,7 @@ import com.sun.source.tree.Tree;
 abstract public class DefaultTreeMatcher implements TreeMatcher {
 
 	protected <T> List<T> list(T element) {
-		return element == null ? Collections.<T> emptyList() : Collections.singletonList(element);
+		return element == null ? Collections.<T>emptyList() : Collections.singletonList(element);
 	}
 
 	protected Multimap<TreeMatcher, Tree> matchSelf(Multimap<TreeMatcher, Tree> currentMatch, Tree parent, boolean condition,
@@ -22,7 +22,7 @@ abstract public class DefaultTreeMatcher implements TreeMatcher {
 			return HashMultimap.create();
 		}
 
-		Multimap<TreeMatcher, Tree> result = currentMatch != null ? currentMatch : HashMultimap.<TreeMatcher, Tree> create();
+		Multimap<TreeMatcher, Tree> result = currentMatch != null ? currentMatch : HashMultimap.<TreeMatcher, Tree>create();
 		if (!result.containsEntry(this, parent)) {
 			result.put(this, parent);
 		}
@@ -54,7 +54,7 @@ abstract public class DefaultTreeMatcher implements TreeMatcher {
 
 		if (matchers.isEmpty()) {
 			// nothing to be matched
-			Multimap<TreeMatcher, Tree> result = currentMatch != null ? currentMatch : HashMultimap.<TreeMatcher, Tree> create();
+			Multimap<TreeMatcher, Tree> result = currentMatch != null ? currentMatch : HashMultimap.<TreeMatcher, Tree>create();
 			if (!result.containsEntry(this, parent)) {
 				result.put(this, parent);
 			}
@@ -94,4 +94,24 @@ abstract public class DefaultTreeMatcher implements TreeMatcher {
 	public MatchingType getMatchingType() {
 		return MatchingType.normal;
 	}
+
+	// private final long id = ids.incrementAndGet();
+	// private final Map<String, MethodCallExpr> patternAnnotations;
+	//
+	// public DefaultNodeMatcher(Node targetNode, Map<String, MethodCallExpr> patternAnnotations) {
+	// this.targetNode = targetNode;
+	// this.patternAnnotations = patternAnnotations;
+	// }
+	//
+	// @Override
+	// public boolean matches(TreeModel<Node, Node> treeModel, Node node, MatchingContext context) {
+	// if (!node.getClass().equals(targetNode.getClass())) {
+	// return false;
+	// }
+	// if (patternAnnotations.containsKey("$last") && !treeModel.isLastChild(node)) {
+	// return false;
+	// }
+	//
+	// return ASTModelBridges.getBridge(targetNode).areSimilar(targetNode, node);
+	// }
 }

@@ -2,13 +2,11 @@ package org.bugby.pattern.example;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import japa.parser.ast.Node;
 
-import org.bugby.api.wildcard.WildcardNodeMatcher;
 import org.bugby.engine.Main;
-import org.bugby.matcher.tree.Tree;
+import org.bugby.engine.MatchResult;
 
-import com.google.common.collect.Multimap;
+import com.sun.source.tree.Tree;
 
 public class MatchingHelper {
 	private static final String BUG_DEF_PATH = "../bug-definitions/src/main/java/org/bugby/bugs";
@@ -23,11 +21,10 @@ public class MatchingHelper {
 	}
 
 	public static void assertBug(String type, String bugFile, String testFile, int line) {
-		Multimap<Tree<WildcardNodeMatcher>, Node> matches = Main.check(BUG_DEF_PATH + "/" + type + "/" + bugFile, TEST_PATH + "/" + type + "/"
-				+ testFile);
-		Node node = Main.getBestMatch(matches);
+		MatchResult matches = Main.check(BUG_DEF_PATH + "/" + type + "/" + bugFile, TEST_PATH + "/" + type + "/" + testFile);
+		Tree node = matches.getBestMatch();
 
 		assertNotNull("Expected a best match", node);
-		assertEquals("Expected to match at line", line, node.getBeginLine());
+		assertEquals("Expected to match at line", line, matches.getParsedSource().getLine(node));
 	}
 }

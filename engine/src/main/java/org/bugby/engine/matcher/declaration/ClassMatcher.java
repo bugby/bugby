@@ -64,4 +64,10 @@ public class ClassMatcher extends DefaultTreeMatcher implements TreeMatcher {
 
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		return "ClassMatcher [patternNode=" + patternNode + ", extendsMatcher=" + extendsMatcher + ", implementsMatchers=" + implementsMatchers
+				+ ", typeParametersMatchers=" + typeParametersMatchers + ", membersMatchers=" + membersMatchers + "]";
+	}
 }

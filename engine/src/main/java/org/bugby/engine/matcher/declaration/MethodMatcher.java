@@ -47,4 +47,11 @@ public class MethodMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		return "MethodMatcher [patternNode=" + patternNode + ", returnTypeMatcher=" + returnTypeMatcher + ", parametersMatchers="
+				+ parametersMatchers + ", typeParametersMatchers=" + typeParametersMatchers + ", throwsMatchers=" + throwsMatchers
+				+ ", bodyMatcher=" + bodyMatcher + "]";
+	}
+
 }
