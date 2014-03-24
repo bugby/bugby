@@ -1,27 +1,34 @@
 package org.bugby.wildcard.matcher;
 
-import japa.parser.ast.Node;
-import japa.parser.ast.body.VariableDeclarator;
-
+import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.MatchingContext;
-import org.bugby.api.wildcard.WildcardNodeMatcher;
-import org.bugby.matcher.tree.MatchingType;
-import org.bugby.matcher.tree.TreeModel;
+import org.bugby.api.wildcard.TreeMatcher;
+import org.bugby.api.wildcard.TreeMatcherFactory;
 
-public class SomeFieldMatcher implements WildcardNodeMatcher {
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.sun.source.tree.ExpressionTree;
+import com.sun.source.tree.IdentifierTree;
+import com.sun.source.tree.Tree;
+import com.sun.source.tree.VariableTree;
 
-	@Override
-	public boolean matches(TreeModel<Node, Node> treeModel, Node node, MatchingContext context) {
-		return node instanceof VariableDeclarator;
+public class SomeFieldMatcher extends DefaultTreeMatcher implements TreeMatcher {
+	private final IdentifierTree patternNode;
+
+	public SomeFieldMatcher(IdentifierTree patternNode, TreeMatcherFactory factory) {
+		this.patternNode = patternNode;
 	}
 
 	@Override
-	public boolean isOrdered(String childType) {
-		return true;
-	}
+	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+		if (!(node instanceof VariableTree)) {
+			return HashMultimap.create();
+		}
+		ExpressionTree mt = (ExpressionTree) node;
 
-	@Override
-	public MatchingType getMatchingType() {
-		return MatchingType.normal;
+		Multimap<TreeMatcher, Tree> result = null;
+		result = matchSelf(result, mt, true, context);
+
+		return result;
 	}
 }

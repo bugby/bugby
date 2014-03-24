@@ -1,23 +1,24 @@
 package org.bugby.engine.matcher.expression;
 
+import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
-import org.bugby.engine.matcher.DefaultMatcher;
+import org.bugby.api.wildcard.TreeMatcherFactory;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.InstanceOfTree;
 import com.sun.source.tree.Tree;
 
-public class InstanceofMatcher extends DefaultMatcher implements TreeMatcher {
+public class InstanceofMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	private final InstanceOfTree patternNode;
 	private final TreeMatcher typeMatcher;
 	private final TreeMatcher expressionMatcher;
 
-	public InstanceofMatcher(InstanceOfTree patternNode, TreeMatcher typeMatcher, TreeMatcher expressionMatcher) {
+	public InstanceofMatcher(InstanceOfTree patternNode, TreeMatcherFactory factory) {
 		this.patternNode = patternNode;
-		this.typeMatcher = typeMatcher;
-		this.expressionMatcher = expressionMatcher;
+		this.typeMatcher = factory.build(patternNode.getType());
+		this.expressionMatcher = factory.build(patternNode.getExpression());
 	}
 
 	@Override

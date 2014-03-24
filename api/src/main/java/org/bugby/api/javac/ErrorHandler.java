@@ -1,4 +1,4 @@
-package org.bugby.engine.javac;
+package org.bugby.api.javac;
 
 /**
  * An implementation of the ErrorHandler interface can be registered with the ErrorReporter class to change the default

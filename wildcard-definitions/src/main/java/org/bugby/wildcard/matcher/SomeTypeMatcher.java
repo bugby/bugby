@@ -1,40 +1,36 @@
 package org.bugby.wildcard.matcher;
 
-import japa.parser.ast.Node;
-import japa.parser.ast.body.ClassOrInterfaceDeclaration;
-import japa.parser.ast.type.Type;
-
+import org.bugby.api.javac.TreeUtils;
+import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.MatchingContext;
-import org.bugby.api.wildcard.WildcardNodeMatcher;
-import org.bugby.matcher.tree.MatchingType;
-import org.bugby.matcher.tree.TreeModel;
+import org.bugby.api.wildcard.TreeMatcher;
+import org.bugby.api.wildcard.TreeMatcherFactory;
 
-public class SomeTypeMatcher implements WildcardNodeMatcher {
-	private final boolean ordered;
-	private final Node nodeFromExample;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.sun.source.tree.ClassTree;
+import com.sun.source.tree.Tree;
 
-	public SomeTypeMatcher(Node nodeFromExample) {
-		ordered = nodeFromExample instanceof Type;
-		this.nodeFromExample = nodeFromExample;
+public class SomeTypeMatcher extends DefaultTreeMatcher implements TreeMatcher {
+	private final Tree patternNode;
+
+	public SomeTypeMatcher(Tree patternNode, TreeMatcherFactory factory) {
+		this.patternNode = patternNode;
 	}
 
 	@Override
-	public boolean matches(TreeModel<Node, Node> treeModel, Node node, MatchingContext context) {
-		return node instanceof Type || node instanceof ClassOrInterfaceDeclaration;
-	}
+	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+		if (!(node instanceof ClassTree) && !TreeUtils.isTypeTree(node)) {
+			return HashMultimap.create();
+		}
+		Multimap<TreeMatcher, Tree> result = null;
+		result = matchSelf(result, node, true, context);
 
-	@Override
-	public boolean isOrdered(String childType) {
-		return "typeParameters".equals(childType);
-	}
-
-	@Override
-	public MatchingType getMatchingType() {
-		return MatchingType.normal;
+		return result;
 	}
 
 	@Override
 	public String toString() {
-		return "SomeTypeMatcher@" + System.identityHashCode(this) + " on " + nodeFromExample.getClass();
+		return "SomeTypeMatcher@" + System.identityHashCode(this) + " on " + patternNode.getClass();
 	}
 }

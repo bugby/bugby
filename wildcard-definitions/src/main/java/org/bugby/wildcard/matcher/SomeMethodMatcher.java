@@ -1,47 +1,85 @@
 package org.bugby.wildcard.matcher;
 
 import japa.parser.ast.Node;
-import japa.parser.ast.body.MethodDeclaration;
-import japa.parser.ast.expr.MethodCallExpr;
 
 import java.util.Comparator;
 
+import org.bugby.api.wildcard.Correlation;
+import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.MatchingContext;
-import org.bugby.api.wildcard.WildcardNodeMatcher;
-import org.bugby.matcher.tree.MatchingType;
-import org.bugby.matcher.tree.TreeModel;
+import org.bugby.api.wildcard.TreeMatcher;
+import org.bugby.api.wildcard.TreeMatcherFactory;
 
-public class SomeMethodMatcher implements WildcardNodeMatcher {
-	private final boolean ordered;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.sun.source.tree.ExpressionTree;
+import com.sun.source.tree.MethodInvocationTree;
+import com.sun.source.tree.MethodTree;
+import com.sun.source.tree.Tree;
+
+public class SomeMethodMatcher extends DefaultTreeMatcher implements TreeMatcher {
+	private final Tree patternNode;
 	private final String correlationKey;
 	private final Comparator<Node> correlationComparator;
 
-	public SomeMethodMatcher(Node nodeFromExample, String correlationKey, Comparator<Node> correlationComparator) {
-		ordered = nodeFromExample instanceof MethodCallExpr;
-		this.correlationKey = correlationKey;
-		this.correlationComparator = correlationComparator;
+	public SomeMethodMatcher(Tree patternNode, TreeMatcherFactory factory) {
+		this.patternNode = patternNode;
+		// tree can be a method call or a method declaration
+		Correlation correlation = getCorrelationAnnotation(patternNode);
+		correlationKey = getCorrelationKey(correlation);
+		correlationComparator = newComparator(correlation);
 	}
 
-	@Override
-	public boolean matches(TreeModel<Node, Node> treeModel, Node node, MatchingContext context) {
-		if (node instanceof MethodDeclaration) {
-			// TODO put this type of code in a generic way - in more places
-			if (correlationKey != null) {
-				return context.checkCorrelation(correlationKey, node, correlationComparator);
-			}
-			return true;
+	private Correlation getCorrelationAnnotation(Tree node) {
+		if (node instanceof MethodTree) {
+			// MethodWrapper method = ASTNodeData.resolvedMethod(currentPatternSourceNode);
+			// if (method != null) {
+			// Correlation correlation = method.getAnnotation(Correlation.class);
+			// return correlation;
+			// }
 		}
-		return node instanceof MethodCallExpr || node instanceof MethodDeclaration;
+		return null;
+	}
+
+	private String getCorrelationKey(Correlation correlation) {
+		if (correlation != null) {
+			return correlation.key();
+		}
+		return null;
 	}
 
 	@Override
-	public boolean isOrdered(String childType) {
-		return true;
+	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+		if (!(node instanceof MethodInvocationTree) && !(node instanceof MethodTree)) {
+			return HashMultimap.create();
+		}
+		// if (node instanceof MethodDeclaration) {
+		// // TODO put this type of code in a generic way - in more places
+		// if (correlationKey != null) {
+		// return context.checkCorrelation(correlationKey, node, correlationComparator);
+		// }
+		// return true;
+		// }
+
+		ExpressionTree mt = (ExpressionTree) node;
+
+		Multimap<TreeMatcher, Tree> result = null;
+		result = matchSelf(result, mt, true, context);
+
+		return result;
 	}
 
-	@Override
-	public MatchingType getMatchingType() {
-		return MatchingType.normal;
+	private Comparator<Node> newComparator(Correlation correlation) {
+		if (correlation == null) {
+			return null;
+		}
+		try {
+			return correlation.comparator().newInstance();
+		} catch (InstantiationException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

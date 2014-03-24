@@ -1,7 +1,5 @@
 package org.bugby.engine;
 
-import japa.parser.ast.Node;
-
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,19 +7,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.lang.model.type.TypeMirror;
+
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.richast.scope.Scope;
-import org.richast.type.TypeWrapper;
-import org.richast.variable.Variable;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.sun.source.tree.Tree;
 
 public class DefaultMatchingContext implements MatchingContext {
-	private final Map<NameAndScope, Variable> variables = new HashMap<NameAndScope, Variable>();
-	private final Map<NameAndScope, TypeWrapper> typeRestrictions = new HashMap<NameAndScope, TypeWrapper>();
+	private final Map<String, String> variables = new HashMap<String, String>();
+	private final Map<String, TypeMirror> typeRestrictions = new HashMap<String, TypeMirror>();
 	private final Map<String, CorrelationInfo> correlations = new HashMap<String, CorrelationInfo>();
 
 	private static class NameAndScope {
@@ -45,8 +43,8 @@ public class DefaultMatchingContext implements MatchingContext {
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + ((name == null) ? 0 : name.hashCode());
-			result = prime * result + ((scope == null) ? 0 : scope.hashCode());
+			result = prime * result + (name == null ? 0 : name.hashCode());
+			result = prime * result + (scope == null ? 0 : scope.hashCode());
 			return result;
 		}
 
@@ -76,27 +74,27 @@ public class DefaultMatchingContext implements MatchingContext {
 	}
 
 	private static class CorrelationInfo {
-		private final Comparator<Node> comparator;
-		private final Set<Node> nodes = Sets.newIdentityHashSet();
+		private final Comparator<Tree> comparator;
+		private final Set<Tree> nodes = Sets.newIdentityHashSet();
 
-		public CorrelationInfo(Comparator<Node> comparator, Node node) {
+		public CorrelationInfo(Comparator<Tree> comparator, Tree node) {
 			this.comparator = comparator;
 			this.nodes.add(node);
 		}
 
-		public Comparator<Node> getComparator() {
+		public Comparator<Tree> getComparator() {
 			return comparator;
 		}
 
-		public Node getFirstNode() {
+		public Tree getFirstNode() {
 			return nodes.iterator().next();
 		}
 
-		public void addNode(Node n) {
+		public void addNode(Tree n) {
 			nodes.add(n);
 		}
 
-		public void removeNode(Node n) {
+		public void removeNode(Tree n) {
 			nodes.remove(n);
 		}
 
@@ -112,28 +110,27 @@ public class DefaultMatchingContext implements MatchingContext {
 	}
 
 	@Override
-	public Variable getVariableMapping(String nameInPatternAST, Scope scopeInPatternAST) {
-		return variables.get(new NameAndScope(scopeInPatternAST, nameInPatternAST));
+	public String getVariableMapping(String nameInPatternAST) {
+		return variables.get(nameInPatternAST);
 	}
 
 	@Override
-	public boolean setVariableMapping(String nameInPatternAST, Scope scopeInPatternAST, Variable var) {
-		NameAndScope key = new NameAndScope(scopeInPatternAST, nameInPatternAST);
-		TypeWrapper typeRestriction = typeRestrictions.get(key);
+	public boolean setVariableMapping(String nameInPatternAST, String currentName, TypeMirror typeRestriction) {
+		TypeMirror tr = typeRestrictions.get(nameInPatternAST);
 		if (typeRestriction == null || typeRestriction.isAssignableFrom(var.getType())) {
-			variables.put(key, var);
+			variables.put(nameInPatternAST, currentName);
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public void addTypeRestriction(String nameInPatternAST, Scope scopeInPatternAST, TypeWrapper type) {
-		typeRestrictions.put(new NameAndScope(scopeInPatternAST, nameInPatternAST), type);
+	public void addTypeRestriction(String nameInPatternAST, TypeMirror type) {
+		typeRestrictions.put(nameInPatternAST, type);
 	}
 
 	@Override
-	public boolean checkCorrelation(String key, Node nodeInSourceAST, Comparator<Node> comparator) {
+	public boolean checkCorrelation(String key, Tree nodeInSourceAST, Comparator<Tree> comparator) {
 		CorrelationInfo correlation = correlations.get(key);
 		if (correlation == null) {
 			correlations.put(key, new CorrelationInfo(comparator, nodeInSourceAST));
@@ -148,7 +145,7 @@ public class DefaultMatchingContext implements MatchingContext {
 	}
 
 	@Override
-	public void clearDataForNode(Node nodeInSourceAST) {
+	public void clearDataForNode(Tree nodeInSourceAST) {
 		// clear correlations
 		Iterator<Map.Entry<String, CorrelationInfo>> it = correlations.entrySet().iterator();
 		while (it.hasNext()) {

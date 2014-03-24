@@ -1,21 +1,22 @@
 package org.bugby.engine.matcher.statement;
 
+import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
-import org.bugby.engine.matcher.DefaultMatcher;
+import org.bugby.api.wildcard.TreeMatcherFactory;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.LabeledStatementTree;
 import com.sun.source.tree.Tree;
 
-public class LabeledMatcher extends DefaultMatcher implements TreeMatcher {
+public class LabeledMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	private final LabeledStatementTree patternNode;
 	private final TreeMatcher statementMatcher;
 
-	public LabeledMatcher(LabeledStatementTree patternNode, TreeMatcher statementMatcher) {
+	public LabeledMatcher(LabeledStatementTree patternNode, TreeMatcherFactory factory) {
 		this.patternNode = patternNode;
-		this.statementMatcher = statementMatcher;
+		this.statementMatcher = factory.build(patternNode.getStatement());
 	}
 
 	@Override

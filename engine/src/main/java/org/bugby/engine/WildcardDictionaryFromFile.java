@@ -11,7 +11,6 @@ import java.io.File;
 import java.util.Collections;
 
 import org.bugby.api.wildcard.Wildcard;
-import org.bugby.api.wildcard.WildcardFactory;
 import org.richast.GenerationContext;
 import org.richast.RichASTParser;
 import org.richast.node.ASTNodeData;
@@ -23,10 +22,9 @@ import org.richast.utils.ClassUtils;
 import org.richast.variable.Variable;
 
 public class WildcardDictionaryFromFile {
-	public static void addWildcardsFromFile(WildcardDictionary dictionary, ClassLoader builtProjectClassLoader,
-			File file) {
-		ClassLoaderWrapper classLoaderWrapper = new ClassLoaderWrapper(builtProjectClassLoader,
-				Collections.<String>emptyList(), Collections.<String>emptyList());
+	public static void addWildcardsFromFile(WildcardDictionary dictionary, ClassLoader builtProjectClassLoader, File file) {
+		ClassLoaderWrapper classLoaderWrapper = new ClassLoaderWrapper(builtProjectClassLoader, Collections.<String> emptyList(),
+				Collections.<String> emptyList());
 		GenerationContext context = new GenerationContext(file);
 		CompilationUnit cu = RichASTParser.parseAndResolve(classLoaderWrapper, file, context, "UTF-8");
 		cu.accept(new WildcardVisitor(), dictionary);
@@ -34,13 +32,9 @@ public class WildcardDictionaryFromFile {
 	}
 
 	private static class WildcardVisitor extends VoidVisitorAdapter<WildcardDictionary> {
-		private void addMatcher(WildcardDictionary dictionary, String name, Wildcard wildcardAnnotation,
-				WildcardFactory wildcardFactoryAnnotation) {
+		private void addMatcher(WildcardDictionary dictionary, String name, Wildcard wildcardAnnotation) {
 			if (wildcardAnnotation != null) {
 				dictionary.addMatcherClass(name, wildcardAnnotation.value());
-			}
-			if (wildcardFactoryAnnotation != null) {
-				dictionary.addMatcherFactoryClass(name, wildcardFactoryAnnotation.value());
 			}
 		}
 
@@ -49,8 +43,7 @@ public class WildcardDictionaryFromFile {
 			MethodWrapper method = ASTNodeData.resolvedMethod(n);
 			if (method != null) {
 				Wildcard wildcardAnnotation = method.getAnnotation(Wildcard.class);
-				WildcardFactory wildcardFactoryAnnotation = method.getAnnotation(WildcardFactory.class);
-				addMatcher(dictionary, n.getName(), wildcardAnnotation, wildcardFactoryAnnotation);
+				addMatcher(dictionary, n.getName(), wildcardAnnotation);
 			}
 			super.visit(n, dictionary);
 		}
@@ -62,8 +55,7 @@ public class WildcardDictionaryFromFile {
 			if (variable instanceof FieldWrapper) {
 				FieldWrapper field = (FieldWrapper) variable;
 				Wildcard wildcardAnnotation = field.getAnnotation(Wildcard.class);
-				WildcardFactory wildcardFactoryAnnotation = field.getAnnotation(WildcardFactory.class);
-				addMatcher(dictionary, n.getId().getName(), wildcardAnnotation, wildcardFactoryAnnotation);
+				addMatcher(dictionary, n.getId().getName(), wildcardAnnotation);
 			}
 			super.visit(n, dictionary);
 		}
@@ -73,8 +65,7 @@ public class WildcardDictionaryFromFile {
 			TypeWrapper type = ASTNodeData.resolvedType(n);
 			if (type != null) {
 				Wildcard wildcardAnnotation = ClassUtils.getAnnotation(type, Wildcard.class);
-				WildcardFactory wildcardFactoryAnnotation = ClassUtils.getAnnotation(type, WildcardFactory.class);
-				addMatcher(dictionary, n.getName(), wildcardAnnotation, wildcardFactoryAnnotation);
+				addMatcher(dictionary, n.getName(), wildcardAnnotation);
 			}
 			super.visit(n, dictionary);
 		}

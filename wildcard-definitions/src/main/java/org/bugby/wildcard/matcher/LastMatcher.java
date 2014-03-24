@@ -4,18 +4,15 @@ import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
-import org.bugby.matcher.tree.MatchingType;
 
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.Tree;
 
-public class NoCodeMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	public NoCodeMatcher(Tree patternNode, TreeMatcherFactory factory) {
-	}
+public class LastMatcher extends DefaultTreeMatcher implements TreeMatcher {
 
-	@Override
-	public MatchingType getMatchingType() {
-		return MatchingType.empty;
+	public LastMatcher(Tree patternNode, TreeMatcherFactory factory) {
+		// WildcardPatternBuildContext buildContext
+		// buildContext.pushAnnotationNode((MethodCallExpr) currentPatternSourceNode);
 	}
 
 	@Override

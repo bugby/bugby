@@ -1,25 +1,26 @@
 package org.bugby.engine.matcher.statement;
 
+import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
-import org.bugby.engine.matcher.DefaultMatcher;
+import org.bugby.api.wildcard.TreeMatcherFactory;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.IfTree;
 import com.sun.source.tree.Tree;
 
-public class IfMatcher extends DefaultMatcher implements TreeMatcher {
+public class IfMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	private final IfTree patternNode;
 	private final TreeMatcher conditionMatcher;
 	private final TreeMatcher thenMatcher;
 	private final TreeMatcher elseMatcher;
 
-	public IfMatcher(IfTree patternNode, TreeMatcher conditionMatcher, TreeMatcher thenMatcher, TreeMatcher elseMatcher) {
+	public IfMatcher(IfTree patternNode, TreeMatcherFactory factory) {
 		this.patternNode = patternNode;
-		this.conditionMatcher = conditionMatcher;
-		this.thenMatcher = thenMatcher;
-		this.elseMatcher = elseMatcher;
+		this.conditionMatcher = factory.build(patternNode.getCondition());
+		this.thenMatcher = factory.build(patternNode.getThenStatement());
+		this.elseMatcher = factory.build(patternNode.getElseStatement());
 	}
 
 	@Override

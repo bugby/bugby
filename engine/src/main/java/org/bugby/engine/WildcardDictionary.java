@@ -5,8 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.bugby.api.wildcard.WildcardNodeMatcher;
-import org.bugby.api.wildcard.WildcardNodeMatcherFactory;
+import org.bugby.api.wildcard.TreeMatcher;
 
 /**
  * This class contains the wildcards (matchers) that can be used to the nodes from the AST.
@@ -15,36 +14,16 @@ import org.bugby.api.wildcard.WildcardNodeMatcherFactory;
  * 
  */
 public class WildcardDictionary {
-	private Map<String, Class<? extends WildcardNodeMatcher>> matchers = new HashMap<String, Class<? extends WildcardNodeMatcher>>();
-	private Map<String, WildcardNodeMatcherFactory> matcherFactories = new HashMap<String, WildcardNodeMatcherFactory>();
+	private Map<String, Class<? extends TreeMatcher>> matchers = new HashMap<String, Class<? extends TreeMatcher>>();
 	// TODO - use full name
 	private Set<String> annotations = new HashSet<String>();
 
-	public void addMatcherClass(String name, Class<? extends WildcardNodeMatcher> matcherClass) {
+	public void addMatcherClass(String name, Class<? extends TreeMatcher> matcherClass) {
 		matchers.put(name, matcherClass);
 	}
 
-	public Class<? extends WildcardNodeMatcher> findMatcherClass(String name) {
+	public Class<? extends TreeMatcher> findMatcherClass(String name) {
 		return matchers.get(name);
-	}
-
-	public void addMatcherFactoryClass(String name, Class<? extends WildcardNodeMatcherFactory> matcherClass) {
-		WildcardNodeMatcherFactory factoryInstance;
-		try {
-			factoryInstance = matcherClass.newInstance();
-		}
-		catch (InstantiationException e) {
-			throw new RuntimeException(e);
-		}
-		catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-
-		matcherFactories.put(name, factoryInstance);
-	}
-
-	public WildcardNodeMatcherFactory findMatcherFactory(String name) {
-		return matcherFactories.get(name);
 	}
 
 	public void addAnnotation(String name) {

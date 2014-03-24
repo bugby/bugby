@@ -1,19 +1,19 @@
-package org.bugby.engine.matcher;
+package org.bugby.api.wildcard;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.bugby.api.wildcard.MatchingContext;
-import org.bugby.api.wildcard.TreeMatcher;
+import org.bugby.matcher.tree.MatchingType;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.Tree;
 
-abstract public class DefaultMatcher implements TreeMatcher {
+abstract public class DefaultTreeMatcher implements TreeMatcher {
 
 	protected <T> List<T> list(T element) {
-		return element == null ? Collections.<T>emptyList() : Collections.singletonList(element);
+		return element == null ? Collections.<T> emptyList() : Collections.singletonList(element);
 	}
 
 	protected Multimap<TreeMatcher, Tree> matchSelf(Multimap<TreeMatcher, Tree> currentMatch, Tree parent, boolean condition,
@@ -22,7 +22,7 @@ abstract public class DefaultMatcher implements TreeMatcher {
 			return HashMultimap.create();
 		}
 
-		Multimap<TreeMatcher, Tree> result = currentMatch != null ? currentMatch : HashMultimap.<TreeMatcher, Tree>create();
+		Multimap<TreeMatcher, Tree> result = currentMatch != null ? currentMatch : HashMultimap.<TreeMatcher, Tree> create();
 		if (!result.containsEntry(this, parent)) {
 			result.put(this, parent);
 		}
@@ -54,7 +54,7 @@ abstract public class DefaultMatcher implements TreeMatcher {
 
 		if (matchers.isEmpty()) {
 			// nothing to be matched
-			Multimap<TreeMatcher, Tree> result = currentMatch != null ? currentMatch : HashMultimap.<TreeMatcher, Tree>create();
+			Multimap<TreeMatcher, Tree> result = currentMatch != null ? currentMatch : HashMultimap.<TreeMatcher, Tree> create();
 			if (!result.containsEntry(this, parent)) {
 				result.put(this, parent);
 			}
@@ -74,5 +74,24 @@ abstract public class DefaultMatcher implements TreeMatcher {
 		}
 		currentMatch.putAll(childrenMatch);
 		return currentMatch;
+	}
+
+	public static List<TreeMatcher> build(TreeMatcherFactory factory, List<? extends Tree> nodes) {
+		if (nodes.isEmpty()) {
+			return Collections.emptyList();
+		}
+		List<TreeMatcher> matchers = new ArrayList<TreeMatcher>(nodes.size());
+		for (Tree node : nodes) {
+			TreeMatcher matcher = factory.build(node);
+			if (matcher != null) {
+				matchers.add(matcher);
+			}
+		}
+		return matchers;
+	}
+
+	@Override
+	public MatchingType getMatchingType() {
+		return MatchingType.normal;
 	}
 }

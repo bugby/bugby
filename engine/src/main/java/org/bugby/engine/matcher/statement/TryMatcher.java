@@ -2,26 +2,27 @@ package org.bugby.engine.matcher.statement;
 
 import java.util.List;
 
+import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
-import org.bugby.engine.matcher.DefaultMatcher;
+import org.bugby.api.wildcard.TreeMatcherFactory;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.TryTree;
 
-public class TryMatcher extends DefaultMatcher implements TreeMatcher {
+public class TryMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	private final TryTree patternNode;
 	private final TreeMatcher blockMatcher;
 	private final List<TreeMatcher> catchMatchers;
 	private final TreeMatcher finallyBlockMatcher;
 
-	public TryMatcher(TryTree patternNode, TreeMatcher blockMatcher, List<TreeMatcher> catchMatchers, TreeMatcher finallyBlockMatcher) {
+	public TryMatcher(TryTree patternNode, TreeMatcherFactory factory) {
 		this.patternNode = patternNode;
-		this.blockMatcher = blockMatcher;
-		this.catchMatchers = catchMatchers;
-		this.finallyBlockMatcher = finallyBlockMatcher;
+		this.blockMatcher = factory.build(patternNode.getBlock());
+		this.catchMatchers = build(factory, patternNode.getCatches());
+		this.finallyBlockMatcher = factory.build(patternNode.getFinallyBlock());
 	}
 
 	@Override

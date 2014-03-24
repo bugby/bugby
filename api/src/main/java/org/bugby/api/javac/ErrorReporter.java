@@ -1,4 +1,4 @@
-package org.bugby.engine.javac;
+package org.bugby.api.javac;
 
 /**
  * Handle errors detected in utility classes. By default, the error reporter throws a RuntimeException, but clients of

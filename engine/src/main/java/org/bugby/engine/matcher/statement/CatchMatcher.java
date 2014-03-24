@@ -1,8 +1,9 @@
 package org.bugby.engine.matcher.statement;
 
+import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
-import org.bugby.engine.matcher.DefaultMatcher;
+import org.bugby.api.wildcard.TreeMatcherFactory;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -10,15 +11,15 @@ import com.sun.source.tree.CaseTree;
 import com.sun.source.tree.CatchTree;
 import com.sun.source.tree.Tree;
 
-public class CatchMatcher extends DefaultMatcher implements TreeMatcher {
+public class CatchMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	private final CatchTree patternNode;
 	private final TreeMatcher parameterMatcher;
 	private final TreeMatcher blockMatcher;
 
-	public CatchMatcher(CatchTree patternNode, TreeMatcher parameterMatcher, TreeMatcher blockMatcher) {
+	public CatchMatcher(CatchTree patternNode, TreeMatcherFactory factory) {
 		this.patternNode = patternNode;
-		this.parameterMatcher = parameterMatcher;
-		this.blockMatcher = blockMatcher;
+		this.parameterMatcher = factory.build(patternNode.getParameter());
+		this.blockMatcher = factory.build(patternNode.getBlock());
 	}
 
 	@Override

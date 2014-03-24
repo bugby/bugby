@@ -2,16 +2,17 @@ package org.bugby.engine.matcher.declaration;
 
 import java.util.List;
 
+import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
-import org.bugby.engine.matcher.DefaultMatcher;
+import org.bugby.api.wildcard.TreeMatcherFactory;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.Tree;
 
-public class MethodMatcher extends DefaultMatcher implements TreeMatcher {
+public class MethodMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	private final MethodTree patternNode;
 	private final TreeMatcher returnTypeMatcher;
 	private final List<TreeMatcher> parametersMatchers;
@@ -19,14 +20,13 @@ public class MethodMatcher extends DefaultMatcher implements TreeMatcher {
 	private final List<TreeMatcher> throwsMatchers;
 	private final TreeMatcher bodyMatcher;
 
-	public MethodMatcher(MethodTree patternNode, TreeMatcher returnTypeMatcher, List<TreeMatcher> parametersMatchers,
-			List<TreeMatcher> typeParametersMatchers, List<TreeMatcher> throwsMatchers, TreeMatcher bodyMatcher) {
+	public MethodMatcher(MethodTree patternNode, TreeMatcherFactory factory) {
 		this.patternNode = patternNode;
-		this.returnTypeMatcher = returnTypeMatcher;
-		this.parametersMatchers = parametersMatchers;
-		this.typeParametersMatchers = typeParametersMatchers;
-		this.throwsMatchers = throwsMatchers;
-		this.bodyMatcher = bodyMatcher;
+		this.returnTypeMatcher = factory.build(patternNode.getReturnType());
+		this.parametersMatchers = build(factory, patternNode.getParameters());
+		this.typeParametersMatchers = build(factory, patternNode.getTypeParameters());
+		this.throwsMatchers = build(factory, patternNode.getThrows());
+		this.bodyMatcher = factory.build(patternNode.getBody());
 	}
 
 	@Override

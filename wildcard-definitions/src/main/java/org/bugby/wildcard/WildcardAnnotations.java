@@ -1,10 +1,10 @@
 package org.bugby.wildcard;
 
-import org.bugby.api.wildcard.WildcardFactory;
-import org.bugby.wildcard.matcher.LastMatcherFactory;
+import org.bugby.api.wildcard.Wildcard;
+import org.bugby.wildcard.matcher.LastMatcher;
 
 public class WildcardAnnotations {
-	@WildcardFactory(LastMatcherFactory.class)
+	@Wildcard(LastMatcher.class)
 	public static void $Last() {
 
 	}

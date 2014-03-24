@@ -2,30 +2,30 @@ package org.bugby.engine.matcher.declaration;
 
 import java.util.List;
 
+import org.bugby.api.javac.TreeUtils;
+import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
-import org.bugby.engine.javac.TreeUtils;
-import org.bugby.engine.matcher.DefaultMatcher;
+import org.bugby.api.wildcard.TreeMatcherFactory;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.Tree;
 
-public class ClassMatcher extends DefaultMatcher implements TreeMatcher {
+public class ClassMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	private final ClassTree patternNode;
 	private final TreeMatcher extendsMatcher;
 	private final List<TreeMatcher> implementsMatchers;
 	private final List<TreeMatcher> typeParametersMatchers;
 	private final List<TreeMatcher> membersMatchers;
 
-	public ClassMatcher(ClassTree patternNode, TreeMatcher extendsMatcher, List<TreeMatcher> implementsMatchers,
-			List<TreeMatcher> typeParametersMatchers, List<TreeMatcher> membersMatchers) {
+	public ClassMatcher(ClassTree patternNode, TreeMatcherFactory factory) {
 		this.patternNode = patternNode;
-		this.extendsMatcher = extendsMatcher;
-		this.implementsMatchers = implementsMatchers;
-		this.typeParametersMatchers = typeParametersMatchers;
-		this.membersMatchers = membersMatchers;
+		this.extendsMatcher = factory.build(patternNode.getExtendsClause());
+		this.implementsMatchers = build(factory, patternNode.getImplementsClause());
+		this.typeParametersMatchers = build(factory, patternNode.getTypeParameters());
+		this.membersMatchers = build(factory, patternNode.getMembers());
 	}
 
 	public ClassTree getPatternNode() {

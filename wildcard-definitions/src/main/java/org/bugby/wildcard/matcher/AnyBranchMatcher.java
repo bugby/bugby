@@ -1,30 +1,35 @@
 package org.bugby.wildcard.matcher;
 
-import japa.parser.ast.Node;
-import japa.parser.ast.stmt.BreakStmt;
-import japa.parser.ast.stmt.ContinueStmt;
-import japa.parser.ast.stmt.ReturnStmt;
-
+import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.MatchingContext;
-import org.bugby.api.wildcard.WildcardNodeMatcher;
-import org.bugby.matcher.tree.MatchingType;
-import org.bugby.matcher.tree.TreeModel;
+import org.bugby.api.wildcard.TreeMatcher;
+import org.bugby.api.wildcard.TreeMatcherFactory;
 
-public class AnyBranchMatcher implements WildcardNodeMatcher {
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.sun.source.tree.BreakTree;
+import com.sun.source.tree.ContinueTree;
+import com.sun.source.tree.MethodInvocationTree;
+import com.sun.source.tree.ReturnTree;
+import com.sun.source.tree.Tree;
 
-	@Override
-	public boolean matches(TreeModel<Node, Node> treeModel, Node node, MatchingContext context) {
-		return node instanceof BreakStmt || node instanceof ContinueStmt || node instanceof ReturnStmt;
+public class AnyBranchMatcher extends DefaultTreeMatcher implements TreeMatcher {
+	private final MethodInvocationTree patternNode;
+
+	public AnyBranchMatcher(MethodInvocationTree patternNode, TreeMatcherFactory factory) {
+		this.patternNode = patternNode;
 	}
 
 	@Override
-	public boolean isOrdered(String childType) {
-		return true;
-	}
+	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+		// TODO should match intantiation blocks
+		if (!(node instanceof BreakTree) && !(node instanceof ContinueTree) && !(node instanceof ReturnTree)) {
+			return HashMultimap.create();
+		}
+		Multimap<TreeMatcher, Tree> result = null;
+		result = matchSelf(result, node, true, context);
 
-	@Override
-	public MatchingType getMatchingType() {
-		return MatchingType.normal;
+		return result;
 	}
 
 }

@@ -2,20 +2,19 @@ package org.bugby.wildcard;
 
 import org.bugby.api.wildcard.Wildcard;
 import org.bugby.api.wildcard.WildcardAnnotation;
-import org.bugby.api.wildcard.WildcardFactory;
 import org.bugby.wildcard.matcher.AnyBranchMatcher;
 import org.bugby.wildcard.matcher.BeginMatcher;
 import org.bugby.wildcard.matcher.EndMatcher;
 import org.bugby.wildcard.matcher.NoCodeMatcher;
-import org.bugby.wildcard.matcher.SomeCodeMatcherFactory;
+import org.bugby.wildcard.matcher.SomeCodeMatcher;
 import org.bugby.wildcard.matcher.SomeConditionMatcher;
-import org.bugby.wildcard.matcher.SomeConditionUsingMatcherFactory;
-import org.bugby.wildcard.matcher.SomeExpressionUsingMatcherFactory;
+import org.bugby.wildcard.matcher.SomeConditionUsingMatcher;
+import org.bugby.wildcard.matcher.SomeExpressionUsingMatcher;
 import org.bugby.wildcard.matcher.SomeFieldMatcher;
-import org.bugby.wildcard.matcher.SomeMethodMatcherFactory;
+import org.bugby.wildcard.matcher.SomeMethodMatcher;
 import org.bugby.wildcard.matcher.SomeParamMatcher;
-import org.bugby.wildcard.matcher.SomeValueMatcherFactory;
-import org.bugby.wildcard.matcher.SomeVariableMatcherFactory;
+import org.bugby.wildcard.matcher.SomeValueMatcher;
+import org.bugby.wildcard.matcher.SomeVariableMatcher;
 
 @SuppressWarnings("unused")
 public class Wildcards {
@@ -45,7 +44,7 @@ public class Wildcards {
 	/**
 	 * matches any variable
 	 */
-	@WildcardFactory(SomeVariableMatcherFactory.class)
+	@Wildcard(SomeVariableMatcher.class)
 	public static SomeType someVar;
 
 	/**
@@ -53,17 +52,17 @@ public class Wildcards {
 	 * 
 	 * @return
 	 */
-	@WildcardFactory(SomeValueMatcherFactory.class)
+	@Wildcard(SomeValueMatcher.class)
 	public static <T> T someValue() {
 		return null;
 	}
 
-	@WildcardFactory(SomeValueMatcherFactory.class)
+	@Wildcard(SomeValueMatcher.class)
 	public static <T> T someTypedValue(Class<T> type) {
 		return null;
 	}
 
-	@WildcardFactory(SomeCodeMatcherFactory.class)
+	@Wildcard(SomeCodeMatcher.class)
 	public static void someCode() {//
 	}
 
@@ -72,12 +71,12 @@ public class Wildcards {
 		return true;
 	}
 
-	@WildcardFactory(SomeExpressionUsingMatcherFactory.class)
+	@Wildcard(SomeExpressionUsingMatcher.class)
 	public static <T> T someExpressionUsing(Object... value) {
 		return null;
 	}
 
-	@WildcardFactory(SomeConditionUsingMatcherFactory.class)
+	@Wildcard(SomeConditionUsingMatcher.class)
 	public static boolean someConditionUsing(Object... value) {
 		return true;
 	}
@@ -97,7 +96,7 @@ public class Wildcards {
 		//
 	}
 
-	@WildcardFactory(SomeMethodMatcherFactory.class)
+	@Wildcard(SomeMethodMatcher.class)
 	public static void someMethod() {
 		//
 	}

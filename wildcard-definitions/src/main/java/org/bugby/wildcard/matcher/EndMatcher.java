@@ -1,26 +1,27 @@
 package org.bugby.wildcard.matcher;
 
-import japa.parser.ast.Node;
-
+import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.MatchingContext;
-import org.bugby.api.wildcard.WildcardNodeMatcher;
+import org.bugby.api.wildcard.TreeMatcher;
+import org.bugby.api.wildcard.TreeMatcherFactory;
 import org.bugby.matcher.tree.MatchingType;
-import org.bugby.matcher.tree.TreeModel;
 
-public class EndMatcher implements WildcardNodeMatcher {
+import com.google.common.collect.Multimap;
+import com.sun.source.tree.Tree;
 
-	@Override
-	public boolean matches(TreeModel<Node, Node> treeModel, Node node, MatchingContext context) {
-		return false;
-	}
-
-	@Override
-	public boolean isOrdered(String childType) {
-		return true;
+public class EndMatcher extends DefaultTreeMatcher implements TreeMatcher {
+	public EndMatcher(Tree patternNode, TreeMatcherFactory factory) {
 	}
 
 	@Override
 	public MatchingType getMatchingType() {
 		return MatchingType.end;
 	}
+
+	@Override
+	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -1,46 +1,66 @@
 package org.bugby.wildcard.matcher;
 
-import japa.parser.ast.Node;
-import japa.parser.ast.body.MethodDeclaration;
-import japa.parser.ast.stmt.BlockStmt;
-
+import java.util.HashMap;
 import java.util.Map;
 
-import org.bugby.api.wildcard.MatchingContext;
-import org.bugby.api.wildcard.WildcardNodeMatcher;
-import org.bugby.matcher.tree.MatchingType;
-import org.bugby.matcher.tree.TreeModel;
-import org.richast.scope.Scope;
-import org.richast.type.TypeWrapper;
+import javax.lang.model.type.TypeMirror;
 
-public class SomeCodeMatcher implements WildcardNodeMatcher {
-	private final Map<String, TypeWrapper> typeRestrictions;
+import org.bugby.api.javac.TreeUtils;
+import org.bugby.api.wildcard.DefaultTreeMatcher;
+import org.bugby.api.wildcard.MatchingContext;
+import org.bugby.api.wildcard.TreeMatcher;
+import org.bugby.api.wildcard.TreeMatcherFactory;
+import org.richast.scope.Scope;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.sun.source.tree.MethodTree;
+import com.sun.source.tree.Tree;
+import com.sun.source.tree.VariableTree;
+
+/**
+ * when used like this <br>
+ * public void someCode(){ // ... bla bla // }
+ * 
+ * @author acraciun
+ */
+public class SomeCodeMatcher extends DefaultTreeMatcher implements TreeMatcher {
+	private final MethodTree patternNode;
+	private final TreeMatcher bodyMatcher;
+	private final Map<String, TypeMirror> typeRestrictions;
 	private final Scope patternScope;
 
-	public SomeCodeMatcher(Scope patternScope, Map<String, TypeWrapper> typeRestrictions) {
-		this.typeRestrictions = typeRestrictions;
-		this.patternScope = patternScope;
-	}
-
-	@Override
-	public boolean matches(TreeModel<Node, Node> treeModel, Node node, MatchingContext context) {
-		if (node instanceof BlockStmt || node instanceof MethodDeclaration) {
-			for (Map.Entry<String, TypeWrapper> entry : typeRestrictions.entrySet()) {
-				context.addTypeRestriction(entry.getKey(), patternScope, entry.getValue());
-			}
-			// TODO need to clean up the restrictions as the end of the children matching
-			return true;
+	public SomeCodeMatcher(MethodTree patternNode, TreeMatcherFactory factory) {
+		this.patternNode = patternNode;
+		this.bodyMatcher = factory.build(patternNode.getBody());
+		typeRestrictions = new HashMap<String, TypeMirror>();
+		for (VariableTree param : patternNode.getParameters()) {
+			typeRestrictions.put(param.getName().toString(), TreeUtils.elementFromDeclaration(param).asType());
+			// patternScope = ASTNodeData.scope(param);
 		}
-		return false;
+		patternScope = null;
 	}
 
 	@Override
-	public boolean isOrdered(String childType) {
-		return true;
+	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+		// TODO should match intantiation blocks
+		if (!(node instanceof MethodTree)) {
+			return HashMultimap.create();
+		}
+		MethodTree mt = (MethodTree) node;
+
+		for (Map.Entry<String, TypeMirror> entry : typeRestrictions.entrySet()) {
+			context.addTypeRestriction(entry.getKey(), entry.getValue());
+		}
+		Multimap<TreeMatcher, Tree> result = null;
+		result = matchChild(result, node, mt.getBody(), bodyMatcher, context);
+
+		// for (Map.Entry<String, TypeMirror> entry : typeRestrictions.entrySet()) {
+		// addTypeRestriction(entry.getKey(), patternScope, entry.getValue());
+		// }
+		context.clearDataForNode(patternNode);
+
+		return result;
 	}
 
-	@Override
-	public MatchingType getMatchingType() {
-		return MatchingType.normal;
-	}
 }

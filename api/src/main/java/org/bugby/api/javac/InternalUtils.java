@@ -1,4 +1,4 @@
-package org.bugby.engine.javac;
+package org.bugby.api.javac;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;

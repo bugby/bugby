@@ -2,24 +2,25 @@ package org.bugby.engine.matcher.statement;
 
 import java.util.List;
 
+import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
-import org.bugby.engine.matcher.DefaultMatcher;
+import org.bugby.api.wildcard.TreeMatcherFactory;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.CaseTree;
 import com.sun.source.tree.Tree;
 
-public class CaseMatcher extends DefaultMatcher implements TreeMatcher {
+public class CaseMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	private final CaseTree patternNode;
 	private final TreeMatcher expressionMatcher;
 	private final List<TreeMatcher> statementsMatchers;
 
-	public CaseMatcher(CaseTree patternNode, TreeMatcher expressionMatcher, List<TreeMatcher> statementsMatchers) {
+	public CaseMatcher(CaseTree patternNode, TreeMatcherFactory factory) {
 		this.patternNode = patternNode;
-		this.expressionMatcher = expressionMatcher;
-		this.statementsMatchers = statementsMatchers;
+		this.expressionMatcher = factory.build(patternNode.getExpression());
+		this.statementsMatchers = build(factory, patternNode.getStatements());
 	}
 
 	@Override
