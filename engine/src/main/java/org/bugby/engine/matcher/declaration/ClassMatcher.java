@@ -1,7 +1,9 @@
 package org.bugby.engine.matcher.declaration;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.bugby.api.javac.InternalUtils;
 import org.bugby.api.javac.TreeUtils;
 import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.MatchingContext;
@@ -25,7 +27,17 @@ public class ClassMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		this.extendsMatcher = factory.build(patternNode.getExtendsClause());
 		this.implementsMatchers = build(factory, patternNode.getImplementsClause());
 		this.typeParametersMatchers = build(factory, patternNode.getTypeParameters());
-		this.membersMatchers = build(factory, patternNode.getMembers());
+		this.membersMatchers = build(factory, removeSyntheticConstructors(patternNode.getMembers()));
+	}
+
+	private List<? extends Tree> removeSyntheticConstructors(List<? extends Tree> members) {
+		List<Tree> filtered = new ArrayList<Tree>(members.size());
+		for (Tree member : members) {
+			if (!InternalUtils.isSyntheticConstructor(member)) {
+				filtered.add(member);
+			}
+		}
+		return filtered;
 	}
 
 	public ClassTree getPatternNode() {
@@ -67,7 +79,7 @@ public class ClassMatcher extends DefaultTreeMatcher implements TreeMatcher {
 
 	@Override
 	public String toString() {
-		return "ClassMatcher [patternNode=" + patternNode + ", extendsMatcher=" + extendsMatcher + ", implementsMatchers=" + implementsMatchers
-				+ ", typeParametersMatchers=" + typeParametersMatchers + ", membersMatchers=" + membersMatchers + "]";
+		return "ClassMatcher [Class=" + patternNode.getSimpleName() + ", extendsMatcher=" + extendsMatcher + ", implementsMatchers="
+				+ implementsMatchers + ", typeParametersMatchers=" + typeParametersMatchers + ", membersMatchers=" + membersMatchers + "]";
 	}
 }

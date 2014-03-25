@@ -63,4 +63,9 @@ public class SomeCodeMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		return "SomeCodeMatcher [patternNode=" + patternNode + ", bodyMatcher=" + bodyMatcher + "]";
+	}
+
 }

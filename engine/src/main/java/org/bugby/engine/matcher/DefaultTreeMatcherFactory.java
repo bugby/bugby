@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
 
 import org.bugby.annotation.BadExample;
@@ -17,6 +18,7 @@ import org.bugby.annotation.GoodExample;
 import org.bugby.annotation.GoodExampleTrigger;
 import org.bugby.api.javac.InternalUtils;
 import org.bugby.api.javac.SourceParser;
+import org.bugby.api.javac.TreeUtils;
 import org.bugby.api.wildcard.Correlation;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
@@ -57,6 +59,7 @@ import org.bugby.engine.matcher.statement.ThrowMatcher;
 import org.bugby.engine.matcher.statement.TryMatcher;
 import org.bugby.engine.matcher.statement.VariableMatcher;
 import org.bugby.engine.matcher.statement.WhileLoopMatcher;
+import org.bugby.wildcard.SomeType;
 
 import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.ArrayAccessTree;
@@ -158,6 +161,12 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 			return ((VariableTree) node).getName().toString();
 		}
 		if (node instanceof ClassTree) {
+			Element element = TreeUtils.elementFromDeclaration((ClassTree) node);
+			if (element.getAnnotation(BadExample.class) != null || //
+					element.getAnnotation(GoodExample.class) != null || //
+					element.getAnnotation(GoodExampleTrigger.class) != null) {
+				return SomeType.class.getSimpleName();
+			}
 			return ((ClassTree) node).getSimpleName().toString();
 		}
 		if (node instanceof MethodTree) {
@@ -201,8 +210,7 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 			// TODO find here compatible constructor
 			Constructor<?> constructor = matcherClass.getDeclaredConstructors()[0];
 			return (TreeMatcher) constructor.newInstance(patternNode, this);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 

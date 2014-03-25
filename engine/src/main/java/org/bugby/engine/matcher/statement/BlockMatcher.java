@@ -40,4 +40,9 @@ public class BlockMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		return matchOrderedChildren(null, node, TreeUtils.descendantsOfType(node, StatementTree.class), statementsMatchers, context);
 	}
 
+	@Override
+	public String toString() {
+		return "BlockMatcher [statementsMatchers=" + statementsMatchers + "]";
+	}
+
 }

@@ -13,7 +13,7 @@ import com.sun.source.tree.Tree;
 abstract public class DefaultTreeMatcher implements TreeMatcher {
 
 	protected <T> List<T> list(T element) {
-		return element == null ? Collections.<T>emptyList() : Collections.singletonList(element);
+		return element == null ? Collections.<T> emptyList() : Collections.singletonList(element);
 	}
 
 	protected Multimap<TreeMatcher, Tree> matchSelf(Multimap<TreeMatcher, Tree> currentMatch, Tree parent, boolean condition,
@@ -22,7 +22,7 @@ abstract public class DefaultTreeMatcher implements TreeMatcher {
 			return HashMultimap.create();
 		}
 
-		Multimap<TreeMatcher, Tree> result = currentMatch != null ? currentMatch : HashMultimap.<TreeMatcher, Tree>create();
+		Multimap<TreeMatcher, Tree> result = currentMatch != null ? currentMatch : HashMultimap.<TreeMatcher, Tree> create();
 		if (!result.containsEntry(this, parent)) {
 			result.put(this, parent);
 		}
@@ -52,9 +52,11 @@ abstract public class DefaultTreeMatcher implements TreeMatcher {
 			return currentMatch;
 		}
 
+		System.out.println("--------------------- MATCHING ---" + parent.getClass() + " matchers:" + matchers.size() + " tree:"
+				+ children.size());
 		if (matchers.isEmpty()) {
 			// nothing to be matched
-			Multimap<TreeMatcher, Tree> result = currentMatch != null ? currentMatch : HashMultimap.<TreeMatcher, Tree>create();
+			Multimap<TreeMatcher, Tree> result = currentMatch != null ? currentMatch : HashMultimap.<TreeMatcher, Tree> create();
 			if (!result.containsEntry(this, parent)) {
 				result.put(this, parent);
 			}

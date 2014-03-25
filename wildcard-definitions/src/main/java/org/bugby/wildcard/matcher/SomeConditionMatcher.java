@@ -1,6 +1,6 @@
 package org.bugby.wildcard.matcher;
 
-import org.bugby.api.javac.TreeUtils;
+import org.bugby.api.javac.InternalUtils;
 import org.bugby.api.javac.TypesUtils;
 import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.MatchingContext;
@@ -34,7 +34,7 @@ public class SomeConditionMatcher extends DefaultTreeMatcher implements TreeMatc
 		ExpressionTree mt = (ExpressionTree) node;
 
 		Multimap<TreeMatcher, Tree> result = null;
-		result = matchSelf(result, node, TypesUtils.isBooleanType(TreeUtils.elementFromUse(mt).asType()), context);
+		result = matchSelf(result, node, TypesUtils.isBooleanType(InternalUtils.typeOf(mt)), context);
 
 		return result;
 	}

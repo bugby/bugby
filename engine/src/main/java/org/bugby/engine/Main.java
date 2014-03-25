@@ -1,6 +1,8 @@
 package org.bugby.engine;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.util.List;
 
 import org.bugby.api.javac.ParsedSource;
 import org.bugby.api.javac.SourceParser;
@@ -12,6 +14,39 @@ import com.google.common.collect.Multimap;
 import com.sun.source.tree.Tree;
 
 public class Main {
+
+	public static void dumpMatcher(String indent, TreeMatcher matcher) {
+		Field[] fields = matcher.getClass().getDeclaredFields();
+		try {
+			for (Field field : fields) {
+				field.setAccessible(true);
+				// simple field
+				if (TreeMatcher.class.isAssignableFrom(field.getType())) {
+					TreeMatcher fieldValue = (TreeMatcher) field.get(matcher);
+					if (fieldValue != null) {
+						System.out.println(indent + field.getName() + " = " + fieldValue.getClass().getSimpleName());
+						dumpMatcher(indent + "  ", fieldValue);
+					}
+					continue;
+				}
+				// list field
+				if (List.class.isAssignableFrom(field.getType())) {// TODO check list of tree matcher
+					List<TreeMatcher> fieldValue = (List<TreeMatcher>) field.get(matcher);
+					if (fieldValue != null && !fieldValue.isEmpty()) {
+						int i = 0;
+						for (TreeMatcher f : fieldValue) {
+							System.out.println(indent + field.getName() + "[" + i + "] = " + f.getClass().getSimpleName());
+							++i;
+							dumpMatcher(indent + "  ", f);
+						}
+					}
+					continue;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static MatchResult check(String patternSource, String source) {
 		// 1. read wildcards
@@ -28,7 +63,7 @@ public class Main {
 		// 2. read patterns
 		DefaultTreeMatcherFactory matcherFactory = new DefaultTreeMatcherFactory(wildcardDictionary);
 		TreeMatcher rootMatcher = matcherFactory.buildFromFile(builtProjectClassLoader, new File(patternSource));
-		System.out.println("PATTERN:\n" + rootMatcher);
+		dumpMatcher("", rootMatcher);
 		System.out.println("-------------------------");
 
 		// 3. parse source file to be checked
