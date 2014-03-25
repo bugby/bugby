@@ -35,4 +35,6 @@ public interface MatchingContext {
 	public Multimap<TreeMatcher, Tree> matchOrdered(List<TreeMatcher> matchers, List<? extends Tree> nodes);
 
 	public Multimap<TreeMatcher, Tree> matchUnordered(List<TreeMatcher> matchers, List<? extends Tree> nodes);
+
+	public Multimap<TreeMatcher, Tree> getMatches();
 }

@@ -11,18 +11,21 @@ import com.google.common.collect.Multimap;
 import com.sun.source.tree.Tree;
 
 abstract public class DefaultTreeMatcher implements TreeMatcher {
+	private final Multimap<TreeMatcher, Tree> NO_MATCH = HashMultimap.create();
 
 	protected <T> List<T> list(T element) {
-		return element == null ? Collections.<T> emptyList() : Collections.singletonList(element);
+		return element == null ? Collections.<T>emptyList() : Collections.singletonList(element);
 	}
 
 	protected Multimap<TreeMatcher, Tree> matchSelf(Multimap<TreeMatcher, Tree> currentMatch, Tree parent, boolean condition,
 			MatchingContext context) {
 		if (!condition) {
-			return HashMultimap.create();
+			return NO_MATCH;
 		}
-
-		Multimap<TreeMatcher, Tree> result = currentMatch != null ? currentMatch : HashMultimap.<TreeMatcher, Tree> create();
+		Multimap<TreeMatcher, Tree> result = HashMultimap.<TreeMatcher, Tree>create();
+		if (currentMatch != null) {
+			result.putAll(currentMatch);
+		}
 		if (!result.containsEntry(this, parent)) {
 			result.put(this, parent);
 		}
@@ -47,35 +50,36 @@ abstract public class DefaultTreeMatcher implements TreeMatcher {
 
 	private Multimap<TreeMatcher, Tree> matchChildren(Multimap<TreeMatcher, Tree> currentMatch, Tree parent, List<? extends Tree> children,
 			List<TreeMatcher> matchers, MatchingContext context, boolean ordered) {
-		if (currentMatch != null && currentMatch.isEmpty()) {
+		if (currentMatch == NO_MATCH) {
 			// this means a match already failed - propagate it until the end
-			return currentMatch;
+			return NO_MATCH;
 		}
 
-		System.out.println("--------------------- MATCHING ---" + parent.getClass() + " matchers:" + matchers.size() + " tree:"
-				+ children.size());
 		if (matchers.isEmpty()) {
 			// nothing to be matched
-			Multimap<TreeMatcher, Tree> result = currentMatch != null ? currentMatch : HashMultimap.<TreeMatcher, Tree> create();
+			Multimap<TreeMatcher, Tree> result = currentMatch != null ? currentMatch : HashMultimap.<TreeMatcher, Tree>create();
 			if (!result.containsEntry(this, parent)) {
 				result.put(this, parent);
 			}
 			return result;
 		}
-
+		System.out.println(">>--------------------- MATCHING ---" + parent.getClass() + " matchers:" + matchers.size() + " tree:"
+				+ children.size());
 		Multimap<TreeMatcher, Tree> childrenMatch = ordered ? context.matchOrdered(matchers, children) : context.matchUnordered(matchers,
 				children);
+		System.out.println("<<--------------------- MATCHING ---" + parent.getClass() + " matchers:" + matchers.size() + " tree:"
+				+ children.size() + " RESULT=" + childrenMatch.size() + " CURRENT:" + (currentMatch != null ? currentMatch.size() : 0));
+
 		if (childrenMatch.isEmpty()) {
-			return HashMultimap.create();
+			return NO_MATCH;
+		}
+		if (currentMatch != null) {
+			childrenMatch.putAll(currentMatch);
 		}
 		if (!childrenMatch.containsEntry(this, parent)) {
 			childrenMatch.put(this, parent);
 		}
-		if (currentMatch == null) {
-			return childrenMatch;
-		}
-		currentMatch.putAll(childrenMatch);
-		return currentMatch;
+		return childrenMatch;
 	}
 
 	public static List<TreeMatcher> build(TreeMatcherFactory factory, List<? extends Tree> nodes) {

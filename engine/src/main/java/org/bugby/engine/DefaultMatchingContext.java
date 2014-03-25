@@ -27,6 +27,7 @@ public class DefaultMatchingContext implements MatchingContext {
 	private final Map<String, String> variables = new HashMap<String, String>();
 	private final Map<String, TypeMirror> typeRestrictions = new HashMap<String, TypeMirror>();
 	private final Map<String, CorrelationInfo> correlations = new HashMap<String, CorrelationInfo>();
+	private final Multimap<TreeMatcher, Tree> matches = HashMultimap.create();
 
 	private static class NameAndScope {
 		private final Scope scope;
@@ -122,6 +123,9 @@ public class DefaultMatchingContext implements MatchingContext {
 				Multimap<TreeMatcher, Tree> tm = wildcard.matches(node, DefaultMatchingContext.this);
 				if (!tm.isEmpty()) {
 					System.err.println(wildcard + " on " + node.toString() + " = OK");
+					if (!matches.containsEntry(wildcard, node)) {
+						matches.put(wildcard, node);
+					}
 				} else {
 					System.out.println(wildcard + " on " + node.toString());
 				}
@@ -228,4 +232,9 @@ public class DefaultMatchingContext implements MatchingContext {
 	public Multimap<TreeMatcher, Tree> matchUnordered(List<TreeMatcher> matchers, List<? extends Tree> nodes) {
 		return transformResult(matchers, oneLevelMatcher.matchUnordered((List<Tree>) nodes, matchers));
 	}
+
+	public Multimap<TreeMatcher, Tree> getMatches() {
+		return matches;
+	}
+
 }

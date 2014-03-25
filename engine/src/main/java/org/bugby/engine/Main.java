@@ -2,7 +2,9 @@ package org.bugby.engine;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.bugby.api.javac.ParsedSource;
 import org.bugby.api.javac.SourceParser;
@@ -10,6 +12,7 @@ import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.engine.matcher.DefaultTreeMatcherFactory;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.Tree;
 
@@ -43,7 +46,8 @@ public class Main {
 					continue;
 				}
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -72,14 +76,17 @@ public class Main {
 
 		// 4. apply matcher
 		MatchingContext context = new DefaultMatchingContext();
-		Multimap<TreeMatcher, Tree> matches = rootMatcher.matches(parsedSource.getCompilationUnitTree(), context);
-		// TODO find a good report here
+		boolean ok = !rootMatcher.matches(parsedSource.getCompilationUnitTree(), context).isEmpty();
+		Multimap<TreeMatcher, Tree> matches = context.getMatches();
+		if (!ok) {
+			matches = HashMultimap.create();
+		}
 
-		// System.out.println("FULLMATCH:------------");
-		//
-		// for (Map.Entry<Tree<WildcardNodeMatcher>, Collection<Node>> entry : matches.asMap().entrySet()) {
-		// System.out.println(entry.getKey().getValue() + " on " + entry.getValue());
-		// }
+		System.out.println("FULLMATCH:------------");
+
+		for (Map.Entry<TreeMatcher, Collection<Tree>> entry : matches.asMap().entrySet()) {
+			System.out.println(entry.getKey().getClass() + " on " + entry.getValue());
+		}
 		return new MatchResult(parsedSource, matches);
 	}
 

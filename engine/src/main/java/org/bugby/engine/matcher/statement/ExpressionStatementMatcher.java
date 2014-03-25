@@ -5,7 +5,6 @@ import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.ExpressionStatementTree;
 import com.sun.source.tree.Tree;
@@ -21,13 +20,14 @@ public class ExpressionStatementMatcher extends DefaultTreeMatcher implements Tr
 
 	@Override
 	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
-		if (!(node instanceof ExpressionStatementTree)) {
-			return HashMultimap.create();
+		Tree toMatch = node;
+		if (toMatch instanceof ExpressionStatementTree) {
+			// matches if the child matches the expression as well
+			toMatch = ((ExpressionStatementTree) toMatch).getExpression();
 		}
-		ExpressionStatementTree ct = (ExpressionStatementTree) node;
 
 		Multimap<TreeMatcher, Tree> result = null;
-		result = matchChild(result, node, ct.getExpression(), expressionMatcher, context);
+		result = matchChild(result, node, toMatch, expressionMatcher, context);
 
 		return result;
 

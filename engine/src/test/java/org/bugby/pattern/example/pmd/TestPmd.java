@@ -9,4 +9,9 @@ public class TestPmd {
 	public void testAvoidBranchingStatement() {
 		assertPmd("AvoidBranchingStatementAsLastInLoop.java", "AvoidBranchingStatementAsLastInLoopCheck2.java", 18);
 	}
+
+	@Test
+	public void testCollapsibleIfStatement1() {
+		assertPmd("CollapsibleIfStatements.java", "CollapsibleIfStatementsCheck.java", 14);
+	}
 }
