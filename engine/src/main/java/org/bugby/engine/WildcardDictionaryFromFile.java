@@ -1,80 +1,80 @@
 package org.bugby.engine;
 
-import japa.parser.ast.CompilationUnit;
-import japa.parser.ast.body.AnnotationDeclaration;
-import japa.parser.ast.body.ClassOrInterfaceDeclaration;
-import japa.parser.ast.body.MethodDeclaration;
-import japa.parser.ast.body.VariableDeclarator;
-import japa.parser.ast.visitor.VoidVisitorAdapter;
-
 import java.io.File;
-import java.util.Collections;
 
+import javax.lang.model.type.TypeMirror;
+
+import org.bugby.api.javac.ElementUtils;
+import org.bugby.api.javac.ParsedSource;
+import org.bugby.api.javac.SourceParser;
+import org.bugby.api.javac.TreeUtils;
 import org.bugby.api.wildcard.Wildcard;
-import org.richast.GenerationContext;
-import org.richast.RichASTParser;
-import org.richast.node.ASTNodeData;
-import org.richast.type.ClassLoaderWrapper;
-import org.richast.type.FieldWrapper;
-import org.richast.type.MethodWrapper;
-import org.richast.type.TypeWrapper;
-import org.richast.utils.ClassUtils;
-import org.richast.variable.Variable;
+
+import com.sun.source.tree.AnnotationTree;
+import com.sun.source.tree.ClassTree;
+import com.sun.source.tree.MethodTree;
+import com.sun.source.tree.VariableTree;
+import com.sun.source.util.TreeScanner;
 
 public class WildcardDictionaryFromFile {
 	public static void addWildcardsFromFile(WildcardDictionary dictionary, ClassLoader builtProjectClassLoader, File file) {
-		ClassLoaderWrapper classLoaderWrapper = new ClassLoaderWrapper(builtProjectClassLoader, Collections.<String> emptyList(),
-				Collections.<String> emptyList());
-		GenerationContext context = new GenerationContext(file);
-		CompilationUnit cu = RichASTParser.parseAndResolve(classLoaderWrapper, file, context, "UTF-8");
-		cu.accept(new WildcardVisitor(), dictionary);
-		// System.out.println(matchers);
+		ParsedSource parsedSource = SourceParser.parse(file, builtProjectClassLoader, "UTF-8");
+
+		new WildcardVisitor(builtProjectClassLoader).scan(parsedSource.getCompilationUnitTree(), dictionary);
 	}
 
-	private static class WildcardVisitor extends VoidVisitorAdapter<WildcardDictionary> {
-		private void addMatcher(WildcardDictionary dictionary, String name, Wildcard wildcardAnnotation) {
+	private static class WildcardVisitor extends TreeScanner<Boolean, WildcardDictionary> {
+		private final ClassLoader builtProjectClassLoader;
+
+		public WildcardVisitor(ClassLoader builtProjectClassLoader) {
+			this.builtProjectClassLoader = builtProjectClassLoader;
+		}
+
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		private void addMatcher(WildcardDictionary dictionary, String name, TypeMirror wildcardAnnotation) {
 			if (wildcardAnnotation != null) {
-				dictionary.addMatcherClass(name, wildcardAnnotation.value());
+				Class clz;
+				try {
+					clz = builtProjectClassLoader.loadClass(wildcardAnnotation.toString());
+					dictionary.addMatcherClass(name, clz);
+				}
+				catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 
 		@Override
-		public void visit(MethodDeclaration n, WildcardDictionary dictionary) {
-			MethodWrapper method = ASTNodeData.resolvedMethod(n);
-			if (method != null) {
-				Wildcard wildcardAnnotation = method.getAnnotation(Wildcard.class);
-				addMatcher(dictionary, n.getName(), wildcardAnnotation);
-			}
-			super.visit(n, dictionary);
+		public Boolean visitMethod(MethodTree node, WildcardDictionary d) {
+			TypeMirror wildcardAnnotation = (TypeMirror) ElementUtils.getAnnotationValue(TreeUtils.elementFromDeclaration(node), Wildcard.class,
+					"value");
+			addMatcher(d, node.getName().toString(), wildcardAnnotation);
+			return super.visitMethod(node, d);
 		}
 
 		@Override
-		public void visit(VariableDeclarator n, WildcardDictionary dictionary) {
-			Variable variable = ASTNodeData.resolvedVariable(n);
-
-			if (variable instanceof FieldWrapper) {
-				FieldWrapper field = (FieldWrapper) variable;
-				Wildcard wildcardAnnotation = field.getAnnotation(Wildcard.class);
-				addMatcher(dictionary, n.getId().getName(), wildcardAnnotation);
-			}
-			super.visit(n, dictionary);
+		public Boolean visitVariable(VariableTree node, WildcardDictionary d) {
+			TypeMirror wildcardAnnotation = (TypeMirror) ElementUtils.getAnnotationValue(TreeUtils.elementFromDeclaration(node), Wildcard.class,
+					"value");
+			addMatcher(d, node.getName().toString(), wildcardAnnotation);
+			return super.visitVariable(node, d);
 		}
 
 		@Override
-		public void visit(ClassOrInterfaceDeclaration n, WildcardDictionary dictionary) {
-			TypeWrapper type = ASTNodeData.resolvedType(n);
-			if (type != null) {
-				Wildcard wildcardAnnotation = ClassUtils.getAnnotation(type, Wildcard.class);
-				addMatcher(dictionary, n.getName(), wildcardAnnotation);
-			}
-			super.visit(n, dictionary);
+		public Boolean visitClass(ClassTree node, WildcardDictionary d) {
+			TypeMirror wildcardAnnotation = (TypeMirror) ElementUtils.getAnnotationValue(TreeUtils.elementFromDeclaration(node), Wildcard.class,
+					"value");
+			addMatcher(d, node.getSimpleName().toString(), wildcardAnnotation);
+			return super.visitClass(node, d);
 		}
 
 		@Override
-		public void visit(AnnotationDeclaration n, WildcardDictionary dictionary) {
-			dictionary.addAnnotation(n.getName());
-			super.visit(n, dictionary);
+		public Boolean visitAnnotation(AnnotationTree node, WildcardDictionary d) {
+			d.addAnnotation(node.getAnnotationType().toString());
+			return super.visitAnnotation(node, d);
 		}
+
 	}
 
 }

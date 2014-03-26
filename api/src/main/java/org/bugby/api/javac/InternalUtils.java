@@ -42,8 +42,7 @@ import com.sun.tools.javac.util.Context;
  * Static utility methods used by annotation abstractions in this package. Some methods in this class depend on the use
  * of Sun javac internals; any procedure in the Checker Framework that uses a non-public API should be placed here.
  */
-@edu.umd.cs.findbugs.annotations.SuppressWarnings(
-		justification = "copied code", value = "BC_UNCONFIRMED_CAST")
+@edu.umd.cs.findbugs.annotations.SuppressWarnings(justification = "copied code", value = "BC_UNCONFIRMED_CAST")
 @SuppressWarnings("PMD")
 // CHECKSTYLE:OFF
 public final class InternalUtils {
@@ -190,6 +189,7 @@ public final class InternalUtils {
 	// }
 	// return annotations;
 	// }
+
 	//
 	// public final static List<? extends AnnotationMirror> annotationsFromTree(AnnotatedTypeTree node) {
 	// return annotationsFromTypeAnnotationTrees(((JCAnnotatedType) node).annotations);

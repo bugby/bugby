@@ -68,7 +68,7 @@ abstract public class DefaultTreeMatcher implements TreeMatcher {
 		Multimap<TreeMatcher, Tree> childrenMatch = ordered ? context.matchOrdered(matchers, children) : context.matchUnordered(matchers,
 				children);
 		System.out.println("<<--------------------- MATCHING ---" + parent.getClass() + " matchers:" + matchers.size() + " tree:"
-				+ children.size() + " RESULT=" + childrenMatch.size() + " CURRENT:" + (currentMatch != null ? currentMatch.size() : 0));
+				+ children.size() + " RESULT=" + childrenMatch.size());
 
 		if (childrenMatch.isEmpty()) {
 			return NO_MATCH;

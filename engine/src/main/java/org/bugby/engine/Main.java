@@ -75,7 +75,7 @@ public class Main {
 		ParsedSource parsedSource = SourceParser.parse(sourceFile, builtProjectClassLoader, "UTF-8");
 
 		// 4. apply matcher
-		MatchingContext context = new DefaultMatchingContext();
+		MatchingContext context = new DefaultMatchingContext(parsedSource);
 		boolean ok = !rootMatcher.matches(parsedSource.getCompilationUnitTree(), context).isEmpty();
 		Multimap<TreeMatcher, Tree> matches = context.getMatches();
 		if (!ok) {

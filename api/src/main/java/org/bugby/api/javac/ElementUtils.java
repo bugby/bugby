@@ -11,8 +11,11 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
@@ -323,7 +326,7 @@ public final class ElementUtils {
 			}
 		}
 
-		return Collections.<TypeElement> unmodifiableList(superelems);
+		return Collections.<TypeElement>unmodifiableList(superelems);
 	}
 
 	/**
@@ -337,7 +340,7 @@ public final class ElementUtils {
 		for (TypeElement atype : alltypes) {
 			fields.addAll(ElementFilter.fieldsIn(atype.getEnclosedElements()));
 		}
-		return Collections.<VariableElement> unmodifiableList(fields);
+		return Collections.<VariableElement>unmodifiableList(fields);
 	}
 
 	/**
@@ -357,7 +360,7 @@ public final class ElementUtils {
 		for (TypeElement atype : alltypes) {
 			meths.addAll(ElementFilter.methodsIn(atype.getEnclosedElements()));
 		}
-		return Collections.<ExecutableElement> unmodifiableList(meths);
+		return Collections.<ExecutableElement>unmodifiableList(meths);
 	}
 
 	public static boolean sameSignature(ExecutableElement m1, ExecutableElement m2) {
@@ -391,4 +394,31 @@ public final class ElementUtils {
 		}
 		return similar;
 	}
+
+	public static AnnotationMirror getAnnotationMirror(Element typeElement, Class<?> clazz) {
+		String clazzName = clazz.getName();
+		for (AnnotationMirror m : typeElement.getAnnotationMirrors()) {
+			if (m.getAnnotationType().toString().equals(clazzName)) {
+				return m;
+			}
+		}
+		return null;
+	}
+
+	public static Object getAnnotationValue(Element typeElement, Class<?> clazz, String key) {
+		return getAnnotationValue(getAnnotationMirror(typeElement, clazz), key);
+	}
+
+	public static Object getAnnotationValue(AnnotationMirror annotationMirror, String key) {
+		if (annotationMirror == null) {
+			return null;
+		}
+		for (Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : annotationMirror.getElementValues().entrySet()) {
+			if (entry.getKey().getSimpleName().toString().equals(key)) {
+				return entry.getValue().getValue();
+			}
+		}
+		return null;
+	}
+
 }

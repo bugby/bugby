@@ -44,7 +44,6 @@
 
 	<modules>
 		<module>api</module>
-		<module>rich-ast</module>
 		<module>tree-matcher</module>
 		<module>wildcard-definitions</module>
 		<module>bug-definitions</module>

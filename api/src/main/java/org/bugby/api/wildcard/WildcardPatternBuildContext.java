@@ -1,20 +1,20 @@
 package org.bugby.api.wildcard;
 
-import japa.parser.ast.expr.MethodCallExpr;
-
 import java.util.HashMap;
 import java.util.Map;
 
-public class WildcardPatternBuildContext {
-	private Map<String, MethodCallExpr> patternAnnotations = new HashMap<String, MethodCallExpr>();
+import com.sun.source.tree.MethodInvocationTree;
 
-	public void pushAnnotationNode(MethodCallExpr patternAnnotationNode) {
-		patternAnnotations.put(patternAnnotationNode.getName(), patternAnnotationNode);
+public class WildcardPatternBuildContext {
+	private Map<String, MethodInvocationTree> patternAnnotations = new HashMap<String, MethodInvocationTree>();
+
+	public void pushAnnotationNode(MethodInvocationTree patternAnnotationNode) {
+		patternAnnotations.put(patternAnnotationNode.getMethodSelect().toString(), patternAnnotationNode);
 	}
 
-	public Map<String, MethodCallExpr> retrieveAnnotations() {
-		Map<String, MethodCallExpr> ret = patternAnnotations;
-		patternAnnotations = new HashMap<String, MethodCallExpr>();
+	public Map<String, MethodInvocationTree> retrieveAnnotations() {
+		Map<String, MethodInvocationTree> ret = patternAnnotations;
+		patternAnnotations = new HashMap<String, MethodInvocationTree>();
 		return ret;
 	}
 }

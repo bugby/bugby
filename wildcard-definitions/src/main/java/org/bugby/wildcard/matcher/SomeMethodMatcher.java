@@ -1,7 +1,5 @@
 package org.bugby.wildcard.matcher;
 
-import japa.parser.ast.Node;
-
 import java.util.Comparator;
 
 import org.bugby.api.wildcard.Correlation;
@@ -20,7 +18,7 @@ import com.sun.source.tree.Tree;
 public class SomeMethodMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	private final Tree patternNode;
 	private final String correlationKey;
-	private final Comparator<Node> correlationComparator;
+	private final Comparator<Tree> correlationComparator;
 
 	public SomeMethodMatcher(Tree patternNode, TreeMatcherFactory factory) {
 		this.patternNode = patternNode;
@@ -69,15 +67,17 @@ public class SomeMethodMatcher extends DefaultTreeMatcher implements TreeMatcher
 		return result;
 	}
 
-	private Comparator<Node> newComparator(Correlation correlation) {
+	private Comparator<Tree> newComparator(Correlation correlation) {
 		if (correlation == null) {
 			return null;
 		}
 		try {
 			return correlation.comparator().newInstance();
-		} catch (InstantiationException e) {
+		}
+		catch (InstantiationException e) {
 			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
+		}
+		catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
 	}

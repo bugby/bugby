@@ -1,19 +1,16 @@
 package org.bugby.wildcard.correlation;
 
-import japa.parser.ast.Node;
-
-import java.util.Arrays;
 import java.util.Comparator;
 
-import org.richast.node.ASTNodeData;
-import org.richast.type.MethodWrapper;
+import com.sun.source.tree.MethodTree;
+import com.sun.source.tree.Tree;
 
-public class SameMethodSignature implements Comparator<Node> {
+public class SameMethodSignature implements Comparator<Tree> {
 
 	@Override
-	public int compare(Node o1, Node o2) {
-		MethodWrapper method1 = ASTNodeData.resolvedMethod(o1);
-		MethodWrapper method2 = ASTNodeData.resolvedMethod(o2);
+	public int compare(Tree o1, Tree o2) {
+		MethodTree method1 = (MethodTree) o1;
+		MethodTree method2 = (MethodTree) o2;
 		if (method1 == null || method2 == null) {
 			return -1;
 		}
@@ -26,7 +23,8 @@ public class SameMethodSignature implements Comparator<Node> {
 		}
 
 		// TODO should I check the generic type args too !?
-		return Arrays.equals(method1.getParameterTypes(), method2.getParameterTypes()) ? 0 : -1;
+		// return Arrays.equals(method1.getParameters(), method2.getParameters()) ? 0 : -1;
+		return 0;
 	}
 
 }

@@ -2,6 +2,7 @@ package org.bugby.engine;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -9,17 +10,20 @@ import java.util.Set;
 
 import javax.lang.model.type.TypeMirror;
 
+import org.bugby.api.javac.ParsedSource;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.matcher.tree.MatchingType;
 import org.bugby.matcher.tree.NodeMatch;
 import org.bugby.matcher.tree.OneLevelMatcher;
-import org.richast.scope.Scope;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
+import com.sun.source.tree.BlockTree;
+import com.sun.source.tree.StatementTree;
 import com.sun.source.tree.Tree;
+import com.sun.source.util.TreeScanner;
 
 public class DefaultMatchingContext implements MatchingContext {
 	private final OneLevelMatcher<Tree, TreeMatcher> oneLevelMatcher = new OneLevelMatcher<Tree, TreeMatcher>(nodeMatch());
@@ -28,57 +32,7 @@ public class DefaultMatchingContext implements MatchingContext {
 	private final Map<String, TypeMirror> typeRestrictions = new HashMap<String, TypeMirror>();
 	private final Map<String, CorrelationInfo> correlations = new HashMap<String, CorrelationInfo>();
 	private final Multimap<TreeMatcher, Tree> matches = HashMultimap.create();
-
-	private static class NameAndScope {
-		private final Scope scope;
-		private final String name;
-
-		public NameAndScope(Scope scope, String name) {
-			this.scope = scope;
-			this.name = name;
-		}
-
-		public Scope getScope() {
-			return scope;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + (name == null ? 0 : name.hashCode());
-			result = prime * result + (scope == null ? 0 : scope.hashCode());
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj) {
-				return true;
-			}
-			if (obj == null) {
-				return false;
-			}
-			if (getClass() != obj.getClass()) {
-				return false;
-			}
-			NameAndScope other = (NameAndScope) obj;
-			if (name == null) {
-				if (other.name != null) {
-					return false;
-				}
-			} else if (!name.equals(other.name)) {
-				return false;
-			}
-
-			return scope == other.scope;
-		}
-
-	}
+	private final ParsedSource parsedSource;
 
 	private static class CorrelationInfo {
 		private final Comparator<Tree> comparator;
@@ -114,6 +68,10 @@ public class DefaultMatchingContext implements MatchingContext {
 			return "CI:" + nodes;
 		}
 
+	}
+
+	public DefaultMatchingContext(ParsedSource parsedSource) {
+		this.parsedSource = parsedSource;
 	}
 
 	private NodeMatch<Tree, TreeMatcher> nodeMatch() {
@@ -223,4 +181,23 @@ public class DefaultMatchingContext implements MatchingContext {
 		return matches;
 	}
 
+	// TODO find a better approach
+	private Map<Tree, List<Tree>> childrenListByNode;
+
+	public List<Tree> getChildrenListContaining(Tree node) {
+		if (childrenListByNode == null) {
+			childrenListByNode = new IdentityHashMap<Tree, List<Tree>>();
+			// only do it for statements at this stage
+			new TreeScanner<Boolean, Boolean>() {
+				@Override
+				public Boolean visitBlock(BlockTree node, Boolean p) {
+					for (StatementTree stmt : node.getStatements()) {
+						childrenListByNode.put(stmt, (List<Tree>) node.getStatements());
+					}
+					return super.visitBlock(node, p);
+				}
+			}.scan(parsedSource.getCompilationUnitTree(), true);
+		}
+		return childrenListByNode.get(node);
+	}
 }

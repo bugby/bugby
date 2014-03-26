@@ -14,7 +14,6 @@ import javax.tools.StandardJavaFileManager;
 
 import org.bugby.api.BugbyException;
 import org.bugby.api.SourcePosition;
-import org.richast.STJSRuntimeException;
 
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.util.JavacTask;
@@ -29,7 +28,7 @@ public class SourceParser {
 		try {
 			JavaCompiler compiler = JavacTool.create();
 			if (compiler == null) {
-				throw new STJSRuntimeException(
+				throw new BugbyException(
 						"A Java compiler is not available for this project. You may have configured your environment to run with JRE instead of a JDK");
 			}
 

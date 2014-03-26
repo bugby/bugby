@@ -10,7 +10,6 @@ import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
-import org.richast.scope.Scope;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -28,7 +27,8 @@ public class SomeCodeMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	private final MethodTree patternNode;
 	private final TreeMatcher bodyMatcher;
 	private final Map<String, TypeMirror> typeRestrictions;
-	private final Scope patternScope;
+
+	// private final Scope patternScope;
 
 	public SomeCodeMatcher(MethodTree patternNode, TreeMatcherFactory factory) {
 		this.patternNode = patternNode;
@@ -38,7 +38,7 @@ public class SomeCodeMatcher extends DefaultTreeMatcher implements TreeMatcher {
 			typeRestrictions.put(param.getName().toString(), TreeUtils.elementFromDeclaration(param).asType());
 			// patternScope = ASTNodeData.scope(param);
 		}
-		patternScope = null;
+		// patternScope = null;
 	}
 
 	@Override

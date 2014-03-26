@@ -1,10 +1,10 @@
 package org.bugby.api.wildcard;
 
-import japa.parser.ast.Node;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Comparator;
+
+import com.sun.source.tree.Tree;
 
 /**
  * annotate more than one element in the pattern tree with this annotation, to tell to the matcher to execute the
@@ -18,5 +18,5 @@ import java.util.Comparator;
 public @interface Correlation {
 	String key();
 
-	Class<? extends Comparator<Node>> comparator();
+	Class<? extends Comparator<Tree>> comparator();
 }

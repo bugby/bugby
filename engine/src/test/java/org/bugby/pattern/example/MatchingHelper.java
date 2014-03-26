@@ -27,4 +27,18 @@ public class MatchingHelper {
 		assertNotNull("Expected a best match", node);
 		assertEquals("Expected to match at line", line, matches.getParsedSource().getLine(node));
 	}
+
+	public static void assertNoBug(String type, String bugFile, String testFile) {
+		MatchResult matches = Main.check(BUG_DEF_PATH + "/" + type + "/" + bugFile, TEST_PATH + "/" + type + "/" + testFile);
+
+		assertEquals("Should not match", 0, matches.getMatches().size());
+	}
+
+	public static void assertPmdNotMatch(String bugFile, String testFile) {
+		assertNoBug("pmd", bugFile, testFile);
+	}
+
+	public static void assertFindbugsNotMatch(String bugFile, String testFile) {
+		assertNoBug("findbugs", bugFile, testFile);
+	}
 }
