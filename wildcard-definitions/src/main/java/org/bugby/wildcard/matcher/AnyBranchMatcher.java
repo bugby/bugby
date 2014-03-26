@@ -9,14 +9,13 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.BreakTree;
 import com.sun.source.tree.ContinueTree;
-import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.ReturnTree;
 import com.sun.source.tree.Tree;
 
 public class AnyBranchMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final MethodInvocationTree patternNode;
+	private final Tree patternNode;
 
-	public AnyBranchMatcher(MethodInvocationTree patternNode, TreeMatcherFactory factory) {
+	public AnyBranchMatcher(Tree patternNode, TreeMatcherFactory factory) {
 		this.patternNode = patternNode;
 	}
 

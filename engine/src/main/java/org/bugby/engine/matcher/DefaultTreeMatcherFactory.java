@@ -79,6 +79,7 @@ import com.sun.source.tree.DoWhileLoopTree;
 import com.sun.source.tree.EmptyStatementTree;
 import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.ExpressionStatementTree;
+import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.ForLoopTree;
 import com.sun.source.tree.IdentifierTree;
 import com.sun.source.tree.IfTree;
@@ -171,6 +172,13 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		}
 		if (node instanceof MethodTree) {
 			return ((MethodTree) node).getName().toString();
+		}
+		if (node instanceof ExpressionStatementTree) {
+			// method(); -> is taken as a matcher together (semi-colon included)
+			ExpressionTree expr = ((ExpressionStatementTree) node).getExpression();
+			if (expr instanceof MethodInvocationTree) {
+				return ((MethodInvocationTree) expr).getMethodSelect().toString();
+			}
 		}
 		if (node instanceof MethodInvocationTree) {
 			return ((MethodInvocationTree) node).getMethodSelect().toString();

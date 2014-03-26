@@ -78,16 +78,6 @@ public class MultiLevelMatcher<T, W, TT, TW> {
 			}
 
 			@Override
-			public boolean isFirstChild(List<TT> nodes, int index) {
-				return MultiLevelMatcher.this.nodeTreeModel.isFirstChild(nodes.get(index));
-			}
-
-			@Override
-			public boolean isLastChild(List<TT> nodes, int index) {
-				return MultiLevelMatcher.this.nodeTreeModel.isLastChild(nodes.get(index));
-			}
-
-			@Override
 			public void removedNodeFromMatch(TT node) {
 				MultiLevelMatcher.this.nodeMatch.removedNodeFromMatch(MultiLevelMatcher.this.nodeTreeModel.getValue(node));
 

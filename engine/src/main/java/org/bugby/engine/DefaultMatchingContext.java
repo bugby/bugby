@@ -138,20 +138,6 @@ public class DefaultMatchingContext implements MatchingContext {
 			}
 
 			@Override
-			public boolean isFirstChild(List<Tree> nodes, int index) {
-				// TODO fix this
-				// return astTreeModel.isFirstChild(nodes.get(index));
-				return false;
-			}
-
-			@Override
-			public boolean isLastChild(List<Tree> nodes, int index) {
-				// TODO fix this
-				// return astTreeModel.isLastChild(nodes.get(index));
-				return false;
-			}
-
-			@Override
 			public void removedNodeFromMatch(Tree node) {
 				DefaultMatchingContext.this.clearDataForNode(node);
 			}

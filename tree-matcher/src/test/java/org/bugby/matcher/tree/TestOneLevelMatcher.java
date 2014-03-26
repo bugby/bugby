@@ -4,9 +4,6 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.bugby.matcher.tree.MatchingType;
-import org.bugby.matcher.tree.NodeMatch;
-import org.bugby.matcher.tree.OneLevelMatcher;
 import org.junit.Test;
 
 @SuppressWarnings("unchecked")
@@ -14,34 +11,23 @@ public class TestOneLevelMatcher extends CommonMatcherTest {
 
 	private OneLevelMatcher<IndexedValue, Wildcard<IndexedValue>> matcher() {
 		// direct matching
-		return new OneLevelMatcher<IndexedValue, Wildcard<IndexedValue>>(
-				new NodeMatch<IndexedValue, Wildcard<IndexedValue>>() {
-					@Override
-					public boolean match(Wildcard<IndexedValue> wildcard, IndexedValue node) {
-						return wildcard.match(node);
-					}
+		return new OneLevelMatcher<IndexedValue, Wildcard<IndexedValue>>(new NodeMatch<IndexedValue, Wildcard<IndexedValue>>() {
+			@Override
+			public boolean match(Wildcard<IndexedValue> wildcard, IndexedValue node) {
+				return wildcard.match(node);
+			}
 
-					@Override
-					public MatchingType getMatchingType(Wildcard<IndexedValue> wildcard) {
-						return wildcard.getMatchingType();
-					}
+			@Override
+			public MatchingType getMatchingType(Wildcard<IndexedValue> wildcard) {
+				return wildcard.getMatchingType();
+			}
 
-					@Override
-					public boolean isFirstChild(List<IndexedValue> nodes, int index) {
-						return index == 0;
-					}
+			@Override
+			public void removedNodeFromMatch(IndexedValue node) {
+				//
 
-					@Override
-					public boolean isLastChild(List<IndexedValue> nodes, int index) {
-						return index == nodes.size() - 1;
-					}
-
-					@Override
-					public void removedNodeFromMatch(IndexedValue node) {
-						//
-
-					}
-				});
+			}
+		});
 	}
 
 	@Test

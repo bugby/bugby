@@ -1,7 +1,6 @@
 package org.bugby.matcher.tree;
 
 import java.util.Arrays;
-import java.util.List;
 
 import junit.framework.Assert;
 
@@ -34,18 +33,6 @@ public class TestMultiLevelMatcher extends CommonMatcherTest {
 					@Override
 					public MatchingType getMatchingType(Wildcard<IndexedValue> wildcard) {
 						return wildcard.getMatchingType();
-					}
-
-					@Override
-					public boolean isFirstChild(List<IndexedValue> nodes, int index) {
-						// is ignored
-						return false;
-					}
-
-					@Override
-					public boolean isLastChild(List<IndexedValue> nodes, int index) {
-						// is ignored
-						return false;
 					}
 
 					@Override
