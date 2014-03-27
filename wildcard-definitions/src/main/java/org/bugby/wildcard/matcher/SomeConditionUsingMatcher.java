@@ -2,15 +2,15 @@ package org.bugby.wildcard.matcher;
 
 import java.util.List;
 
+import org.bugby.api.javac.InternalUtils;
 import org.bugby.api.javac.TreeUtils;
 import org.bugby.api.javac.TypesUtils;
 import org.bugby.api.wildcard.DefaultTreeMatcher;
+import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.Tree;
@@ -25,17 +25,17 @@ public class SomeConditionUsingMatcher extends DefaultTreeMatcher implements Tre
 	}
 
 	@Override
-	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+	public boolean matches(Tree node, MatchingContext context) {
+		FluidMatcher match = matching(node, context);
 		if (!(node instanceof ExpressionTree)) {
-			return HashMultimap.create();
+			return match.done(false);
 		}
 		ExpressionTree mt = (ExpressionTree) node;
 
-		Multimap<TreeMatcher, Tree> result = null;
-		result = matchSelf(result, node, TypesUtils.isBooleanType(TreeUtils.elementFromUse(mt).asType()), context);
-		result = matchUnorderedChildren(result, mt, TreeUtils.descendantsOfType(mt, Tree.class), argumentsMatchers, context);
+		match.self(TypesUtils.isBooleanType(InternalUtils.typeOf(mt)));
+		match.unorderedChildren(TreeUtils.descendantsOfType(mt, Tree.class), argumentsMatchers);
 
-		return result;
+		return match.done();
 	}
 
 }

@@ -4,12 +4,11 @@ import java.util.List;
 
 import org.bugby.api.javac.TreeUtils;
 import org.bugby.api.wildcard.DefaultTreeMatcher;
+import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.tree.Tree;
@@ -32,11 +31,12 @@ public class CompilationUnitMatcher extends DefaultTreeMatcher implements TreeMa
 	}
 
 	@Override
-	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+	public boolean matches(Tree node, MatchingContext context) {
+		FluidMatcher match = matching(node, context);
 		if (!(node instanceof CompilationUnitTree)) {
-			return HashMultimap.create();
+			return match.done(false);
 		}
 
-		return matchOrderedChildren(null, node, TreeUtils.descendantsOfType(node, ClassTree.class), typeMatchers, context);
+		return match.orderedChildren(TreeUtils.descendantsOfType(node, ClassTree.class), typeMatchers).done();
 	}
 }

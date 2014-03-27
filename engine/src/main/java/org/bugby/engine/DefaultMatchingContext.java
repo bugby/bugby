@@ -11,11 +11,12 @@ import java.util.Set;
 import javax.lang.model.type.TypeMirror;
 
 import org.bugby.api.javac.ParsedSource;
+import org.bugby.api.javac.TypesUtils;
 import org.bugby.api.wildcard.MatchingContext;
+import org.bugby.api.wildcard.MatchingType;
 import org.bugby.api.wildcard.TreeMatcher;
-import org.bugby.matcher.tree.MatchingType;
-import org.bugby.matcher.tree.NodeMatch;
-import org.bugby.matcher.tree.OneLevelMatcher;
+import org.bugby.engine.algorithm.NodeMatch;
+import org.bugby.engine.algorithm.OneLevelMatcher;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -78,16 +79,13 @@ public class DefaultMatchingContext implements MatchingContext {
 		return new NodeMatch<Tree, TreeMatcher>() {
 			@Override
 			public boolean match(TreeMatcher wildcard, Tree node) {
-				Multimap<TreeMatcher, Tree> tm = wildcard.matches(node, DefaultMatchingContext.this);
-				if (!tm.isEmpty()) {
-					System.err.println(wildcard + " on " + node.toString() + " = OK");
+				boolean ok = wildcard.matches(node, DefaultMatchingContext.this);
+				if (ok) {
 					if (!matches.containsEntry(wildcard, node)) {
 						matches.put(wildcard, node);
 					}
-				} else {
-					System.out.println(wildcard + " on " + node.toString());
 				}
-				return !tm.isEmpty();
+				return ok;
 			}
 
 			@Override
@@ -108,12 +106,9 @@ public class DefaultMatchingContext implements MatchingContext {
 	}
 
 	@Override
-	public boolean setVariableMapping(String nameInPatternAST, String currentName, TypeMirror typeRestriction) {
+	public boolean setVariableMapping(String nameInPatternAST, String currentName, TypeMirror currentType) {
 		TypeMirror tr = typeRestrictions.get(nameInPatternAST);
-		if (typeRestriction == null) {
-			// TODO fix this
-			// || typeRestriction.isAssignableFrom(var.getType())) {
-
+		if (tr == null || parsedSource.getTypes().isAssignable(tr, parsedSource.getTypes().erasure(currentType))) {
 			variables.put(nameInPatternAST, currentName);
 			return true;
 		}
@@ -122,7 +117,12 @@ public class DefaultMatchingContext implements MatchingContext {
 
 	@Override
 	public void addTypeRestriction(String nameInPatternAST, TypeMirror type) {
-		typeRestrictions.put(nameInPatternAST, type);
+		// type may be in the class loader of the pattern
+		if (!TypesUtils.isObject(type)) {
+			TypeMirror rawType = parsedSource.getTypes().erasure(type);
+			TypeMirror reloaded = parsedSource.getElements().getTypeElement(rawType.toString()).asType();
+			typeRestrictions.put(nameInPatternAST, reloaded);
+		}
 	}
 
 	@Override
@@ -177,6 +177,7 @@ public class DefaultMatchingContext implements MatchingContext {
 		return transformResult(matchers, oneLevelMatcher.matchUnordered((List<Tree>) nodes, matchers));
 	}
 
+	@Override
 	public Multimap<TreeMatcher, Tree> getMatches() {
 		return matches;
 	}
@@ -184,6 +185,7 @@ public class DefaultMatchingContext implements MatchingContext {
 	// TODO find a better approach
 	private Map<Tree, List<Tree>> childrenListByNode;
 
+	@Override
 	public List<Tree> getChildrenListContaining(Tree node) {
 		if (childrenListByNode == null) {
 			childrenListByNode = new IdentityHashMap<Tree, List<Tree>>();

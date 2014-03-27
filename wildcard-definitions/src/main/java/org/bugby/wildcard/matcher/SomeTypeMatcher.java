@@ -6,12 +6,11 @@ import java.util.List;
 import org.bugby.api.javac.InternalUtils;
 import org.bugby.api.javac.TreeUtils;
 import org.bugby.api.wildcard.DefaultTreeMatcher;
+import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.Tree;
 
@@ -49,22 +48,22 @@ public class SomeTypeMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	}
 
 	@Override
-	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+	public boolean matches(Tree node, MatchingContext context) {
+		FluidMatcher match = matching(node, context);
 		if (!(node instanceof ClassTree) && !TreeUtils.isTypeTree(node)) {
-			return HashMultimap.create();
+			return match.done(false);
 		}
 		ClassTree ct = (ClassTree) node;
 
-		Multimap<TreeMatcher, Tree> result = null;
 		if (patternNode instanceof ClassTree) {
-			result = matchUnorderedChildren(result, node, ct.getMembers(), membersMatchers, context);
-			result = matchChild(result, node, ct.getExtendsClause(), extendsMatcher, context);
-			result = matchUnorderedChildren(result, node, ct.getImplementsClause(), implementsMatchers, context);
-			result = matchOrderedChildren(result, node, ct.getTypeParameters(), typeParametersMatchers, context);
+			match.unorderedChildren(ct.getMembers(), membersMatchers);
+			match.child(ct.getExtendsClause(), extendsMatcher);
+			match.unorderedChildren(ct.getImplementsClause(), implementsMatchers);
+			match.unorderedChildren(ct.getTypeParameters(), typeParametersMatchers);
 		} else {
-			result = matchSelf(result, node, true, context);
+			match.self(true);
 		}
-		return result;
+		return match.done();
 	}
 
 	@Override

@@ -21,15 +21,6 @@ public class OverrideBothEqualsAndHashcodeCheck1 {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((field == null) ? 0 : field.hashCode());
-		result = prime * result + field1;
-		return result;
-	}
-
-	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
@@ -52,6 +43,15 @@ public class OverrideBothEqualsAndHashcodeCheck1 {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (field == null ? 0 : field.hashCode());
+		result = prime * result + field1;
+		return result;
 	}
 
 }

@@ -1,4 +1,7 @@
-package org.bugby.matcher.tree;
+package org.bugby.engine.algorithm;
+
+import org.bugby.api.wildcard.MatchingType;
+
 
 
 public interface NodeMatch<T, W> {

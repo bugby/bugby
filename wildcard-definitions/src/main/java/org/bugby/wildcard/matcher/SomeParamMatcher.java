@@ -1,12 +1,11 @@
 package org.bugby.wildcard.matcher;
 
 import org.bugby.api.wildcard.DefaultTreeMatcher;
+import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 
@@ -22,18 +21,18 @@ public class SomeParamMatcher extends DefaultTreeMatcher implements TreeMatcher 
 	}
 
 	@Override
-	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+	public boolean matches(Tree node, MatchingContext context) {
+		FluidMatcher match = matching(node, context);
 		if (!(node instanceof VariableTree)) {
-			return HashMultimap.create();
+			return match.done(false);
 		}
 		VariableTree mt = (VariableTree) node;
 
-		Multimap<TreeMatcher, Tree> result = null;
-		// result = matchSelf(result, node, mt.getName().equals(patternNode.getName()), context);
-		result = matchChild(result, node, mt.getType(), typeMatcher, context);
-		result = matchChild(result, node, mt.getInitializer(), initMatcher, context);
+		// match.self(mt.getName().equals(patternNode.getName()));
+		match.child(mt.getType(), typeMatcher);
+		match.child(mt.getInitializer(), initMatcher);
 
-		return result;
+		return match.done();
 	}
 
 }

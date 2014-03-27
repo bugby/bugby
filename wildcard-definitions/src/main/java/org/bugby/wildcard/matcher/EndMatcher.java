@@ -3,13 +3,12 @@ package org.bugby.wildcard.matcher;
 import java.util.List;
 
 import org.bugby.api.wildcard.DefaultTreeMatcher;
+import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
+import org.bugby.api.wildcard.MatchingType;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
-import org.bugby.matcher.tree.MatchingType;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.Tree;
 
 public class EndMatcher extends DefaultTreeMatcher implements TreeMatcher {
@@ -22,12 +21,13 @@ public class EndMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	}
 
 	@Override
-	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+	public boolean matches(Tree node, MatchingContext context) {
+		FluidMatcher match = matching(node, context);
 		List<Tree> list = context.getChildrenListContaining(node);
 		if (list != null && list.size() > 0 && list.get(list.size() - 1) == node) {
-			return matchSelf(null, node, true, context);
+			return match.done(true);
 		}
-		return HashMultimap.create();
+		return match.done(false);
 	}
 
 }

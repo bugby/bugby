@@ -1,12 +1,12 @@
 package org.bugby.wildcard.matcher;
 
 import org.bugby.api.wildcard.DefaultTreeMatcher;
+import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.BreakTree;
 import com.sun.source.tree.ContinueTree;
 import com.sun.source.tree.ReturnTree;
@@ -20,15 +20,16 @@ public class AnyBranchMatcher extends DefaultTreeMatcher implements TreeMatcher 
 	}
 
 	@Override
-	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+	public boolean matches(Tree node, MatchingContext context) {
+		FluidMatcher match = matching(node, context);
 		// TODO should match intantiation blocks
 		if (!(node instanceof BreakTree) && !(node instanceof ContinueTree) && !(node instanceof ReturnTree)) {
-			return HashMultimap.create();
+			return match.done(false);
 		}
-		Multimap<TreeMatcher, Tree> result = null;
-		result = matchSelf(result, node, true, context);
 
-		return result;
+		match.self(true);
+
+		return match.done();
 	}
 
 }

@@ -7,7 +7,12 @@ import org.junit.Test;
 
 public class TestPmd {
 	@Test
-	public void testAvoidBranchingStatement() {
+	public void testAvoidBranchingStatement1() {
+		assertPmd("AvoidBranchingStatementAsLastInLoop.java", "AvoidBranchingStatementAsLastInLoopCheck1.java", 18);
+	}
+
+	@Test
+	public void testAvoidBranchingStatement2() {
 		assertPmd("AvoidBranchingStatementAsLastInLoop.java", "AvoidBranchingStatementAsLastInLoopCheck2.java", 18);
 	}
 
@@ -44,5 +49,45 @@ public class TestPmd {
 	@Test
 	public void testDontCallThreadRun3() {
 		assertPmd("DontCallThreadRun.java", "DontCallThreadRunCheck3.java", 13);
+	}
+
+	@Test
+	public void testJumbledIncrementer1() {
+		assertPmd("JumbledIncrementer.java", "JumbledIncrementerCheck1.java", 6);
+	}
+
+	@Test
+	public void testJumbledIncrementer2() {
+		assertPmdNotMatch("JumbledIncrementer.java", "JumbledIncrementerCheck2.java");
+	}
+
+	@Test
+	public void testJumbledIncrementer3() {
+		assertPmd("JumbledIncrementer.java", "JumbledIncrementerCheck3.java", 6);
+	}
+
+	@Test
+	public void testMisplacedNullCheckAnd1() {
+		assertPmd("MisplacedNullCheckAnd.java", "MisplacedNullCheckAndCheck1.java", 6);
+	}
+
+	@Test
+	public void testMisplacedNullCheckAnd2() {
+		assertPmdNotMatch("MisplacedNullCheckAnd.java", "MisplacedNullCheckAndCheck2.java");
+	}
+
+	@Test
+	public void testMisplacedNullCheckOr1() {
+		assertPmd("MisplacedNullCheckOr.java", "MisplacedNullCheckOrCheck1.java", 7);
+	}
+
+	@Test
+	public void testOverrideBothEqualsAndHashcode1() {
+		assertPmd("OverrideBothEqualsAndHashcode.java", "OverrideBothEqualsAndHashcodeCheck1.java", 54);
+	}
+
+	@Test
+	public void testOverrideBothEqualsAndHashcode2() {
+		assertPmdNotMatch("OverrideBothEqualsAndHashcode.java", "OverrideBothEqualsAndHashcodeCheck2.java");
 	}
 }

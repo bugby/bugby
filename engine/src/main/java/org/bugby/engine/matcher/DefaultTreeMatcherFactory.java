@@ -154,6 +154,16 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		this.wildcardDictionary = wildcardDictionary;
 	}
 
+	private String getMethodName(MethodInvocationTree method) {
+		if (method.getMethodSelect() instanceof MemberSelectTree) {
+			return ((MemberSelectTree) method.getMethodSelect()).getIdentifier().toString();
+		}
+		if (method.getMethodSelect() instanceof IdentifierTree) {
+			return ((IdentifierTree) method.getMethodSelect()).getName().toString();
+		}
+		return null;
+	}
+
 	private String getMatcherName(Tree node) {
 		if (node instanceof IdentifierTree) {
 			return ((IdentifierTree) node).getName().toString();
@@ -177,11 +187,11 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 			// method(); -> is taken as a matcher together (semi-colon included)
 			ExpressionTree expr = ((ExpressionStatementTree) node).getExpression();
 			if (expr instanceof MethodInvocationTree) {
-				return ((MethodInvocationTree) expr).getMethodSelect().toString();
+				return getMethodName((MethodInvocationTree) expr);
 			}
 		}
 		if (node instanceof MethodInvocationTree) {
-			return ((MethodInvocationTree) node).getMethodSelect().toString();
+			return getMethodName((MethodInvocationTree) node);
 		}
 		return null;
 	}
@@ -219,7 +229,8 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 			Constructor<?> constructor = matcherClass.getDeclaredConstructors()[0];
 			return (TreeMatcher) constructor.newInstance(patternNode, this);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException("Cannont create matcher of type:" + matcherClass.getName() + " with node of type:"
+					+ patternNode.getClass().getName() + ":" + e, e);
 		}
 
 	}

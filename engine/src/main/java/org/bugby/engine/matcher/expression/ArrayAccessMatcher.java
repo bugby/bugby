@@ -1,11 +1,11 @@
 package org.bugby.engine.matcher.expression;
 
 import org.bugby.api.wildcard.DefaultTreeMatcher;
+import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.ArrayAccessTree;
 import com.sun.source.tree.Tree;
@@ -22,17 +22,18 @@ public class ArrayAccessMatcher extends DefaultTreeMatcher implements TreeMatche
 	}
 
 	@Override
-	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+	public boolean matches(Tree node, MatchingContext context) {
+		FluidMatcher match = matching(node, context);
 		if (!(node instanceof ArrayAccessTree)) {
-			return HashMultimap.create();
+			return match.done(false);
 		}
 		ArrayAccessTree mt = (ArrayAccessTree) node;
 
-		Multimap<TreeMatcher, Tree> result = null;
-		result = matchChild(result, node, mt.getExpression(), expressionMatcher, context);
-		result = matchChild(result, node, mt.getIndex(), indexMatcher, context);
+		
+		match.child(mt.getExpression(), expressionMatcher);
+		match.child(mt.getIndex(), indexMatcher);
 
-		return result;
+		return match.done();
 	}
 
 }

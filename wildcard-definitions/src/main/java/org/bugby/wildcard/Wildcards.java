@@ -39,7 +39,7 @@ public class Wildcards {
 	 * matches any parameter
 	 */
 	@Wildcard(SomeParamMatcher.class)
-	public static SomeType someParameter;
+	public static SomeType someParam;
 
 	/**
 	 * matches any variable

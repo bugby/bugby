@@ -1,11 +1,11 @@
 package org.bugby.engine.matcher.statement;
 
 import org.bugby.api.wildcard.DefaultTreeMatcher;
+import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.Tree;
@@ -24,18 +24,19 @@ public class EnhancedForLoopMatcher extends DefaultTreeMatcher implements TreeMa
 	}
 
 	@Override
-	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+	public boolean matches(Tree node, MatchingContext context) {
+		FluidMatcher match = matching(node, context);
 		if (!(node instanceof EnhancedForLoopTree)) {
-			return HashMultimap.create();
+			return match.done(false);
 		}
 		EnhancedForLoopTree ct = (EnhancedForLoopTree) node;
 
-		Multimap<TreeMatcher, Tree> result = null;
-		result = matchChild(result, node, ct.getVariable(), variableMatcher, context);
-		result = matchChild(result, node, ct.getExpression(), expressionMatcher, context);
-		result = matchChild(result, node, ct.getStatement(), statementMatcher, context);
+		
+		match.child(ct.getVariable(), variableMatcher);
+		match.child(ct.getExpression(), expressionMatcher);
+		match.child(ct.getStatement(), statementMatcher);
 
-		return result;
+		return match.done();
 	}
 
 }

@@ -3,7 +3,7 @@ package org.bugby.pattern.example;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.bugby.engine.Main;
+import org.bugby.engine.Bugby;
 import org.bugby.engine.MatchResult;
 
 import com.sun.source.tree.Tree;
@@ -21,7 +21,7 @@ public class MatchingHelper {
 	}
 
 	public static void assertBug(String type, String bugFile, String testFile, int line) {
-		MatchResult matches = Main.check(BUG_DEF_PATH + "/" + type + "/" + bugFile, TEST_PATH + "/" + type + "/" + testFile);
+		MatchResult matches = Bugby.check(BUG_DEF_PATH + "/" + type + "/" + bugFile, TEST_PATH + "/" + type + "/" + testFile);
 		Tree node = matches.getBestMatch();
 
 		assertNotNull("Expected a best match", node);
@@ -29,7 +29,7 @@ public class MatchingHelper {
 	}
 
 	public static void assertNoBug(String type, String bugFile, String testFile) {
-		MatchResult matches = Main.check(BUG_DEF_PATH + "/" + type + "/" + bugFile, TEST_PATH + "/" + type + "/" + testFile);
+		MatchResult matches = Bugby.check(BUG_DEF_PATH + "/" + type + "/" + bugFile, TEST_PATH + "/" + type + "/" + testFile);
 
 		assertEquals("Should not match", 0, matches.getMatches().size());
 	}

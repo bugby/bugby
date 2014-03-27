@@ -1,9 +1,9 @@
-package org.bugby.matcher.tree;
+package org.bugby.engine.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bugby.matcher.tree.MatchingType;
+import org.bugby.api.wildcard.MatchingType;
 
 class DefaultWildcard<T> implements Wildcard<T> {
 	/**

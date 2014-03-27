@@ -48,9 +48,8 @@ public class SourceParser {
 
 			javacTask.analyze();
 
-			return new ParsedSource(cu, Trees.instance(javacTask));
-		}
-		catch (IOException e) {
+			return new ParsedSource(cu, Trees.instance(javacTask), javacTask.getTypes(), javacTask.getElements());
+		} catch (IOException e) {
 			throw new BugbyException(new SourcePosition(inputFile, 0, 0), "Cannot parse the Java file:" + e);
 		}
 

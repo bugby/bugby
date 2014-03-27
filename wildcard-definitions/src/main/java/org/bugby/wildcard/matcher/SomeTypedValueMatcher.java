@@ -4,12 +4,12 @@ import javax.lang.model.type.TypeMirror;
 
 import org.bugby.api.javac.TreeUtils;
 import org.bugby.api.wildcard.DefaultTreeMatcher;
+import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.Tree;
@@ -25,16 +25,16 @@ public class SomeTypedValueMatcher extends DefaultTreeMatcher implements TreeMat
 	}
 
 	@Override
-	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+	public boolean matches(Tree node, MatchingContext context) {
+		FluidMatcher match = matching(node, context);
 		if (!(node instanceof ExpressionTree)) {
-			return HashMultimap.create();
+			return match.done(false);
 		}
 		ExpressionTree mt = (ExpressionTree) node;
 
-		Multimap<TreeMatcher, Tree> result = null;
-		result = matchSelf(result, node, checkType.equals(TreeUtils.elementFromUse(mt).asType()), context);
+		match.self(checkType.equals(TreeUtils.elementFromUse(mt).asType()));
 
-		return result;
+		return match.done();
 	}
 
 }

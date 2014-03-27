@@ -3,12 +3,11 @@ package org.bugby.engine.matcher.declaration;
 import java.util.List;
 
 import org.bugby.api.wildcard.DefaultTreeMatcher;
+import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.Tree;
 
@@ -30,21 +29,21 @@ public class MethodMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	}
 
 	@Override
-	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+	public boolean matches(Tree node, MatchingContext context) {
+		FluidMatcher match = matching(node, context);
 		if (!(node instanceof MethodTree)) {
-			return HashMultimap.create();
+			return match.done(false);
 		}
 		MethodTree mt = (MethodTree) node;
 
-		Multimap<TreeMatcher, Tree> result = null;
-		result = matchSelf(result, node, patternNode.getName().equals(mt.getName()), context);
-		result = matchUnorderedChildren(result, node, mt.getThrows(), throwsMatchers, context);
-		result = matchChild(result, node, mt.getReturnType(), returnTypeMatcher, context);
-		result = matchOrderedChildren(result, node, mt.getParameters(), parametersMatchers, context);
-		result = matchOrderedChildren(result, node, mt.getTypeParameters(), typeParametersMatchers, context);
-		result = matchChild(result, node, mt.getBody(), bodyMatcher, context);
+		match.self(patternNode.getName().toString().equals(mt.getName().toString()));
+		match.unorderedChildren(mt.getThrows(), throwsMatchers);
+		match.child(mt.getReturnType(), returnTypeMatcher);
+		match.orderedChildren(mt.getParameters(), parametersMatchers);
+		match.orderedChildren(mt.getTypeParameters(), typeParametersMatchers);
+		match.child(mt.getBody(), bodyMatcher);
 
-		return result;
+		return match.done();
 	}
 
 	@Override

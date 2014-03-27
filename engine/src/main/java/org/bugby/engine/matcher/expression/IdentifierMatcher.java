@@ -1,12 +1,11 @@
 package org.bugby.engine.matcher.expression;
 
 import org.bugby.api.wildcard.DefaultTreeMatcher;
+import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.IdentifierTree;
 import com.sun.source.tree.Tree;
 
@@ -18,16 +17,16 @@ public class IdentifierMatcher extends DefaultTreeMatcher implements TreeMatcher
 	}
 
 	@Override
-	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+	public boolean matches(Tree node, MatchingContext context) {
+		FluidMatcher match = matching(node, context);
 		if (!(node instanceof IdentifierTree)) {
-			return HashMultimap.create();
+			return match.done(false);
 		}
 		IdentifierTree mt = (IdentifierTree) node;
 
-		Multimap<TreeMatcher, Tree> result = null;
-		result = matchSelf(result, node, mt.getName().equals(patternNode.getName()), context);
+		match.self(mt.getName().toString().equals(patternNode.getName().toString()));
 
-		return result;
+		return match.done();
 	}
 
 }

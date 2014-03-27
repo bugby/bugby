@@ -1,9 +1,11 @@
-package org.bugby.matcher.tree;
+package org.bugby.engine.algorithm;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
+
+import org.bugby.api.wildcard.MatchingType;
 
 public class OneLevelMatcher<T, W> {
 	private final NodeMatch<T, W> nodeMatch;

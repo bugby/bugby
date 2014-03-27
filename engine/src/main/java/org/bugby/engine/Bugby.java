@@ -16,7 +16,11 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.Tree;
 
-public class Main {
+public class Bugby {
+
+	private static String toString(Object obj) {
+		return obj.getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(obj));
+	}
 
 	public static void dumpMatcher(String indent, TreeMatcher matcher) {
 		Field[] fields = matcher.getClass().getDeclaredFields();
@@ -27,7 +31,7 @@ public class Main {
 				if (TreeMatcher.class.isAssignableFrom(field.getType())) {
 					TreeMatcher fieldValue = (TreeMatcher) field.get(matcher);
 					if (fieldValue != null) {
-						System.out.println(indent + field.getName() + " = " + fieldValue.getClass().getSimpleName());
+						System.out.println(indent + field.getName() + " = " + toString(fieldValue));
 						dumpMatcher(indent + "  ", fieldValue);
 					}
 					continue;
@@ -38,7 +42,7 @@ public class Main {
 					if (fieldValue != null && !fieldValue.isEmpty()) {
 						int i = 0;
 						for (TreeMatcher f : fieldValue) {
-							System.out.println(indent + field.getName() + "[" + i + "] = " + f.getClass().getSimpleName());
+							System.out.println(indent + field.getName() + "[" + i + "] = " + toString(f));
 							++i;
 							dumpMatcher(indent + "  ", f);
 						}
@@ -46,8 +50,7 @@ public class Main {
 					continue;
 				}
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -76,7 +79,7 @@ public class Main {
 
 		// 4. apply matcher
 		MatchingContext context = new DefaultMatchingContext(parsedSource);
-		boolean ok = !rootMatcher.matches(parsedSource.getCompilationUnitTree(), context).isEmpty();
+		boolean ok = rootMatcher.matches(parsedSource.getCompilationUnitTree(), context);
 		Multimap<TreeMatcher, Tree> matches = context.getMatches();
 		if (!ok) {
 			matches = HashMultimap.create();

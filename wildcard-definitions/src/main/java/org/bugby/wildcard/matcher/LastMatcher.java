@@ -1,11 +1,11 @@
 package org.bugby.wildcard.matcher;
 
 import org.bugby.api.wildcard.DefaultTreeMatcher;
+import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.Tree;
 
 public class LastMatcher extends DefaultTreeMatcher implements TreeMatcher {
@@ -16,9 +16,10 @@ public class LastMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	}
 
 	@Override
-	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+	public boolean matches(Tree node, MatchingContext context) {
+		FluidMatcher match = matching(node, context);
 		// TODO Auto-generated method stub
-		return null;
+		return false;
 	}
 
 }

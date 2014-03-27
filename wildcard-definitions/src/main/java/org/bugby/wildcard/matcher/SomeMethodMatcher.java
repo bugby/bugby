@@ -4,13 +4,12 @@ import java.util.Comparator;
 
 import org.bugby.api.wildcard.Correlation;
 import org.bugby.api.wildcard.DefaultTreeMatcher;
+import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.Tree;
@@ -47,9 +46,10 @@ public class SomeMethodMatcher extends DefaultTreeMatcher implements TreeMatcher
 	}
 
 	@Override
-	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+	public boolean matches(Tree node, MatchingContext context) {
+		FluidMatcher match = matching(node, context);
 		if (!(node instanceof MethodInvocationTree) && !(node instanceof MethodTree)) {
-			return HashMultimap.create();
+			return match.done(false);
 		}
 		// if (node instanceof MethodDeclaration) {
 		// // TODO put this type of code in a generic way - in more places
@@ -59,12 +59,11 @@ public class SomeMethodMatcher extends DefaultTreeMatcher implements TreeMatcher
 		// return true;
 		// }
 
-		ExpressionTree mt = (ExpressionTree) node;
+		// ExpressionTree mt = (ExpressionTree) node;
 
-		Multimap<TreeMatcher, Tree> result = null;
-		result = matchSelf(result, mt, true, context);
+		match.self(true);
 
-		return result;
+		return match.done();
 	}
 
 	private Comparator<Tree> newComparator(Correlation correlation) {
@@ -73,11 +72,9 @@ public class SomeMethodMatcher extends DefaultTreeMatcher implements TreeMatcher
 		}
 		try {
 			return correlation.comparator().newInstance();
-		}
-		catch (InstantiationException e) {
+		} catch (InstantiationException e) {
 			throw new RuntimeException(e);
-		}
-		catch (IllegalAccessException e) {
+		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
 	}

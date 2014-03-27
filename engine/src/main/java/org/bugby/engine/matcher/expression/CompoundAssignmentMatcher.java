@@ -1,11 +1,11 @@
 package org.bugby.engine.matcher.expression;
 
 import org.bugby.api.wildcard.DefaultTreeMatcher;
+import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.CompoundAssignmentTree;
 import com.sun.source.tree.Tree;
@@ -22,17 +22,18 @@ public class CompoundAssignmentMatcher extends DefaultTreeMatcher implements Tre
 	}
 
 	@Override
-	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+	public boolean matches(Tree node, MatchingContext context) {
+		FluidMatcher match = matching(node, context);
 		if (!(node instanceof CompoundAssignmentTree)) {
-			return HashMultimap.create();
+			return match.done(false);
 		}
 		CompoundAssignmentTree mt = (CompoundAssignmentTree) node;
 
-		Multimap<TreeMatcher, Tree> result = null;
-		result = matchSelf(result, node, mt.getKind().equals(patternNode.getKind()), context);
-		result = matchChild(result, node, mt.getExpression(), expressionMatcher, context);
-		result = matchChild(result, node, mt.getVariable(), variableMatcher, context);
+		
+		match.self(mt.getKind().equals(patternNode.getKind()));
+		match.child(mt.getExpression(), expressionMatcher);
+		match.child(mt.getVariable(), variableMatcher);
 
-		return result;
+		return match.done();
 	}
 }

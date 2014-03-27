@@ -1,11 +1,11 @@
 package org.bugby.engine.matcher.expression;
 
 import org.bugby.api.wildcard.DefaultTreeMatcher;
+import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.UnaryTree;
@@ -20,17 +20,18 @@ public class UnaryMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	}
 
 	@Override
-	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+	public boolean matches(Tree node, MatchingContext context) {
+		FluidMatcher match = matching(node, context);
 		if (!(node instanceof UnaryTree)) {
-			return HashMultimap.create();
+			return match.done(false);
 		}
 		UnaryTree mt = (UnaryTree) node;
 
-		Multimap<TreeMatcher, Tree> result = null;
-		result = matchSelf(result, node, mt.getKind().equals(patternNode.getKind()), context);
-		result = matchChild(result, node, mt.getExpression(), expressionMatcher, context);
+		
+		match.self(mt.getKind().equals(patternNode.getKind()));
+		match.child(mt.getExpression(), expressionMatcher);
 
-		return result;
+		return match.done();
 	}
 
 }

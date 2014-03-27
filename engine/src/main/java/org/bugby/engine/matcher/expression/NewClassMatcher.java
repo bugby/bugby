@@ -3,11 +3,11 @@ package org.bugby.engine.matcher.expression;
 import java.util.List;
 
 import org.bugby.api.wildcard.DefaultTreeMatcher;
+import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.Tree;
@@ -30,20 +30,21 @@ public class NewClassMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	}
 
 	@Override
-	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+	public boolean matches(Tree node, MatchingContext context) {
+		FluidMatcher match = matching(node, context);
 		if (!(node instanceof NewClassTree)) {
-			return HashMultimap.create();
+			return match.done(false);
 		}
 		NewClassTree mt = (NewClassTree) node;
 
-		Multimap<TreeMatcher, Tree> result = null;
-		result = matchChild(result, node, mt.getEnclosingExpression(), enclosingExpressionMatcher, context);
-		result = matchChild(result, node, mt.getIdentifier(), identifierMatcher, context);
-		result = matchChild(result, node, mt.getClassBody(), classBodyMatcher, context);
-		result = matchOrderedChildren(result, node, mt.getTypeArguments(), typeArgumentsMatchers, context);
-		result = matchOrderedChildren(result, node, mt.getArguments(), argumentsMatchers, context);
+		
+		match.child(mt.getEnclosingExpression(), enclosingExpressionMatcher);
+		match.child(mt.getIdentifier(), identifierMatcher);
+		match.child(mt.getClassBody(), classBodyMatcher);
+		match.orderedChildren(mt.getTypeArguments(), typeArgumentsMatchers);
+		match.orderedChildren(mt.getArguments(), argumentsMatchers);
 
-		return result;
+		return match.done();
 	}
 
 }

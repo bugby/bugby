@@ -1,9 +1,10 @@
-package org.bugby.matcher.tree;
+package org.bugby.engine.algorithm;
 
 import java.util.List;
 
 import junit.framework.Assert;
 
+import org.bugby.api.wildcard.MatchingType;
 import org.junit.Test;
 
 @SuppressWarnings("unchecked")

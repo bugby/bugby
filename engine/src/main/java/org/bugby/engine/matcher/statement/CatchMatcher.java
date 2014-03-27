@@ -1,11 +1,11 @@
 package org.bugby.engine.matcher.statement;
 
 import org.bugby.api.wildcard.DefaultTreeMatcher;
+import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.CaseTree;
 import com.sun.source.tree.CatchTree;
@@ -23,17 +23,18 @@ public class CatchMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	}
 
 	@Override
-	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+	public boolean matches(Tree node, MatchingContext context) {
+		FluidMatcher match = matching(node, context);
 		if (!(node instanceof CaseTree)) {
-			return HashMultimap.create();
+			return match.done(false);
 		}
 		CatchTree ct = (CatchTree) node;
 
-		Multimap<TreeMatcher, Tree> result = null;
-		result = matchChild(result, node, ct.getBlock(), blockMatcher, context);
-		result = matchChild(result, node, ct.getParameter(), parameterMatcher, context);
+		
+		match.child(ct.getBlock(), blockMatcher);
+		match.child(ct.getParameter(), parameterMatcher);
 
-		return result;
+		return match.done();
 
 	}
 

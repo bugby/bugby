@@ -3,11 +3,11 @@ package org.bugby.engine.matcher.expression;
 import java.util.List;
 
 import org.bugby.api.wildcard.DefaultTreeMatcher;
+import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.Tree;
@@ -26,17 +26,18 @@ public class MethodInvocationMatcher extends DefaultTreeMatcher implements TreeM
 	}
 
 	@Override
-	public Multimap<TreeMatcher, Tree> matches(Tree node, MatchingContext context) {
+	public boolean matches(Tree node, MatchingContext context) {
+		FluidMatcher match = matching(node, context);
 		if (!(node instanceof MethodInvocationTree)) {
-			return HashMultimap.create();
+			return match.done(false);
 		}
 		MethodInvocationTree mt = (MethodInvocationTree) node;
 
-		Multimap<TreeMatcher, Tree> result = null;
-		result = matchChild(result, node, mt.getMethodSelect(), methodSelectMatcher, context);
-		result = matchOrderedChildren(result, node, mt.getTypeArguments(), typeArgumentsMathers, context);
-		result = matchOrderedChildren(result, node, mt.getArguments(), argumentsMatchers, context);
+		
+		match.child(mt.getMethodSelect(), methodSelectMatcher);
+		match.orderedChildren(mt.getTypeArguments(), typeArgumentsMathers);
+		match.orderedChildren(mt.getArguments(), argumentsMatchers);
 
-		return result;
+		return match.done();
 	}
 }
