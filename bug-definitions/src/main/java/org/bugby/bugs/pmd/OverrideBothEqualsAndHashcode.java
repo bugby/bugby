@@ -6,6 +6,7 @@ import org.bugby.wildcard.Wildcards;
 @GoodExample
 public class OverrideBothEqualsAndHashcode {
 	@Override
+	//	@Correlation(key = "check")
 	public boolean equals(Object someParam) {
 		return Wildcards.<Boolean> someValue();
 	}

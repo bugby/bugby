@@ -49,7 +49,6 @@ public class Wildcards {
 
 	/**
 	 * matches any expression of any type
-	 * 
 	 * @return
 	 */
 	@Wildcard(SomeValueMatcher.class)
@@ -79,6 +78,11 @@ public class Wildcards {
 	@Wildcard(SomeConditionUsingMatcher.class)
 	public static boolean someConditionUsing(Object... value) {
 		return true;
+	}
+
+	@Wildcard(SomeConditionUsingMatcher.class)
+	public static <T> T anywhere(Object... value) {
+		return null;
 	}
 
 	@Wildcard(BeginMatcher.class)

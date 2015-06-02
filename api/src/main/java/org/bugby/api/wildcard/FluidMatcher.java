@@ -11,7 +11,7 @@ public class FluidMatcher {
 	private final MatchingContext context;
 	private final Tree node;
 	private final TreeMatcher matcher;
-	private boolean current = true;
+	private boolean currentMatch = true;
 	private static int level = 0;
 
 	public FluidMatcher(MatchingContext context, Tree node, TreeMatcher matcher) {
@@ -44,38 +44,39 @@ public class FluidMatcher {
 	}
 
 	protected FluidMatcher matchChildren(List<? extends Tree> children, List<TreeMatcher> matchers, boolean ordered) {
-		if (!current) {
+		if (!currentMatch) {
 			return this;
 		}
 		if (matchers.isEmpty()) {
-			current = true;
+			currentMatch = true;
 			return this;
 		}
-		Multimap<TreeMatcher, Tree> childrenMatch = ordered ? context.matchOrdered(matchers, children) : context.matchUnordered(matchers,
-				children);
+		Multimap<TreeMatcher, Tree> childrenMatch =
+				ordered ? context.matchOrdered(matchers, children) : context.matchUnordered(matchers, children);
 
-		current = !childrenMatch.isEmpty();
+		currentMatch = !childrenMatch.isEmpty();
 		return this;
 	}
 
 	public boolean done(boolean result) {
-		current = result;
+		currentMatch = result;
 		return done();
 	}
 
 	public boolean done() {
 		level--;
-		if (current) {
-			System.err.println(Strings.repeat("  ", level) + "<<  " + toString(matcher) + " = " + current);
+		if (currentMatch) {
+			//matches - but put in error to view it better
+			System.err.println(Strings.repeat("  ", level) + "<<  " + toString(matcher) + " = " + currentMatch);
 		} else {
-			System.out.println(Strings.repeat("  ", level) + "<< " + toString(matcher) + " = " + current);
+			System.out.println(Strings.repeat("  ", level) + "<< " + toString(matcher) + " = " + currentMatch);
 		}
 
-		return current;
+		return currentMatch;
 	}
 
 	public FluidMatcher self(boolean b) {
-		current &= b;
+		currentMatch &= b;
 		return this;
 	}
 }

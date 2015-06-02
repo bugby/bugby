@@ -1,5 +1,6 @@
 package org.bugby.bugs.pmd;
 
+import static org.bugby.wildcard.Wildcards.anywhere;
 import static org.bugby.wildcard.Wildcards.someConditionUsing;
 
 import org.bugby.annotation.BadExample;
@@ -8,8 +9,8 @@ import org.bugby.annotation.BadExample;
 public class MisplacedNullCheckOr {
 	public void someCode(Object someVar) {
 
-		if (someConditionUsing(someVar) || someVar == null) {
-
+		if (anywhere(someConditionUsing(someVar) || someConditionUsing(someVar == null))) {
+			//
 		}
 	}
 }

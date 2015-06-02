@@ -68,7 +68,7 @@ public class TestPmd {
 
 	@Test
 	public void testMisplacedNullCheckAnd1() {
-		assertPmd("MisplacedNullCheckAnd.java", "MisplacedNullCheckAndCheck1.java", 6);
+		assertPmd("MisplacedNullCheckAnd.java", "MisplacedNullCheckAndCheck1.java", 8);
 	}
 
 	@Test

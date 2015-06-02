@@ -23,14 +23,7 @@
 			<artifactId>bugby-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<!-- TODO - this should arrive dynamically at runtime -->
-		<dependency>
-			<groupId>org.bugby</groupId>
-			<artifactId>bugby-bug-definitions</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-
+	
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>

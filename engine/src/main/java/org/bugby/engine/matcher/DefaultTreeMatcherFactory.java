@@ -59,7 +59,6 @@ import org.bugby.engine.matcher.statement.ThrowMatcher;
 import org.bugby.engine.matcher.statement.TryMatcher;
 import org.bugby.engine.matcher.statement.VariableMatcher;
 import org.bugby.engine.matcher.statement.WhileLoopMatcher;
-import org.bugby.wildcard.SomeType;
 
 import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.ArrayAccessTree;
@@ -104,9 +103,10 @@ import com.sun.source.tree.WhileLoopTree;
 
 public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 	private static Set<Class<? extends Annotation>> skipAnnotations = new HashSet<Class<? extends Annotation>>(Arrays.asList(GoodExample.class,
-			GoodExampleTrigger.class, BadExample.class, SuppressWarnings.class, Override.class, Correlation.class));
+		GoodExampleTrigger.class, BadExample.class, SuppressWarnings.class, Override.class, Correlation.class));
 
-	private static final Map<Class<? extends Tree>, Class<? extends TreeMatcher>> matcherClasses = new HashMap<Class<? extends Tree>, Class<? extends TreeMatcher>>();
+	private static final Map<Class<? extends Tree>, Class<? extends TreeMatcher>> matcherClasses =
+			new HashMap<Class<? extends Tree>, Class<? extends TreeMatcher>>();
 	static {
 		matcherClasses.put(ClassTree.class, ClassMatcher.class);
 		matcherClasses.put(MethodTree.class, MethodMatcher.class);
@@ -176,7 +176,8 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 			if (element.getAnnotation(BadExample.class) != null || //
 					element.getAnnotation(GoodExample.class) != null || //
 					element.getAnnotation(GoodExampleTrigger.class) != null) {
-				return SomeType.class.getSimpleName();
+				//XXX: this should be done differently, probably in the annotation
+				return "SomeType";
 			}
 			return ((ClassTree) node).getSimpleName().toString();
 		}
@@ -228,7 +229,8 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 			// TODO find here compatible constructor
 			Constructor<?> constructor = matcherClass.getDeclaredConstructors()[0];
 			return (TreeMatcher) constructor.newInstance(patternNode, this);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new RuntimeException("Cannont create matcher of type:" + matcherClass.getName() + " with node of type:"
 					+ patternNode.getClass().getName() + ":" + e, e);
 		}

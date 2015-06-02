@@ -44,9 +44,8 @@
 
 	<modules>
 		<module>api</module>
-		<module>wildcard-definitions</module>
-		<module>bug-definitions</module>
 		<module>engine</module>
+		<module>bug-definitions</module>
 <!-- 		<module>maven-plugin</module> -->
 <!-- 		<module>maven-plugin-it</module> -->
 	</modules>
