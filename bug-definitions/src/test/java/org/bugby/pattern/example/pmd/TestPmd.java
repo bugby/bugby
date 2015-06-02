@@ -1,93 +1,100 @@
 package org.bugby.pattern.example.pmd;
 
-import static org.bugby.pattern.example.MatchingHelper.assertPmd;
-import static org.bugby.pattern.example.MatchingHelper.assertPmdNotMatch;
+import static org.bugby.pattern.example.MatchingHelper.assertBug;
+import static org.bugby.pattern.example.MatchingHelper.assertNoBug;
 
+import org.bugby.bugs.pmd.AvoidBranchingStatementAsLastInLoop;
+import org.bugby.bugs.pmd.CollapsibleIfStatements;
+import org.bugby.bugs.pmd.DontCallThreadRun;
+import org.bugby.bugs.pmd.JumbledIncrementer;
+import org.bugby.bugs.pmd.MisplacedNullCheckAnd;
+import org.bugby.bugs.pmd.MisplacedNullCheckOr;
+import org.bugby.bugs.pmd.OverrideBothEqualsAndHashcode;
 import org.junit.Test;
 
 public class TestPmd {
 	@Test
 	public void testAvoidBranchingStatement1() {
-		assertPmd("AvoidBranchingStatementAsLastInLoop.java", "AvoidBranchingStatementAsLastInLoopCheck1.java", 18);
+		assertBug(AvoidBranchingStatementAsLastInLoop.class, AvoidBranchingStatementAsLastInLoopCheck1.class, 18);
 	}
 
 	@Test
 	public void testAvoidBranchingStatement2() {
-		assertPmd("AvoidBranchingStatementAsLastInLoop.java", "AvoidBranchingStatementAsLastInLoopCheck2.java", 18);
+		assertBug(AvoidBranchingStatementAsLastInLoop.class, AvoidBranchingStatementAsLastInLoopCheck2.class, 18);
 	}
 
 	@Test
 	public void testCollapsibleIfStatement1() {
-		assertPmd("CollapsibleIfStatements.java", "CollapsibleIfStatementsCheck.java", 14);
+		assertBug(CollapsibleIfStatements.class, CollapsibleIfStatementsCheck.class, 14);
 	}
 
 	@Test
 	public void testCollapsibleIfStatement2() {
-		assertPmdNotMatch("CollapsibleIfStatements.java", "CollapsibleIfStatementsCheck2.java");
+		assertNoBug(CollapsibleIfStatements.class, CollapsibleIfStatementsCheck2.class);
 	}
 
 	@Test
 	public void testCollapsibleIfStatement3() {
-		assertPmdNotMatch("CollapsibleIfStatements.java", "CollapsibleIfStatementsCheck3.java");
+		assertNoBug(CollapsibleIfStatements.class, CollapsibleIfStatementsCheck3.class);
 	}
 
 	@Test
 	public void testCollapsibleIfStatement4() {
-		assertPmd("CollapsibleIfStatements.java", "CollapsibleIfStatementsCheck4.java", 25);
+		assertBug(CollapsibleIfStatements.class, CollapsibleIfStatementsCheck4.class, 25);
 	}
 
 	@Test
 	public void testDontCallThreadRun1() {
-		assertPmd("DontCallThreadRun.java", "DontCallThreadRunCheck1.java", 9);
+		assertBug(DontCallThreadRun.class, DontCallThreadRunCheck1.class, 9);
 	}
 
 	@Test
 	public void testDontCallThreadRun2() {
-		assertPmd("DontCallThreadRun.java", "DontCallThreadRunCheck2.java", 9);
+		assertBug(DontCallThreadRun.class, DontCallThreadRunCheck2.class, 9);
 	}
 
 	@Test
 	public void testDontCallThreadRun3() {
-		assertPmd("DontCallThreadRun.java", "DontCallThreadRunCheck3.java", 13);
+		assertBug(DontCallThreadRun.class, DontCallThreadRunCheck3.class, 13);
 	}
 
 	@Test
 	public void testJumbledIncrementer1() {
-		assertPmd("JumbledIncrementer.java", "JumbledIncrementerCheck1.java", 6);
+		assertBug(JumbledIncrementer.class, JumbledIncrementerCheck1.class, 6);
 	}
 
 	@Test
 	public void testJumbledIncrementer2() {
-		assertPmdNotMatch("JumbledIncrementer.java", "JumbledIncrementerCheck2.java");
+		assertNoBug(JumbledIncrementer.class, JumbledIncrementerCheck2.class);
 	}
 
 	@Test
 	public void testJumbledIncrementer3() {
-		assertPmd("JumbledIncrementer.java", "JumbledIncrementerCheck3.java", 6);
+		assertBug(JumbledIncrementer.class, JumbledIncrementerCheck3.class, 6);
 	}
 
 	@Test
 	public void testMisplacedNullCheckAnd1() {
-		assertPmd("MisplacedNullCheckAnd.java", "MisplacedNullCheckAndCheck1.java", 8);
+		assertBug(MisplacedNullCheckAnd.class, MisplacedNullCheckAndCheck1.class, 8);
 	}
 
 	@Test
 	public void testMisplacedNullCheckAnd2() {
-		assertPmdNotMatch("MisplacedNullCheckAnd.java", "MisplacedNullCheckAndCheck2.java");
+		assertNoBug(MisplacedNullCheckAnd.class, MisplacedNullCheckAndCheck2.class);
 	}
 
 	@Test
 	public void testMisplacedNullCheckOr1() {
-		assertPmd("MisplacedNullCheckOr.java", "MisplacedNullCheckOrCheck1.java", 7);
+		assertBug(MisplacedNullCheckOr.class, MisplacedNullCheckOrCheck1.class, 7);
 	}
 
 	@Test
 	public void testOverrideBothEqualsAndHashcode1() {
-		assertPmd("OverrideBothEqualsAndHashcode.java", "OverrideBothEqualsAndHashcodeCheck1.java", 54);
+		assertBug(OverrideBothEqualsAndHashcode.class, OverrideBothEqualsAndHashcodeCheck1.class, 54);
 	}
 
 	@Test
 	public void testOverrideBothEqualsAndHashcode2() {
-		assertPmdNotMatch("OverrideBothEqualsAndHashcode.java", "OverrideBothEqualsAndHashcodeCheck2.java");
+		assertNoBug(OverrideBothEqualsAndHashcode.class, OverrideBothEqualsAndHashcodeCheck2.class);
 	}
 }

@@ -50,7 +50,8 @@ public class Bugby {
 					continue;
 				}
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -60,11 +61,11 @@ public class Bugby {
 		ClassLoader builtProjectClassLoader = Thread.currentThread().getContextClassLoader();
 		WildcardDictionary wildcardDictionary = new WildcardDictionary();
 		WildcardDictionaryFromFile.addWildcardsFromFile(wildcardDictionary, builtProjectClassLoader, new File(
-				"../wildcard-definitions/src/main/java/org/bugby/wildcard/Wildcards.java"));
+				"../bug-definitions/src/main/java/org/bugby/wildcard/Wildcards.java"));
 		WildcardDictionaryFromFile.addWildcardsFromFile(wildcardDictionary, builtProjectClassLoader, new File(
-				"../wildcard-definitions/src/main/java/org/bugby/wildcard/SomeType.java"));
+				"../bug-definitions/src/main/java/org/bugby/wildcard/SomeType.java"));
 		WildcardDictionaryFromFile.addWildcardsFromFile(wildcardDictionary, builtProjectClassLoader, new File(
-				"../wildcard-definitions/src/main/java/org/bugby/wildcard/WildcardAnnotations.java"));
+				"../bug-definitions/src/main/java/org/bugby/wildcard/WildcardAnnotations.java"));
 		// here add more custom wildcards by dynamic discovery
 
 		// 2. read patterns
