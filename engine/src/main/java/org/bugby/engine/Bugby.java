@@ -66,6 +66,10 @@ public class Bugby {
 				"../bug-definitions/src/main/java/org/bugby/wildcard/SomeType.java"));
 		WildcardDictionaryFromFile.addWildcardsFromFile(wildcardDictionary, builtProjectClassLoader, new File(
 				"../bug-definitions/src/main/java/org/bugby/wildcard/WildcardAnnotations.java"));
+		WildcardDictionaryFromFile.addWildcardsFromFile(wildcardDictionary, builtProjectClassLoader, new File(
+				"../bug-definitions/src/main/java/org/bugby/wildcard/MatchCount.java"));
+		WildcardDictionaryFromFile.addWildcardsFromFile(wildcardDictionary, builtProjectClassLoader, new File(
+				"../bug-definitions/src/main/java/org/bugby/wildcard/Missing.java"));
 		// here add more custom wildcards by dynamic discovery
 
 		// 2. read patterns

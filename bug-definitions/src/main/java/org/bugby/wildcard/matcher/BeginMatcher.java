@@ -24,7 +24,7 @@ public class BeginMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	@Override
 	public boolean matches(Tree node, MatchingContext context) {
 		FluidMatcher match = matching(node, context);
-		List<Tree> list = context.getChildrenListContaining(node);
+		List<Tree> list = context.getSiblingsOf(node);
 		if (list != null && list.size() > 0 && list.get(0) == node) {
 			return match.self(true).done();
 		}

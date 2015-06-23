@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.collect.Multimap;
 import com.sun.source.tree.ExpressionStatementTree;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.Tree;
@@ -44,6 +45,7 @@ abstract public class DefaultTreeMatcher implements TreeMatcher {
 		}
 		return null;
 	}
+
 	// private final long id = ids.incrementAndGet();
 	// private final Map<String, MethodCallExpr> patternAnnotations;
 	//
@@ -63,4 +65,25 @@ abstract public class DefaultTreeMatcher implements TreeMatcher {
 	//
 	// return ASTModelBridges.getBridge(targetNode).areSimilar(targetNode, node);
 	// }
+
+	/**
+	 * called before starting the matching, multiple siblings with multiple nodes from the AST to be checked. Called once for each of the
+	 * siblings involved in the matching process.
+	 * @param ordered
+	 */
+	@Override
+	public void startMatching(boolean ordered, MatchingContext context) {
+		//does nothing
+	}
+
+	/**
+	 * called once the matching was returned by the multiple matchers. The matcher has a chance to alter the final result returned to the caller
+	 * @param currentResult
+	 * @return
+	 */
+	@Override
+	public Multimap<TreeMatcher, Tree> endMatching(Multimap<TreeMatcher, Tree> currentResult, MatchingContext context) {
+		//does nothing
+		return currentResult;
+	}
 }

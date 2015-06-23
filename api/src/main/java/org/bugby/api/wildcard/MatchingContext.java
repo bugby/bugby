@@ -6,6 +6,7 @@ import java.util.List;
 import javax.lang.model.type.TypeMirror;
 
 import com.google.common.collect.Multimap;
+import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.tree.Tree;
 
 public interface MatchingContext {
@@ -16,9 +17,8 @@ public interface MatchingContext {
 	public void addTypeRestriction(String nameInPatternAST, TypeMirror type);
 
 	/**
-	 * for the first node with the given key, the method will store the node and return true. subsequent calls for the
-	 * same key will check if the associated comparator returns 0 between the existing node and the new node.
-	 * 
+	 * for the first node with the given key, the method will store the node and return true. subsequent calls for the same key will check if the
+	 * associated comparator returns 0 between the existing node and the new node.
 	 * @param key
 	 * @param node
 	 * @return
@@ -27,7 +27,6 @@ public interface MatchingContext {
 
 	/**
 	 * clear all mappings, restrictions, etc related to the given node in the source AST
-	 * 
 	 * @param node
 	 */
 	public void clearDataForNode(Tree nodeInSourceAST);
@@ -38,5 +37,11 @@ public interface MatchingContext {
 
 	public Multimap<TreeMatcher, Tree> getMatches();
 
-	List<Tree> getChildrenListContaining(Tree node);
+	public List<Tree> getSiblingsOf(Tree node);
+
+	public <V> void putValue(MatchingValueKey key, V value);
+
+	public <V> V getValue(MatchingValueKey key);
+
+	public CompilationUnitTree getCompilationUnitTree();
 }

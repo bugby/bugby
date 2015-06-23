@@ -37,8 +37,18 @@ public class TestFindbugs {
 	}
 
 	@Test
-	public void testCloneableWithoutClone() {
-		assertBug(CloneableWithoutClone.class, CloneableWithoutCloneCheck1.class, 7);
+	public void testCloneableWithoutCloneNoBug() {
+		assertNoBug(CloneableWithoutClone.class, CloneableWithoutCloneCheck1.class);
+	}
+
+	@Test
+	public void testCloneableWithoutCloneBug() {
+		assertBug(CloneableWithoutClone.class, CloneableWithoutCloneCheck2.class, 3);
+	}
+
+	@Test
+	public void testCloneableWithoutCloneNoBugAsNoCloneable() {
+		assertNoBug(CloneableWithoutClone.class, CloneableWithoutCloneCheck3.class);
 	}
 
 	@Test

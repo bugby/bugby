@@ -67,7 +67,7 @@ public class FluidMatcher {
 		level--;
 		if (currentMatch) {
 			//matches - but put in error to view it better
-			System.err.println(Strings.repeat("  ", level) + "<<  " + toString(matcher) + " = " + currentMatch);
+			System.out.println(Strings.repeat("  ", level) + "<<  " + toString(matcher) + " = " + currentMatch);
 		} else {
 			System.out.println(Strings.repeat("  ", level) + "<< " + toString(matcher) + " = " + currentMatch);
 		}

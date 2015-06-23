@@ -9,7 +9,6 @@ import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.HashMultimap;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.Tree;
@@ -72,9 +71,11 @@ public class SomeMethodMatcher extends DefaultTreeMatcher implements TreeMatcher
 		}
 		try {
 			return correlation.comparator().newInstance();
-		} catch (InstantiationException e) {
+		}
+		catch (InstantiationException e) {
 			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
+		}
+		catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
 	}

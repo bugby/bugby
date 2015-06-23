@@ -14,6 +14,7 @@ import org.bugby.api.javac.ParsedSource;
 import org.bugby.api.javac.TypesUtils;
 import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.MatchingType;
+import org.bugby.api.wildcard.MatchingValueKey;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.engine.algorithm.NodeMatch;
 import org.bugby.engine.algorithm.OneLevelMatcher;
@@ -22,6 +23,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.sun.source.tree.BlockTree;
+import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.tree.StatementTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.util.TreeScanner;
@@ -34,6 +36,7 @@ public class DefaultMatchingContext implements MatchingContext {
 	private final Map<String, CorrelationInfo> correlations = new HashMap<String, CorrelationInfo>();
 	private final Multimap<TreeMatcher, Tree> matches = HashMultimap.create();
 	private final ParsedSource parsedSource;
+	private final Map<MatchingValueKey, Object> values = new HashMap<MatchingValueKey, Object>();
 
 	private static class CorrelationInfo {
 		private final Comparator<Tree> comparator;
@@ -155,11 +158,6 @@ public class DefaultMatchingContext implements MatchingContext {
 		// TODO clear all the other maps
 	}
 
-	@Override
-	public Multimap<TreeMatcher, Tree> matchOrdered(List<TreeMatcher> matchers, List<? extends Tree> nodes) {
-		return transformResult(matchers, oneLevelMatcher.matchOrdered((List<Tree>) nodes, matchers));
-	}
-
 	private Multimap<TreeMatcher, Tree> transformResult(List<TreeMatcher> matchers, List<List<Tree>> oneLevelMatch) {
 		Multimap<TreeMatcher, Tree> result = HashMultimap.create();
 		for (List<Tree> solution : oneLevelMatch) {
@@ -172,9 +170,33 @@ public class DefaultMatchingContext implements MatchingContext {
 		return result;
 	}
 
+	private Multimap<TreeMatcher, Tree> validateResult(List<TreeMatcher> matchers, Multimap<TreeMatcher, Tree> result) {
+		Multimap<TreeMatcher, Tree> finalResult = result;
+		for (TreeMatcher m : matchers) {
+			finalResult = m.endMatching(finalResult, this);
+		}
+		return finalResult;
+	}
+
+	private void startMatchers(List<TreeMatcher> matchers, boolean ordered) {
+		for (TreeMatcher m : matchers) {
+			m.startMatching(ordered, this);
+		}
+
+	}
+
+	@Override
+	public Multimap<TreeMatcher, Tree> matchOrdered(List<TreeMatcher> matchers, List<? extends Tree> nodes) {
+		startMatchers(matchers, true);
+		Multimap<TreeMatcher, Tree> result = transformResult(matchers, oneLevelMatcher.matchOrdered((List<Tree>) nodes, matchers));
+		return validateResult(matchers, result);
+	}
+
 	@Override
 	public Multimap<TreeMatcher, Tree> matchUnordered(List<TreeMatcher> matchers, List<? extends Tree> nodes) {
-		return transformResult(matchers, oneLevelMatcher.matchUnordered((List<Tree>) nodes, matchers));
+		startMatchers(matchers, false);
+		Multimap<TreeMatcher, Tree> result = transformResult(matchers, oneLevelMatcher.matchUnordered((List<Tree>) nodes, matchers));
+		return validateResult(matchers, result);
 	}
 
 	@Override
@@ -186,7 +208,7 @@ public class DefaultMatchingContext implements MatchingContext {
 	private Map<Tree, List<Tree>> childrenListByNode;
 
 	@Override
-	public List<Tree> getChildrenListContaining(Tree node) {
+	public List<Tree> getSiblingsOf(Tree node) {
 		if (childrenListByNode == null) {
 			childrenListByNode = new IdentityHashMap<Tree, List<Tree>>();
 			// only do it for statements at this stage
@@ -201,5 +223,21 @@ public class DefaultMatchingContext implements MatchingContext {
 			}.scan(parsedSource.getCompilationUnitTree(), true);
 		}
 		return childrenListByNode.get(node);
+	}
+
+	@Override
+	public <V> void putValue(MatchingValueKey key, V value) {
+		values.put(key, value);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <V> V getValue(MatchingValueKey key) {
+		return (V) values.get(key);
+	}
+
+	@Override
+	public CompilationUnitTree getCompilationUnitTree() {
+		return parsedSource.getCompilationUnitTree();
 	}
 }

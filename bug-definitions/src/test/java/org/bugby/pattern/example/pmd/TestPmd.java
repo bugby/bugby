@@ -85,7 +85,7 @@ public class TestPmd {
 
 	@Test
 	public void testMisplacedNullCheckOr1() {
-		assertBug(MisplacedNullCheckOr.class, MisplacedNullCheckOrCheck1.class, 7);
+		assertBug(MisplacedNullCheckOr.class, MisplacedNullCheckOrCheck1.class, 6);
 	}
 
 	@Test

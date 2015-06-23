@@ -56,7 +56,7 @@ public class SomeTypeMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		ClassTree ct = (ClassTree) node;
 
 		if (patternNode instanceof ClassTree) {
-			match.unorderedChildren(ct.getMembers(), membersMatchers);
+			match.unorderedChildren(removeSyntheticConstructors(ct.getMembers()), membersMatchers);
 			match.child(ct.getExtendsClause(), extendsMatcher);
 			match.unorderedChildren(ct.getImplementsClause(), implementsMatchers);
 			match.unorderedChildren(ct.getTypeParameters(), typeParametersMatchers);

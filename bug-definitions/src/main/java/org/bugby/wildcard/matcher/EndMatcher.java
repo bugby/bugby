@@ -23,7 +23,7 @@ public class EndMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	@Override
 	public boolean matches(Tree node, MatchingContext context) {
 		FluidMatcher match = matching(node, context);
-		List<Tree> list = context.getChildrenListContaining(node);
+		List<Tree> list = context.getSiblingsOf(node);
 		if (list != null && list.size() > 0 && list.get(list.size() - 1) == node) {
 			return match.done(true);
 		}

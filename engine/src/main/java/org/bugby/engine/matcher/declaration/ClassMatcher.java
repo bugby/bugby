@@ -68,7 +68,7 @@ public class ClassMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		ClassTree ct = (ClassTree) node;
 
 		match.self(TreeUtils.elementFromDeclaration(patternNode).equals(TreeUtils.elementFromDeclaration(ct)));
-		match.unorderedChildren(ct.getMembers(), membersMatchers);
+		match.unorderedChildren(removeSyntheticConstructors(ct.getMembers()), membersMatchers);
 		match.child(ct.getExtendsClause(), extendsMatcher);
 		match.unorderedChildren(ct.getImplementsClause(), implementsMatchers);
 		match.orderedChildren(ct.getTypeParameters(), typeParametersMatchers);

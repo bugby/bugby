@@ -5,8 +5,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -205,7 +207,6 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 
 	@Override
 	public TreeMatcher build(Tree patternNode) {
-
 		if (skip(patternNode)) {
 			return null;
 		}
@@ -228,13 +229,71 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		try {
 			// TODO find here compatible constructor
 			Constructor<?> constructor = matcherClass.getDeclaredConstructors()[0];
-			return (TreeMatcher) constructor.newInstance(patternNode, this);
+			TreeMatcher patternNodeMatcher = (TreeMatcher) constructor.newInstance(patternNode, this);
+			patternNodeMatcher = addAnnotationMatchers(patternNode, patternNodeMatcher);
+			return patternNodeMatcher;
 		}
 		catch (Exception e) {
 			throw new RuntimeException("Cannont create matcher of type:" + matcherClass.getName() + " with node of type:"
 					+ patternNode.getClass().getName() + ":" + e, e);
 		}
 
+	}
+
+	/**
+	 * adds the annotation matchers that would affect the patternNodeMatcher behaviour. Please note that this only applies to nodes that can have
+	 * annotations.
+	 * @param patternNode
+	 * @param patternNodeMatcher
+	 * @return
+	 */
+	private TreeMatcher addAnnotationMatchers(Tree patternNode, TreeMatcher aPatternNodeMatcher) {
+		List<? extends AnnotationTree> annotations = getAnnotationTrees(patternNode);
+		TreeMatcher patternNodeMatcher = aPatternNodeMatcher;
+		for (AnnotationTree annotation : annotations) {
+			patternNodeMatcher = addAnnotationMatcher(annotation, patternNode, patternNodeMatcher);
+		}
+		return patternNodeMatcher;
+	}
+
+	/**
+	 * @param annotation
+	 * @param patternNode
+	 * @param patternNodeMatcher
+	 * @return an matcher adding the annotation specific functionality or patternNodeMatcher if no corresponding matcher was found
+	 */
+	private TreeMatcher addAnnotationMatcher(AnnotationTree annotation, Tree patternNode, TreeMatcher patternNodeMatcher) {
+		TypeMirror type = InternalUtils.typeOf(annotation.getAnnotationType());
+		String matcherName = type.toString();
+		Class<? extends TreeMatcher> matcherClass = wildcardDictionary.findMatcherClass(matcherName);
+		if (matcherClass == null) {
+			return patternNodeMatcher;
+		}
+
+		try {
+			// TODO find here compatible constructor
+			Constructor<?> constructor = matcherClass.getDeclaredConstructors()[0];
+			TreeMatcher annotationNodeMatcher = (TreeMatcher) constructor.newInstance(annotation, patternNode, patternNodeMatcher);
+
+			return annotationNodeMatcher;
+		}
+		catch (Exception e) {
+			throw new RuntimeException("Cannont create annotation matcher of type:" + matcherClass.getName() + " with node of type:"
+					+ patternNode.getClass().getName() + ":" + e, e);
+		}
+	}
+
+	private List<? extends AnnotationTree> getAnnotationTrees(Tree node) {
+		if (node instanceof MethodTree) {
+			return ((MethodTree) node).getModifiers().getAnnotations();
+		}
+		if (node instanceof ClassTree) {
+			return ((ClassTree) node).getModifiers().getAnnotations();
+		}
+		if (node instanceof VariableTree) {
+			return ((VariableTree) node).getModifiers().getAnnotations();
+		}
+		return Collections.emptyList();
 	}
 
 	private Class<?> getTreeInteface(Class<?> clazz) {
