@@ -1,4 +1,4 @@
-package org.bugby.pattern.example.pmd;
+package org.bugby.pattern.example.pmd.basic;
 
 import java.util.Collections;
 import java.util.List;

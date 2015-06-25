@@ -1,4 +1,4 @@
-package org.bugby.pattern.example.pmd;
+package org.bugby.pattern.example.pmd.basic;
 
 public class MisplacedNullCheckAndCheck2 {
 	public void someCode() {

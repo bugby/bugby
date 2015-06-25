@@ -161,6 +161,11 @@ public class DefaultMatchingContext implements MatchingContext {
 	private Multimap<TreeMatcher, Tree> transformResult(List<TreeMatcher> matchers, List<List<Tree>> oneLevelMatch) {
 		Multimap<TreeMatcher, Tree> result = HashMultimap.create();
 		for (List<Tree> solution : oneLevelMatch) {
+			//special case for empty matching
+			if (solution.isEmpty()) {
+				//TODO i should put here the parent.
+				result.put(matchers.get(0), getCompilationUnitTree());
+			}
 			for (int i = 0; i < solution.size(); ++i) {
 				if (!result.containsEntry(matchers.get(i), solution.get(i))) {
 					result.put(matchers.get(i), solution.get(i));

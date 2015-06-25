@@ -2,27 +2,10 @@
 - when i have @Not - it matches if NO match exists, should make sure it's not affected by SOME matches
 - remove @GoodExample and replace it with @BadExample -> @BugExample (or problem example).
  put @Not for what was in the @GoodExample and not in the trigger
- 
- for @Not for example
- 
- public class Pattern {
- 
- @Not
- public void hashCode(){
- }
- 
- }
- 
-should not match
 
- public class Pattern {
- 
- public void otherMethod(){
- }
- 
- public void hashCode(){
- }
- 
- }
- 
- i.e. should not take only the first match -> match count = 0
+
+
+- TreeWrapper
+- special matchers for code size and complexity
+- VariableMatcher should be by default !?
+- all definitions (class, method, variable/field, should create a "matching table") especially when calling methods of external types

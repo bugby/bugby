@@ -1,4 +1,4 @@
-package org.bugby.bugs.pmd;
+package org.bugby.bugs.pmd.basic;
 
 import static org.bugby.wildcard.Wildcards.someTypedValue;
 

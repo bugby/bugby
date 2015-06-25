@@ -6,18 +6,14 @@ import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.Multimap;
-import com.sun.source.tree.CaseTree;
 import com.sun.source.tree.CatchTree;
 import com.sun.source.tree.Tree;
 
 public class CatchMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final CatchTree patternNode;
 	private final TreeMatcher parameterMatcher;
 	private final TreeMatcher blockMatcher;
 
 	public CatchMatcher(CatchTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
 		this.parameterMatcher = factory.build(patternNode.getParameter());
 		this.blockMatcher = factory.build(patternNode.getBlock());
 	}
@@ -25,12 +21,11 @@ public class CatchMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	@Override
 	public boolean matches(Tree node, MatchingContext context) {
 		FluidMatcher match = matching(node, context);
-		if (!(node instanceof CaseTree)) {
+		if (!(node instanceof CatchTree)) {
 			return match.done(false);
 		}
 		CatchTree ct = (CatchTree) node;
 
-		
 		match.child(ct.getBlock(), blockMatcher);
 		match.child(ct.getParameter(), parameterMatcher);
 

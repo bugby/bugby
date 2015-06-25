@@ -9,6 +9,7 @@ import org.bugby.wildcard.matcher.NoCodeMatcher;
 import org.bugby.wildcard.matcher.SomeCodeMatcher;
 import org.bugby.wildcard.matcher.SomeConditionMatcher;
 import org.bugby.wildcard.matcher.SomeConditionUsingMatcher;
+import org.bugby.wildcard.matcher.SomeExpressionThrowingMatcher;
 import org.bugby.wildcard.matcher.SomeExpressionUsingMatcher;
 import org.bugby.wildcard.matcher.SomeFieldMatcher;
 import org.bugby.wildcard.matcher.SomeMethodMatcher;
@@ -61,8 +62,16 @@ public class Wildcards {
 		return null;
 	}
 
-	@Wildcard(SomeCodeMatcher.class)
-	public static void someCode() {//
+	/**
+	 * matches any expression. The clazz parameter that represents the class of the exception to be thrown is not checked. It has only the role
+	 * to allow throwing the desired exception. This is usually used when the pattern concentrates more on the "catch" part of an block.
+	 * @param clazz
+	 * @return
+	 * @throws T
+	 */
+	@Wildcard(SomeExpressionThrowingMatcher.class)
+	public static <T extends Exception, V> V someExpressionThrowing(Class<T> clazz) throws T {//
+		return null;
 	}
 
 	@Wildcard(SomeConditionMatcher.class)
@@ -108,5 +117,18 @@ public class Wildcards {
 	@Wildcard(AnyBranchMatcher.class)
 	public static void anyBranch() {
 
+	}
+
+	/**
+	 * matches any block of code or an entire method. It can be used as a method definition only, not as a method call! Example:
+	 *
+	 * <pre>
+	 * public void someCode() {
+	 * 	//... other matchers
+	 * }
+	 * </pre>
+	 */
+	@Wildcard(SomeCodeMatcher.class)
+	public static void someCode() {//
 	}
 }
