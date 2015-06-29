@@ -8,6 +8,7 @@ import com.sun.source.tree.Tree;
 
 /**
  * this represents the path to a matching pair (matcher, node)
+ * 
  * @author acraciun
  */
 public class MatchingPath {
@@ -17,6 +18,7 @@ public class MatchingPath {
 	private MatchingPath parent;
 	private final List<MatchingPath> children;
 	private final List<MatchingValueKey> valueKeys;
+	private final List<List<MatchingPath>> solutions;
 
 	public MatchingPath(MatchingContext context, TreeMatcher matcher, Tree sourceNode, MatchingPath parent) {
 		this.context = context;
@@ -25,6 +27,7 @@ public class MatchingPath {
 		this.parent = parent;
 		this.children = new ArrayList<MatchingPath>();
 		this.valueKeys = new ArrayList<MatchingValueKey>();
+		this.solutions = new ArrayList<List<MatchingPath>>();
 		if (parent != null) {
 			parent.addChild(this);
 		}
@@ -59,10 +62,6 @@ public class MatchingPath {
 		children.add(child);
 	}
 
-	protected void removeChild(MatchingPath child) {
-		children.remove(child);
-	}
-
 	public void addValueKey(MatchingValueKey key) {
 		valueKeys.add(key);
 	}
@@ -75,13 +74,18 @@ public class MatchingPath {
 		for (MatchingPath child : children) {
 			child.remove();
 		}
-		if (parent != null) {
-			parent.removeChild(this);
-		}
+		children.clear();
 		for (MatchingValueKey key : valueKeys) {
 			context.removeValue(key);
 		}
 		parent = null;
 	}
 
+	public void addSolution() {
+		solutions.add(new ArrayList<MatchingPath>(children));
+	}
+
+	public List<List<MatchingPath>> getSolutions() {
+		return Collections.unmodifiableList(solutions);
+	}
 }

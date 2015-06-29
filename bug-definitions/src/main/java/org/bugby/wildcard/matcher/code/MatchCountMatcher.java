@@ -32,7 +32,7 @@ public class MatchCountMatcher extends DefaultTreeMatcher {
 		min = ann.min();
 		max = ann.max();
 		this.annotatedNodeMatcher = annotatedNodeMatcher;
-		matchingKey = new MatchingValueKey(getId(), "METHOD", "COUNT");
+		matchingKey = new MatchingValueKey("METHOD", "COUNT:" + getId());
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class MatchCountMatcher extends DefaultTreeMatcher {
 		if (count >= min && count <= max) {
 			return super.endMatching(currentResult, context);
 		}
-		//return empty result as there is no match
+		// return empty result as there is no match
 		return HashMultimap.create();
 	}
 

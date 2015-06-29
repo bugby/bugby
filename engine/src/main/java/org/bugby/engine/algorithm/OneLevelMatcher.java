@@ -35,6 +35,7 @@ public class OneLevelMatcher<T, W> {
 
 	/**
 	 * the wildcards have to be matched in order
+	 * 
 	 * @param nodes
 	 * @param wildcards
 	 * @return
@@ -68,6 +69,7 @@ public class OneLevelMatcher<T, W> {
 						oneMatch.add(nodes.get(pos.getNode()));
 					}
 					matchings.add(oneMatch);
+					nodeMatch.solutionFound();
 				}
 			}
 		}
@@ -131,6 +133,7 @@ public class OneLevelMatcher<T, W> {
 
 	/**
 	 * the wildcards may match in any order
+	 * 
 	 * @param nodes
 	 * @param wildcards
 	 * @return
@@ -175,6 +178,7 @@ public class OneLevelMatcher<T, W> {
 						result.add(oneResult);
 					}
 				}
+				nodeMatch.solutionFound();
 				nodeMatch.removedNodeFromMatch(firstWildcard, nodes.get(n));
 			}
 		}

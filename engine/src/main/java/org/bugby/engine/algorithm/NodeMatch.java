@@ -9,4 +9,9 @@ public interface NodeMatch<T, W> {
 
 	public void removedNodeFromMatch(W wildcard, T node);
 
+	/**
+	 * called when a full solution was found during the current multi-node matching
+	 */
+	public void solutionFound();
+
 }

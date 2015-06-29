@@ -2,34 +2,27 @@ package org.bugby.api.wildcard;
 
 public final class MatchingValueKey {
 	private final String matcherName;
-	private final String valueName;
-	private final int matcherId;
+	private final Object valueKey;
 
-	public MatchingValueKey(int matcherId, String matcherName, String valueName) {
-		this.matcherId = matcherId;
+	public MatchingValueKey(String matcherName, Object valueKey) {
 		this.matcherName = matcherName;
-		this.valueName = valueName;
+		this.valueKey = valueKey;
 	}
 
 	public String getMatcherName() {
 		return matcherName;
 	}
 
-	public String getValueName() {
-		return valueName;
-	}
-
-	public int getMatcherId() {
-		return matcherId;
+	public Object getValueKey() {
+		return valueKey;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + matcherId;
-		result = prime * result + (matcherName == null ? 0 : matcherName.hashCode());
-		result = prime * result + (valueName == null ? 0 : valueName.hashCode());
+		result = prime * result + ((matcherName == null) ? 0 : matcherName.hashCode());
+		result = prime * result + ((valueKey == null) ? 0 : valueKey.hashCode());
 		return result;
 	}
 
@@ -45,9 +38,6 @@ public final class MatchingValueKey {
 			return false;
 		}
 		MatchingValueKey other = (MatchingValueKey) obj;
-		if (matcherId != other.matcherId) {
-			return false;
-		}
 		if (matcherName == null) {
 			if (other.matcherName != null) {
 				return false;
@@ -55,11 +45,11 @@ public final class MatchingValueKey {
 		} else if (!matcherName.equals(other.matcherName)) {
 			return false;
 		}
-		if (valueName == null) {
-			if (other.valueName != null) {
+		if (valueKey == null) {
+			if (other.valueKey != null) {
 				return false;
 			}
-		} else if (!valueName.equals(other.valueName)) {
+		} else if (!valueKey.equals(other.valueKey)) {
 			return false;
 		}
 		return true;

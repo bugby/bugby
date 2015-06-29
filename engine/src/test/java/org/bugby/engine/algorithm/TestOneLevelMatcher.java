@@ -28,6 +28,12 @@ public class TestOneLevelMatcher extends CommonMatcherTest {
 				//
 
 			}
+
+			@Override
+			public void solutionFound() {
+				//
+
+			}
 		});
 	}
 

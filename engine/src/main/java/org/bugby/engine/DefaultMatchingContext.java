@@ -3,7 +3,6 @@ package org.bugby.engine;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,7 +32,6 @@ public class DefaultMatchingContext implements MatchingContext {
 	private final OneLevelMatcher<Tree, TreeMatcher> oneLevelMatcher = new OneLevelMatcher<Tree, TreeMatcher>(nodeMatch());
 
 	private final Map<String, String> variables = new HashMap<String, String>();
-	private final Map<String, TypeMirror> typeRestrictions = new HashMap<String, TypeMirror>();
 	private final Map<String, CorrelationInfo> correlations = new HashMap<String, CorrelationInfo>();
 	private final Multimap<TreeMatcher, Tree> matches = HashMultimap.create();
 	private final ParsedSource parsedSource;
@@ -114,37 +112,14 @@ public class DefaultMatchingContext implements MatchingContext {
 				if (child != null) {
 					child.remove();
 				}
-				DefaultMatchingContext.this.clearDataForNode(node);
+
+			}
+
+			@Override
+			public void solutionFound() {
+				currentPath.addSolution();
 			}
 		};
-	}
-
-	//	@Override
-	//	public String getVariableMapping(String nameInPatternAST) {
-	//		return variables.get(nameInPatternAST);
-	//	}
-	//
-	//	@Override
-	//	public boolean setVariableMapping(String nameInPatternAST, String currentName, TypeMirror currentType) {
-	//		TypeMirror tr = typeRestrictions.get(nameInPatternAST);
-	//		if (tr == null || parsedSource.getTypes().isAssignable(tr, parsedSource.getTypes().erasure(currentType))) {
-	//			variables.put(nameInPatternAST, currentName);
-	//			return true;
-	//		}
-	//		return false;
-	//	}
-
-	@Override
-	public void addTypeRestriction(String nameInPatternAST, TypeMirror type) {
-		// type may be in the class loader of the pattern
-		if (!TypesUtils.isObject(type)) {
-			TypeMirror rawType = parsedSource.getTypes().erasure(type);
-			TypeMirror reloaded = rawType;
-			if (!rawType.getKind().isPrimitive()) {
-				reloaded = parsedSource.getElements().getTypeElement(rawType.toString()).asType();
-			}
-			typeRestrictions.put(nameInPatternAST, reloaded);
-		}
 	}
 
 	@Override
@@ -162,27 +137,12 @@ public class DefaultMatchingContext implements MatchingContext {
 		return false;
 	}
 
-	@Override
-	public void clearDataForNode(Tree nodeInSourceAST) {
-		// clear correlations
-		Iterator<Map.Entry<String, CorrelationInfo>> it = correlations.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<String, CorrelationInfo> entry = it.next();
-			entry.getValue().removeNode(nodeInSourceAST);
-			if (entry.getValue().getNodeCount() == 0) {
-				it.remove();
-			}
-		}
-
-		// TODO clear all the other maps
-	}
-
 	private Multimap<TreeMatcher, Tree> transformResult(List<TreeMatcher> matchers, List<List<Tree>> oneLevelMatch) {
 		Multimap<TreeMatcher, Tree> result = HashMultimap.create();
 		for (List<Tree> solution : oneLevelMatch) {
-			//special case for empty matching
+			// special case for empty matching
 			if (solution.isEmpty()) {
-				//TODO i should put here the parent.
+				// TODO i should put here the parent.
 				result.put(matchers.get(0), getCompilationUnitTree());
 			}
 			for (int i = 0; i < solution.size(); ++i) {
@@ -271,7 +231,8 @@ public class DefaultMatchingContext implements MatchingContext {
 
 	@Override
 	public void removeValue(MatchingValueKey key) {
-		//TODO should i call the path as well here !? need to clarify who can call what
+		// TODO should i call the path as well here !? need to clarify who can call what
+		// TODO i should keep a counter for when keys are shared
 		values.remove(key);
 	}
 
@@ -281,8 +242,42 @@ public class DefaultMatchingContext implements MatchingContext {
 	}
 
 	@Override
+	public Map<MatchingValueKey, Object> getValues() {
+		return values;
+	}
+
+	@Override
 	public MatchingPath getCurrentMatchingPath() {
 		return currentPath;
+	}
+
+	public MatchingPath getRootMatchingPath() {
+		return rootPath;
+	}
+
+	@Override
+	public ParsedSource getParsedSource() {
+		return parsedSource;
+	}
+
+	private TypeMirror processType(TypeMirror type) {
+		if (!TypesUtils.isObject(type)) {
+			TypeMirror rawType = getParsedSource().getTypes().erasure(type);
+			TypeMirror reloaded = rawType;
+			if (!rawType.getKind().isPrimitive()) {
+				reloaded = getParsedSource().getElements().getTypeElement(rawType.toString()).asType();
+			}
+			return reloaded;
+		}
+		return getParsedSource().getElements().getTypeElement(type.toString()).asType();
+	}
+
+	@Override
+	public boolean compatibleTypes(TypeMirror patternType, TypeMirror sourceNodeType) {
+		TypeMirror processedPatternType = processType(patternType);
+		TypeMirror processedSourceNodeType = processType(sourceNodeType);
+
+		return getParsedSource().getTypes().isAssignable(processedSourceNodeType, processedPatternType);
 	}
 
 }

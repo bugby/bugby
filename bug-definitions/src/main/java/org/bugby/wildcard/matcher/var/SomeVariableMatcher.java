@@ -1,5 +1,7 @@
 package org.bugby.wildcard.matcher.var;
 
+import java.util.Map;
+
 import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
 
@@ -11,6 +13,7 @@ import org.bugby.api.wildcard.MatchingValueKey;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
+import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.IdentifierTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
@@ -19,7 +22,9 @@ public class SomeVariableMatcher extends DefaultTreeMatcher implements TreeMatch
 	private final Tree patternNode;
 	private final String variableName;
 	private final Element patternVariableElement;
-	private final MatchingValueKey matchingKey;
+	private final boolean isDefinition;
+	private final TreeMatcher initMatcher;
+	private final TreeMatcher typeMatcher;
 
 	// private final Scope scopeInPattern;
 
@@ -27,7 +32,19 @@ public class SomeVariableMatcher extends DefaultTreeMatcher implements TreeMatch
 		this.patternNode = patternNode;
 		variableName = getVariableName(patternNode);
 		patternVariableElement = getVariableElement(patternNode);
-		matchingKey = new MatchingValueKey(getId(), "SomeVariableMatcher", "ELEMENT");
+		isDefinition = patternNode instanceof VariableTree;
+		if (patternNode instanceof VariableTree) {
+			ExpressionTree init = ((VariableTree) patternNode).getInitializer();
+			if (init != null) {
+				initMatcher = factory.build(init);
+			} else {
+				initMatcher = null;
+			}
+			typeMatcher = factory.build(((VariableTree) patternNode).getType());
+		} else {
+			initMatcher = null;
+			typeMatcher = null;
+		}
 	}
 
 	private Element getVariableElement(Tree node) {
@@ -68,24 +85,54 @@ public class SomeVariableMatcher extends DefaultTreeMatcher implements TreeMatch
 			return match.done(false);
 		}
 
+		boolean isSourceNodeDefinition = node instanceof VariableTree;
+		if (isDefinition != isSourceNodeDefinition) {
+			// match usage with usage and definition with definition
+			return match.done(false);
+		}
 		match.self(true);
 
-		//TODO what about initializer!!
+		MatchingValueKey matchingKey = new MatchingValueKey("SomeVariableMatcher", patternVariableElement);
+
 		Element currentMapping = context.getValue(matchingKey);
 		if (currentMapping == null) {
-			// no assignment made yet
-			//			if (!context.setVariableMapping(variableName, currentVarName, getVariableType(node))) {
-			//				// wrong type - no match
-			//				return match.done(false);
-			//			}
-			context.putValue(matchingKey, sourceVarElement);
-			System.out.println("!!!!!!!!! ASSIGN " + patternVariableElement + " to " + sourceVarElement);
-			match.self(true);
+			boolean variableAlreadyAssign = checkAlreadyAssigned(sourceVarElement, context.getValues());
+			if (variableAlreadyAssign) {
+				return match.done(false);
+			}
+
+			if (!isDefinition) {
+				match.self(context.compatibleTypes(patternVariableElement.asType(), sourceVarElement.asType()));
+			}
 		} else {
 			match.self(currentMapping.equals(sourceVarElement));
 		}
 
+		if (isDefinition) {
+			VariableTree mt = (VariableTree) node;
+			match.child(mt.getType(), typeMatcher);
+			if (initMatcher != null) {
+				match.child(mt.getInitializer(), initMatcher);
+			}
+		}
+
+		if (currentMapping == null && match.isCurrentMatch()) {
+			context.putValue(matchingKey, sourceVarElement);
+			System.out.println("!!!!!!!!! ASSIGN " + patternVariableElement + " to " + sourceVarElement);
+		}
 		return match.done();
+	}
+
+	private boolean checkAlreadyAssigned(Element sourceVarElement, Map<MatchingValueKey, Object> values) {
+		for (Map.Entry<MatchingValueKey, Object> entry : values.entrySet()) {
+			if (entry.getKey().getMatcherName().equals("SomeVariableMatcher")) {
+				Element assigned = (Element) entry.getValue();
+				if (sourceVarElement.equals(assigned)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	@Override

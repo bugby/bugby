@@ -28,7 +28,7 @@ public class FluidMatcher {
 	}
 
 	protected <T> List<T> list(T element) {
-		return element == null ? Collections.<T> emptyList() : Collections.singletonList(element);
+		return element == null ? Collections.<T>emptyList() : Collections.singletonList(element);
 	}
 
 	public FluidMatcher child(Tree child, TreeMatcher childMatcher) {
@@ -51,8 +51,8 @@ public class FluidMatcher {
 			currentMatch = true;
 			return this;
 		}
-		Multimap<TreeMatcher, Tree> childrenMatch =
-				ordered ? context.matchOrdered(matchers, children) : context.matchUnordered(matchers, children);
+		Multimap<TreeMatcher, Tree> childrenMatch = ordered ? context.matchOrdered(matchers, children) : context.matchUnordered(matchers,
+				children);
 
 		currentMatch = !childrenMatch.isEmpty();
 		return this;
@@ -66,7 +66,7 @@ public class FluidMatcher {
 	public boolean done() {
 		level--;
 		if (currentMatch) {
-			//matches - but put in error to view it better
+			// matches - but put in error to view it better
 			System.out.println(Strings.repeat("  ", level) + "<<  " + toString(matcher) + " = " + currentMatch);
 		} else {
 			System.out.println(Strings.repeat("  ", level) + "<< " + toString(matcher) + " = " + currentMatch);
@@ -79,4 +79,9 @@ public class FluidMatcher {
 		currentMatch &= b;
 		return this;
 	}
+
+	public boolean isCurrentMatch() {
+		return currentMatch;
+	}
+
 }

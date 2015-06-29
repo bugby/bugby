@@ -40,6 +40,7 @@ import org.bugby.engine.matcher.expression.MethodInvocationMatcher;
 import org.bugby.engine.matcher.expression.NewArrayMatcher;
 import org.bugby.engine.matcher.expression.NewClassMatcher;
 import org.bugby.engine.matcher.expression.ParenthesizedMatcher;
+import org.bugby.engine.matcher.expression.PrimitiveTypeMatcher;
 import org.bugby.engine.matcher.expression.TypeCastMatcher;
 import org.bugby.engine.matcher.expression.UnaryMatcher;
 import org.bugby.engine.matcher.statement.AssertMatcher;
@@ -94,6 +95,7 @@ import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.NewArrayTree;
 import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.ParenthesizedTree;
+import com.sun.source.tree.PrimitiveTypeTree;
 import com.sun.source.tree.ReturnTree;
 import com.sun.source.tree.SwitchTree;
 import com.sun.source.tree.SynchronizedTree;
@@ -107,10 +109,9 @@ import com.sun.source.tree.WhileLoopTree;
 
 public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 	private static Set<Class<? extends Annotation>> skipAnnotations = new HashSet<Class<? extends Annotation>>(Arrays.asList(GoodExample.class,
-		GoodExampleTrigger.class, BadExample.class, SuppressWarnings.class, Override.class, Correlation.class));
+			GoodExampleTrigger.class, BadExample.class, SuppressWarnings.class, Override.class, Correlation.class));
 
-	private static final Map<Class<? extends Tree>, Class<? extends TreeMatcher>> matcherClasses =
-			new HashMap<Class<? extends Tree>, Class<? extends TreeMatcher>>();
+	private static final Map<Class<? extends Tree>, Class<? extends TreeMatcher>> matcherClasses = new HashMap<Class<? extends Tree>, Class<? extends TreeMatcher>>();
 	static {
 		matcherClasses.put(ClassTree.class, ClassMatcher.class);
 		matcherClasses.put(MethodTree.class, MethodMatcher.class);
@@ -121,6 +122,7 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 
 		matcherClasses.put(ConditionalExpressionTree.class, ConditionalMatcher.class);
 		matcherClasses.put(IdentifierTree.class, IdentifierMatcher.class);
+		matcherClasses.put(PrimitiveTypeTree.class, PrimitiveTypeMatcher.class);
 		matcherClasses.put(InstanceOfTree.class, InstanceofMatcher.class);
 		matcherClasses.put(LiteralTree.class, LiteralMatcher.class);
 		matcherClasses.put(MemberSelectTree.class, MemberSelectMatcher.class);
@@ -183,7 +185,7 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 			if (element.getAnnotation(BadExample.class) != null || //
 					element.getAnnotation(GoodExample.class) != null || //
 					element.getAnnotation(GoodExampleTrigger.class) != null) {
-				//XXX: this should be done differently, probably in the annotation
+				// XXX: this should be done differently, probably in the annotation
 				return "SomeType";
 			}
 			return ((ClassTree) node).getSimpleName().toString();
@@ -210,7 +212,7 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 
 	@Override
 	public TreeMatcher buildForType(String type) {
-		//TODO here I need a mechanism to find the source of a given type
+		// TODO here I need a mechanism to find the source of a given type
 		final String BUG_DEF_PATH = "src/main/java/";
 		return buildFromFile(new File(BUG_DEF_PATH, type.replace('.', File.separatorChar) + ".java"));
 	}
@@ -257,8 +259,9 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 	}
 
 	/**
-	 * adds the annotation matchers that would affect the patternNodeMatcher behaviour. Please note that this only applies to nodes that can have
-	 * annotations.
+	 * adds the annotation matchers that would affect the patternNodeMatcher behaviour. Please note that this only
+	 * applies to nodes that can have annotations.
+	 * 
 	 * @param patternNode
 	 * @param patternNodeMatcher
 	 * @return
@@ -276,7 +279,8 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 	 * @param annotation
 	 * @param patternNode
 	 * @param patternNodeMatcher
-	 * @return an matcher adding the annotation specific functionality or patternNodeMatcher if no corresponding matcher was found
+	 * @return an matcher adding the annotation specific functionality or patternNodeMatcher if no corresponding matcher
+	 *         was found
 	 */
 	private TreeMatcher addAnnotationMatcher(AnnotationTree annotation, Tree patternNode, TreeMatcher patternNodeMatcher) {
 		TypeMirror type = InternalUtils.typeOf(annotation.getAnnotationType());
