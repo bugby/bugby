@@ -1,9 +1,8 @@
-package org.bugby.pattern.example.value;
+package org.bugby.pattern.example.test;
 
 import static org.bugby.pattern.example.MatchingHelper.assertBug;
 import static org.bugby.pattern.example.MatchingHelper.assertNoBug;
 
-import org.bugby.bugs.value.Methods;
 import org.junit.Test;
 
 public class TestMatchingCount {

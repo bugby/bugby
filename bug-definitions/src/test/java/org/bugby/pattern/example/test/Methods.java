@@ -1,4 +1,4 @@
-package org.bugby.bugs.value;
+package org.bugby.pattern.example.test;
 
 import org.bugby.annotation.BadExample;
 import org.bugby.wildcard.MatchCount;

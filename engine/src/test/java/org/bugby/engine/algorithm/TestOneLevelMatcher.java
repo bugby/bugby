@@ -24,7 +24,7 @@ public class TestOneLevelMatcher extends CommonMatcherTest {
 			}
 
 			@Override
-			public void removedNodeFromMatch(IndexedValue node) {
+			public void removedNodeFromMatch(Wildcard<IndexedValue> wildcard, IndexedValue node) {
 				//
 
 			}

@@ -83,8 +83,8 @@ public class Bugby {
 		ParsedSource parsedSource = SourceParser.parse(sourceFile, builtProjectClassLoader, "UTF-8");
 
 		// 4. apply matcher
-		MatchingContext context = new DefaultMatchingContext(parsedSource);
-		boolean ok = rootMatcher.matches(parsedSource.getCompilationUnitTree(), context);
+		MatchingContext context = new DefaultMatchingContext(rootMatcher, parsedSource);
+		boolean ok = context.matches();
 		Multimap<TreeMatcher, Tree> matches = context.getMatches();
 		if (!ok) {
 			matches = HashMultimap.create();

@@ -10,9 +10,9 @@ import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.tree.Tree;
 
 public interface MatchingContext {
-	public String getVariableMapping(String nameInPatternAST);
-
-	public boolean setVariableMapping(String nameInPatternAST, String currentName, TypeMirror type);
+	//	public String getVariableMapping(String nameInPatternAST);
+	//
+	//	public boolean setVariableMapping(String nameInPatternAST, String currentName, TypeMirror type);
 
 	public void addTypeRestriction(String nameInPatternAST, TypeMirror type);
 
@@ -43,5 +43,20 @@ public interface MatchingContext {
 
 	public <V> V getValue(MatchingValueKey key);
 
+	public void removeValue(MatchingValueKey key);
+
 	public CompilationUnitTree getCompilationUnitTree();
+
+	/**
+	 * contains as last node the current matcher being checked. It assumes that the next check is actually part of the path, until the matches
+	 * method of the matcher returns.
+	 * @return
+	 */
+	public MatchingPath getCurrentMatchingPath();
+
+	/**
+	 * @return true if there is a match between the pattern and the source corresponding to this context
+	 */
+	boolean matches();
+
 }

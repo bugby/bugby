@@ -18,7 +18,7 @@ import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 
 public class MatchCountMatcher extends DefaultTreeMatcher {
-	private final static MatchingValueKey MATCHING_KEY = new MatchingValueKey("METHOD", "COUNT");
+	private final MatchingValueKey matchingKey;
 	private final int min;
 	private final int max;
 	private final TreeMatcher annotatedNodeMatcher;
@@ -32,6 +32,7 @@ public class MatchCountMatcher extends DefaultTreeMatcher {
 		min = ann.min();
 		max = ann.max();
 		this.annotatedNodeMatcher = annotatedNodeMatcher;
+		matchingKey = new MatchingValueKey(getId(), "METHOD", "COUNT");
 	}
 
 	@Override
@@ -39,20 +40,20 @@ public class MatchCountMatcher extends DefaultTreeMatcher {
 		boolean matched = annotatedNodeMatcher.matches(node, context);
 
 		if (matched) {
-			context.putValue(MATCHING_KEY, (Integer) context.getValue(MATCHING_KEY) + 1);
+			context.putValue(matchingKey, (Integer) context.getValue(matchingKey) + 1);
 		}
 		return matched;
 	}
 
 	@Override
 	public void startMatching(boolean ordered, MatchingContext context) {
-		context.putValue(MATCHING_KEY, 0);
+		context.putValue(matchingKey, 0);
 		super.startMatching(ordered, context);
 	}
 
 	@Override
 	public Multimap<TreeMatcher, Tree> endMatching(Multimap<TreeMatcher, Tree> currentResult, MatchingContext context) {
-		int count = context.getValue(MATCHING_KEY);
+		int count = context.getValue(matchingKey);
 		if (count >= min && count <= max) {
 			return super.endMatching(currentResult, context);
 		}

@@ -11,6 +11,17 @@ import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 
 abstract public class DefaultTreeMatcher implements TreeMatcher {
+	private static volatile int sequence = 0;
+
+	private final int id;
+
+	protected DefaultTreeMatcher() {
+		id = sequence++;
+	}
+
+	public int getId() {
+		return id;
+	}
 
 	protected FluidMatcher matching(Tree node, MatchingContext context) {
 		return new FluidMatcher(context, node, this);

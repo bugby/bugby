@@ -58,7 +58,7 @@ public class OneLevelMatcher<T, W> {
 			MatchPosition start = matchingStack.pop();
 			// notice that the node is no longer part of the ongoing match, so context can be cleaned
 			if (start.node >= 0) {
-				nodeMatch.removedNodeFromMatch(nodes.get(start.node));
+				nodeMatch.removedNodeFromMatch(wildcards.get(start.wildcard), nodes.get(start.node));
 			}
 			if (start.getNode() < nodes.size() - 1) {
 				if (matchOrderedOne(nodes, wildcards, start.getNode() + 1, start.getWildcard(), matchingStack)) {
@@ -175,7 +175,7 @@ public class OneLevelMatcher<T, W> {
 						result.add(oneResult);
 					}
 				}
-				nodeMatch.removedNodeFromMatch(nodes.get(n));
+				nodeMatch.removedNodeFromMatch(firstWildcard, nodes.get(n));
 			}
 		}
 		return result;

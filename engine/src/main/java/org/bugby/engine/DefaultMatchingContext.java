@@ -13,6 +13,7 @@ import javax.lang.model.type.TypeMirror;
 import org.bugby.api.javac.ParsedSource;
 import org.bugby.api.javac.TypesUtils;
 import org.bugby.api.wildcard.MatchingContext;
+import org.bugby.api.wildcard.MatchingPath;
 import org.bugby.api.wildcard.MatchingType;
 import org.bugby.api.wildcard.MatchingValueKey;
 import org.bugby.api.wildcard.TreeMatcher;
@@ -37,6 +38,11 @@ public class DefaultMatchingContext implements MatchingContext {
 	private final Multimap<TreeMatcher, Tree> matches = HashMultimap.create();
 	private final ParsedSource parsedSource;
 	private final Map<MatchingValueKey, Object> values = new HashMap<MatchingValueKey, Object>();
+
+	private final TreeMatcher rootMatcher;
+
+	private MatchingPath rootPath;
+	private MatchingPath currentPath;
 
 	private static class CorrelationInfo {
 		private final Comparator<Tree> comparator;
@@ -74,19 +80,25 @@ public class DefaultMatchingContext implements MatchingContext {
 
 	}
 
-	public DefaultMatchingContext(ParsedSource parsedSource) {
+	public DefaultMatchingContext(TreeMatcher rootMatcher, ParsedSource parsedSource) {
 		this.parsedSource = parsedSource;
+		this.rootMatcher = rootMatcher;
 	}
 
 	private NodeMatch<Tree, TreeMatcher> nodeMatch() {
 		return new NodeMatch<Tree, TreeMatcher>() {
 			@Override
 			public boolean match(TreeMatcher wildcard, Tree node) {
+				currentPath = new MatchingPath(DefaultMatchingContext.this, wildcard, node, currentPath);
 				boolean ok = wildcard.matches(node, DefaultMatchingContext.this);
+				MatchingPath oldPath = currentPath;
+				currentPath = currentPath.getParent();
 				if (ok) {
 					if (!matches.containsEntry(wildcard, node)) {
 						matches.put(wildcard, node);
 					}
+				} else {
+					oldPath.remove();
 				}
 				return ok;
 			}
@@ -97,26 +109,30 @@ public class DefaultMatchingContext implements MatchingContext {
 			}
 
 			@Override
-			public void removedNodeFromMatch(Tree node) {
+			public void removedNodeFromMatch(TreeMatcher wildcard, Tree node) {
+				MatchingPath child = currentPath.getChild(wildcard, node);
+				if (child != null) {
+					child.remove();
+				}
 				DefaultMatchingContext.this.clearDataForNode(node);
 			}
 		};
 	}
 
-	@Override
-	public String getVariableMapping(String nameInPatternAST) {
-		return variables.get(nameInPatternAST);
-	}
-
-	@Override
-	public boolean setVariableMapping(String nameInPatternAST, String currentName, TypeMirror currentType) {
-		TypeMirror tr = typeRestrictions.get(nameInPatternAST);
-		if (tr == null || parsedSource.getTypes().isAssignable(tr, parsedSource.getTypes().erasure(currentType))) {
-			variables.put(nameInPatternAST, currentName);
-			return true;
-		}
-		return false;
-	}
+	//	@Override
+	//	public String getVariableMapping(String nameInPatternAST) {
+	//		return variables.get(nameInPatternAST);
+	//	}
+	//
+	//	@Override
+	//	public boolean setVariableMapping(String nameInPatternAST, String currentName, TypeMirror currentType) {
+	//		TypeMirror tr = typeRestrictions.get(nameInPatternAST);
+	//		if (tr == null || parsedSource.getTypes().isAssignable(tr, parsedSource.getTypes().erasure(currentType))) {
+	//			variables.put(nameInPatternAST, currentName);
+	//			return true;
+	//		}
+	//		return false;
+	//	}
 
 	@Override
 	public void addTypeRestriction(String nameInPatternAST, TypeMirror type) {
@@ -210,6 +226,12 @@ public class DefaultMatchingContext implements MatchingContext {
 	}
 
 	@Override
+	public boolean matches() {
+		currentPath = rootPath = new MatchingPath(this, rootMatcher, getCompilationUnitTree(), null);
+		return rootMatcher.matches(parsedSource.getCompilationUnitTree(), this);
+	}
+
+	@Override
 	public Multimap<TreeMatcher, Tree> getMatches() {
 		return matches;
 	}
@@ -238,6 +260,7 @@ public class DefaultMatchingContext implements MatchingContext {
 	@Override
 	public <V> void putValue(MatchingValueKey key, V value) {
 		values.put(key, value);
+		currentPath.addValueKey(key);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -247,7 +270,19 @@ public class DefaultMatchingContext implements MatchingContext {
 	}
 
 	@Override
+	public void removeValue(MatchingValueKey key) {
+		//TODO should i call the path as well here !? need to clarify who can call what
+		values.remove(key);
+	}
+
+	@Override
 	public CompilationUnitTree getCompilationUnitTree() {
 		return parsedSource.getCompilationUnitTree();
 	}
+
+	@Override
+	public MatchingPath getCurrentMatchingPath() {
+		return currentPath;
+	}
+
 }

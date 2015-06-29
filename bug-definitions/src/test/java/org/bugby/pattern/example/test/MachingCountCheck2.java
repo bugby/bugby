@@ -1,4 +1,4 @@
-package org.bugby.pattern.example.value;
+package org.bugby.pattern.example.test;
 
 public class MachingCountCheck2 {
 	public void method1() {
