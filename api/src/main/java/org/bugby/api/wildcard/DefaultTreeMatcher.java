@@ -8,6 +8,7 @@ import com.google.common.collect.Multimap;
 import com.sun.source.tree.ExpressionStatementTree;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.Tree;
+import com.sun.source.tree.VariableTree;
 
 abstract public class DefaultTreeMatcher implements TreeMatcher {
 
@@ -42,6 +43,10 @@ abstract public class DefaultTreeMatcher implements TreeMatcher {
 
 		if (node instanceof ExpressionTree) {
 			return (T) node;
+		}
+
+		if (node instanceof VariableTree) {
+			return (T) ((VariableTree) node).getInitializer();
 		}
 		return null;
 	}

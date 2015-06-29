@@ -35,7 +35,6 @@ public class OneLevelMatcher<T, W> {
 
 	/**
 	 * the wildcards have to be matched in order
-	 * 
 	 * @param nodes
 	 * @param wildcards
 	 * @return
@@ -132,12 +131,21 @@ public class OneLevelMatcher<T, W> {
 
 	/**
 	 * the wildcards may match in any order
-	 * 
 	 * @param nodes
 	 * @param wildcards
 	 * @return
 	 */
 	public List<List<T>> matchUnordered(List<T> nodes, List<W> wildcards) {
+		// special case - EMPTY
+		if (wildcards.size() == 1 && nodeMatch.getMatchingType(wildcards.get(0)) == MatchingType.empty) {
+			// assert w == 0 && w == wildcards.size() - 1
+			List<List<T>> result = new ArrayList<List<T>>();
+			if (nodes.isEmpty()) {
+				result.add(new ArrayList<T>());
+			}
+			return result;
+		}
+
 		if (nodes.isEmpty() || wildcards.isEmpty()) {
 			return Collections.emptyList();
 		}

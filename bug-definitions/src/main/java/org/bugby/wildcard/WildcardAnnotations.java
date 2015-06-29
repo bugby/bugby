@@ -1,7 +1,7 @@
 package org.bugby.wildcard;
 
 import org.bugby.api.wildcard.Wildcard;
-import org.bugby.wildcard.matcher.LastMatcher;
+import org.bugby.wildcard.matcher.code.LastMatcher;
 
 public class WildcardAnnotations {
 	@Wildcard(LastMatcher.class)

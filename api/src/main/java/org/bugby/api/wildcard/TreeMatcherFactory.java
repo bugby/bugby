@@ -12,4 +12,6 @@ public interface TreeMatcherFactory {
 	 * @return the matcher corresponding to the given AST node or null if the matching of the node is skipped
 	 */
 	public TreeMatcher build(Tree patternNode);
+
+	public TreeMatcher buildForType(String type);
 }

@@ -123,7 +123,10 @@ public class DefaultMatchingContext implements MatchingContext {
 		// type may be in the class loader of the pattern
 		if (!TypesUtils.isObject(type)) {
 			TypeMirror rawType = parsedSource.getTypes().erasure(type);
-			TypeMirror reloaded = parsedSource.getElements().getTypeElement(rawType.toString()).asType();
+			TypeMirror reloaded = rawType;
+			if (!rawType.getKind().isPrimitive()) {
+				reloaded = parsedSource.getElements().getTypeElement(rawType.toString()).asType();
+			}
 			typeRestrictions.put(nameInPatternAST, reloaded);
 		}
 	}
@@ -191,6 +194,7 @@ public class DefaultMatchingContext implements MatchingContext {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Multimap<TreeMatcher, Tree> matchOrdered(List<TreeMatcher> matchers, List<? extends Tree> nodes) {
 		startMatchers(matchers, true);
 		Multimap<TreeMatcher, Tree> result = transformResult(matchers, oneLevelMatcher.matchOrdered((List<Tree>) nodes, matchers));
@@ -198,6 +202,7 @@ public class DefaultMatchingContext implements MatchingContext {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Multimap<TreeMatcher, Tree> matchUnordered(List<TreeMatcher> matchers, List<? extends Tree> nodes) {
 		startMatchers(matchers, false);
 		Multimap<TreeMatcher, Tree> result = transformResult(matchers, oneLevelMatcher.matchUnordered((List<Tree>) nodes, matchers));

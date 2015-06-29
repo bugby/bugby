@@ -57,6 +57,7 @@ import org.bugby.engine.matcher.statement.IfMatcher;
 import org.bugby.engine.matcher.statement.LabeledMatcher;
 import org.bugby.engine.matcher.statement.ReturnMatcher;
 import org.bugby.engine.matcher.statement.SwitchMatcher;
+import org.bugby.engine.matcher.statement.SynchronizedMatcher;
 import org.bugby.engine.matcher.statement.ThrowMatcher;
 import org.bugby.engine.matcher.statement.TryMatcher;
 import org.bugby.engine.matcher.statement.VariableMatcher;
@@ -95,6 +96,7 @@ import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.ParenthesizedTree;
 import com.sun.source.tree.ReturnTree;
 import com.sun.source.tree.SwitchTree;
+import com.sun.source.tree.SynchronizedTree;
 import com.sun.source.tree.ThrowTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.TryTree;
@@ -130,6 +132,7 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		matcherClasses.put(UnaryTree.class, UnaryMatcher.class);
 		matcherClasses.put(AssertTree.class, AssertMatcher.class);
 		matcherClasses.put(BlockTree.class, BlockMatcher.class);
+		matcherClasses.put(SynchronizedTree.class, SynchronizedMatcher.class);
 		matcherClasses.put(BreakTree.class, BreakMatcher.class);
 		matcherClasses.put(CaseTree.class, CaseMatcher.class);
 		matcherClasses.put(CatchTree.class, CatchMatcher.class);
@@ -151,9 +154,11 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		matcherClasses.put(CompilationUnitTree.class, CompilationUnitMatcher.class);
 	}
 	private final WildcardDictionary wildcardDictionary;
+	private final ClassLoader builtProjectClassLoader;
 
-	public DefaultTreeMatcherFactory(WildcardDictionary wildcardDictionary) {
+	public DefaultTreeMatcherFactory(WildcardDictionary wildcardDictionary, ClassLoader builtProjectClassLoader) {
 		this.wildcardDictionary = wildcardDictionary;
+		this.builtProjectClassLoader = builtProjectClassLoader;
 	}
 
 	private String getMethodName(MethodInvocationTree method) {
@@ -199,7 +204,18 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		return null;
 	}
 
-	public TreeMatcher buildFromFile(ClassLoader builtProjectClassLoader, File file) {
+	private static String sourceFileName(Class<?> clz) {
+		return clz.getName().replace(".class", "").replace('.', File.separatorChar) + ".java";
+	}
+
+	@Override
+	public TreeMatcher buildForType(String type) {
+		//TODO here I need a mechanism to find the source of a given type
+		final String BUG_DEF_PATH = "src/main/java/";
+		return buildFromFile(new File(BUG_DEF_PATH, type.replace('.', File.separatorChar) + ".java"));
+	}
+
+	public TreeMatcher buildFromFile(File file) {
 		CompilationUnitTree cu = SourceParser.parse(file, builtProjectClassLoader, "UTF-8").getCompilationUnitTree();
 
 		return build(cu);

@@ -5,10 +5,19 @@ import static org.bugby.pattern.example.MatchingHelper.assertNoBug;
 
 import org.bugby.bugs.pmd.basic.CollapsibleIfStatements;
 import org.bugby.bugs.pmd.basic.DontCallThreadRun;
+import org.bugby.bugs.pmd.basic.DoubleCheckedLocking;
 import org.bugby.bugs.pmd.basic.EmptyCatchBlock;
+import org.bugby.bugs.pmd.basic.EmptyFinallyBlock;
+import org.bugby.bugs.pmd.basic.EmptyIfStmt;
+import org.bugby.bugs.pmd.basic.EmptyTryBlock;
+import org.bugby.bugs.pmd.basic.EmptyWhileStmt;
+import org.bugby.bugs.pmd.basic.ForLoopShouldBeWhileLoop;
 import org.bugby.bugs.pmd.basic.JumbledIncrementer;
 import org.bugby.bugs.pmd.basic.MisplacedNullCheckAnd;
 import org.bugby.bugs.pmd.basic.MisplacedNullCheckOr;
+import org.bugby.bugs.pmd.basic.OverrideBothEqualsAndHashcode1;
+import org.bugby.bugs.pmd.basic.OverrideBothEqualsAndHashcode2;
+import org.bugby.bugs.pmd.basic.UnnecessaryConversionTemporary;
 import org.junit.Test;
 
 public class TestPmdBasic {
@@ -87,4 +96,91 @@ public class TestPmdBasic {
 		assertBug(DontCallThreadRun.class, DontCallThreadRunCheck3.class, 13);
 	}
 
+	@Test
+	public void testEmptyIfStmtBug() {
+		assertBug(EmptyIfStmt.class, EmptyIfStmtBug.class, 6);
+	}
+
+	@Test
+	public void testEmptyIfStmtNoBug() {
+		assertNoBug(EmptyIfStmt.class, EmptyIfStmtNoBug.class);
+	}
+
+	@Test
+	public void testWhileStmtBug() {
+		assertBug(EmptyWhileStmt.class, EmptyWhileStmtBug.class, 5);
+	}
+
+	@Test
+	public void testWhileStmtNoBug() {
+		assertNoBug(EmptyWhileStmt.class, EmptyWhileStmtNoBug.class);
+	}
+
+	@Test
+	public void testTryBlockBug() {
+		assertBug(EmptyTryBlock.class, EmptyTryBlockBug.class, 7);
+	}
+
+	@Test
+	public void testTryBlockNoBug() {
+		assertNoBug(EmptyTryBlock.class, EmptyTryBlockNoBug.class);
+	}
+
+	@Test
+	public void testTryFinallyBug() {
+		assertBug(EmptyFinallyBlock.class, EmptyFinallyBlockBug.class, 8);
+	}
+
+	@Test
+	public void testTryFinallyNoBug() {
+		assertNoBug(EmptyFinallyBlock.class, EmptyFinallyBlockNoBug.class);
+	}
+
+	@Test
+	public void testForLoopShouldBeWhileLoopBug() {
+		assertBug(ForLoopShouldBeWhileLoop.class, ForLoopShouldBeWhileLoopBug.class, 5);
+	}
+
+	@Test
+	public void testForLoopShouldBeWhileLoopNoBug() {
+		assertNoBug(ForLoopShouldBeWhileLoop.class, ForLoopShouldBeWhileLoopNoBug.class);
+	}
+
+	@Test
+	public void testUnnecessaryConversionTemporaryLoopBug() {
+		assertBug(UnnecessaryConversionTemporary.class, UnnecessaryConversionTemporaryBug.class, 6);
+	}
+
+	@Test
+	public void testUnnecessaryConversionTemporaryNoBug() {
+		assertNoBug(UnnecessaryConversionTemporary.class, UnnecessaryConversionTemporaryNoBug.class);
+	}
+
+	@Test
+	public void testOverrideBothEqualsAndHashcodeBug1() {
+		//XXX what line number is correct !?
+		assertBug(OverrideBothEqualsAndHashcode1.class, OverrideBothEqualsAndHashcodeBug1.class, 45);
+	}
+
+	@Test
+	public void testOverrideBothEqualsAndHashcodeBug2() {
+		//XXX what line number is correct !?
+		assertBug(OverrideBothEqualsAndHashcode2.class, OverrideBothEqualsAndHashcodeBug2.class, 3);
+	}
+
+	@Test
+	public void testOverrideBothEqualsAndHashcodeNoBug() {
+		assertNoBug(OverrideBothEqualsAndHashcode1.class, OverrideBothEqualsAndHashcodeNoBug.class);
+		assertNoBug(OverrideBothEqualsAndHashcode2.class, OverrideBothEqualsAndHashcodeNoBug.class);
+	}
+
+	@Test
+	public void testDoubleCheckedLockingBug() {
+		assertBug(DoubleCheckedLocking.class, DoubleCheckedLockingBug.class, 14);
+	}
+
+	@Test
+	public void testDoubleCheckedLockingNoBug() {
+		assertNoBug(DoubleCheckedLocking.class, DoubleCheckedLockingNoBug.class);
+	}
 }

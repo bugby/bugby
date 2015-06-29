@@ -1,7 +1,7 @@
 package org.bugby.wildcard;
 
 import org.bugby.api.wildcard.Wildcard;
-import org.bugby.wildcard.matcher.SomeTypeMatcher;
+import org.bugby.wildcard.matcher.type.SomeTypeMatcher;
 
 /**
  * matches any type

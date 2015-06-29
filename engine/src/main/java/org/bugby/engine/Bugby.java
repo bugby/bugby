@@ -73,8 +73,8 @@ public class Bugby {
 		// here add more custom wildcards by dynamic discovery
 
 		// 2. read patterns
-		DefaultTreeMatcherFactory matcherFactory = new DefaultTreeMatcherFactory(wildcardDictionary);
-		TreeMatcher rootMatcher = matcherFactory.buildFromFile(builtProjectClassLoader, new File(patternSource));
+		DefaultTreeMatcherFactory matcherFactory = new DefaultTreeMatcherFactory(wildcardDictionary, builtProjectClassLoader);
+		TreeMatcher rootMatcher = matcherFactory.buildFromFile(new File(patternSource));
 		dumpMatcher("", rootMatcher);
 		System.out.println("-------------------------");
 

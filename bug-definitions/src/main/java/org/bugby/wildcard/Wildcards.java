@@ -3,19 +3,19 @@ package org.bugby.wildcard;
 import org.bugby.api.wildcard.Wildcard;
 import org.bugby.api.wildcard.WildcardAnnotation;
 import org.bugby.wildcard.matcher.AnyBranchMatcher;
-import org.bugby.wildcard.matcher.BeginMatcher;
-import org.bugby.wildcard.matcher.EndMatcher;
-import org.bugby.wildcard.matcher.NoCodeMatcher;
-import org.bugby.wildcard.matcher.SomeCodeMatcher;
-import org.bugby.wildcard.matcher.SomeConditionMatcher;
-import org.bugby.wildcard.matcher.SomeConditionUsingMatcher;
-import org.bugby.wildcard.matcher.SomeExpressionThrowingMatcher;
-import org.bugby.wildcard.matcher.SomeExpressionUsingMatcher;
-import org.bugby.wildcard.matcher.SomeFieldMatcher;
-import org.bugby.wildcard.matcher.SomeMethodMatcher;
-import org.bugby.wildcard.matcher.SomeParamMatcher;
-import org.bugby.wildcard.matcher.SomeValueMatcher;
-import org.bugby.wildcard.matcher.SomeVariableMatcher;
+import org.bugby.wildcard.matcher.code.BeginMatcher;
+import org.bugby.wildcard.matcher.code.EndMatcher;
+import org.bugby.wildcard.matcher.code.NoCodeMatcher;
+import org.bugby.wildcard.matcher.code.SomeCodeMatcher;
+import org.bugby.wildcard.matcher.expr.SomeConditionMatcher;
+import org.bugby.wildcard.matcher.expr.SomeConditionUsingMatcher;
+import org.bugby.wildcard.matcher.expr.SomeExpressionThrowingMatcher;
+import org.bugby.wildcard.matcher.expr.SomeExpressionUsingMatcher;
+import org.bugby.wildcard.matcher.expr.SomeValueMatcher;
+import org.bugby.wildcard.matcher.method.SomeMethodMatcher;
+import org.bugby.wildcard.matcher.var.SomeFieldMatcher;
+import org.bugby.wildcard.matcher.var.SomeParamMatcher;
+import org.bugby.wildcard.matcher.var.SomeVariableMatcher;
 
 @SuppressWarnings("unused")
 public class Wildcards {
