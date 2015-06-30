@@ -1,16 +1,18 @@
 package org.bugby.wildcard.matcher.code;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.lang.model.element.Element;
 
 import org.bugby.api.javac.TreeUtils;
 import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.MatchingContext;
+import org.bugby.api.wildcard.MatchingPath;
 import org.bugby.api.wildcard.MatchingValueKey;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.wildcard.MatchCount;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.MethodTree;
@@ -52,13 +54,13 @@ public class MatchCountMatcher extends DefaultTreeMatcher {
 	}
 
 	@Override
-	public Multimap<TreeMatcher, Tree> endMatching(Multimap<TreeMatcher, Tree> currentResult, MatchingContext context) {
+	public List<List<MatchingPath>> endMatching(List<List<MatchingPath>> currentResult, MatchingContext context) {
 		int count = context.getValue(matchingKey);
 		if (count >= min && count <= max) {
 			return super.endMatching(currentResult, context);
 		}
 		// return empty result as there is no match
-		return HashMultimap.create();
+		return Collections.emptyList();
 	}
 
 	private static Element getElementFromDeclaration(Tree annotatedNode) {

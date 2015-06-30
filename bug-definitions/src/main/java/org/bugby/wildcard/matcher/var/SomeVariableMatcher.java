@@ -3,7 +3,6 @@ package org.bugby.wildcard.matcher.var;
 import java.util.Map;
 
 import javax.lang.model.element.Element;
-import javax.lang.model.type.TypeMirror;
 
 import org.bugby.api.javac.TreeUtils;
 import org.bugby.api.wildcard.DefaultTreeMatcher;
@@ -63,16 +62,6 @@ public class SomeVariableMatcher extends DefaultTreeMatcher implements TreeMatch
 		}
 		if (node instanceof IdentifierTree) {
 			return ((IdentifierTree) node).getName().toString();
-		}
-		return null;
-	}
-
-	private TypeMirror getVariableType(Tree node) {
-		if (node instanceof VariableTree) {
-			return TreeUtils.elementFromDeclaration((VariableTree) node).asType();
-		}
-		if (node instanceof IdentifierTree) {
-			return TreeUtils.elementFromUse((IdentifierTree) node).asType();
 		}
 		return null;
 	}

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.ExpressionStatementTree;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.Tree;
@@ -98,7 +97,7 @@ abstract public class DefaultTreeMatcher implements TreeMatcher {
 	 * @return
 	 */
 	@Override
-	public Multimap<TreeMatcher, Tree> endMatching(Multimap<TreeMatcher, Tree> currentResult, MatchingContext context) {
+	public List<List<MatchingPath>> endMatching(List<List<MatchingPath>> currentResult, MatchingContext context) {
 		//does nothing
 		return currentResult;
 	}

@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.Tree;
 
 public class FluidMatcher {
@@ -28,7 +27,7 @@ public class FluidMatcher {
 	}
 
 	protected <T> List<T> list(T element) {
-		return element == null ? Collections.<T>emptyList() : Collections.singletonList(element);
+		return element == null ? Collections.<T> emptyList() : Collections.singletonList(element);
 	}
 
 	public FluidMatcher child(Tree child, TreeMatcher childMatcher) {
@@ -51,8 +50,7 @@ public class FluidMatcher {
 			currentMatch = true;
 			return this;
 		}
-		Multimap<TreeMatcher, Tree> childrenMatch = ordered ? context.matchOrdered(matchers, children) : context.matchUnordered(matchers,
-				children);
+		List<List<MatchingPath>> childrenMatch = ordered ? context.matchOrdered(matchers, children) : context.matchUnordered(matchers, children);
 
 		currentMatch = !childrenMatch.isEmpty();
 		return this;

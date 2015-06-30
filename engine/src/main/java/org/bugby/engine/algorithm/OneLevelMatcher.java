@@ -7,8 +7,8 @@ import java.util.Stack;
 
 import org.bugby.api.wildcard.MatchingType;
 
-public class OneLevelMatcher<T, W> {
-	private final NodeMatch<T, W> nodeMatch;
+public class OneLevelMatcher<T, W, R> {
+	private final NodeMatch<T, W, R> nodeMatch;
 
 	private class MatchPosition {
 		private final int node;
@@ -29,25 +29,24 @@ public class OneLevelMatcher<T, W> {
 
 	}
 
-	public OneLevelMatcher(NodeMatch<T, W> nodeMatch) {
+	public OneLevelMatcher(NodeMatch<T, W, R> nodeMatch) {
 		this.nodeMatch = nodeMatch;
 	}
 
 	/**
 	 * the wildcards have to be matched in order
-	 * 
 	 * @param nodes
 	 * @param wildcards
 	 * @return
 	 */
-	public List<List<T>> matchOrdered(List<T> nodes, List<W> wildcards) {
+	public List<List<R>> matchOrdered(List<T> nodes, List<W> wildcards) {
 		Stack<MatchPosition> matchingStack = new Stack<MatchPosition>();
-		List<List<T>> matchings = new ArrayList<List<T>>();
+		List<List<R>> matchings = new ArrayList<List<R>>();
 		// special case - EMPTY
 		if (wildcards.size() == 1 && nodeMatch.getMatchingType(wildcards.get(0)) == MatchingType.empty) {
 			// assert w == 0 && w == wildcards.size() - 1
 			if (nodes.isEmpty()) {
-				matchings.add(new ArrayList<T>());
+				matchings.add(new ArrayList<R>());
 			}
 			return matchings;
 		}
@@ -64,9 +63,9 @@ public class OneLevelMatcher<T, W> {
 			if (start.getNode() < nodes.size() - 1) {
 				if (matchOrderedOne(nodes, wildcards, start.getNode() + 1, start.getWildcard(), matchingStack)) {
 					// dump the stack in a result
-					List<T> oneMatch = new ArrayList<T>();
+					List<R> oneMatch = new ArrayList<R>();
 					for (MatchPosition pos : matchingStack) {
-						oneMatch.add(nodes.get(pos.getNode()));
+						oneMatch.add(nodeMatch.buildResult(wildcards.get(pos.wildcard), nodes.get(pos.getNode())));
 					}
 					matchings.add(oneMatch);
 					nodeMatch.solutionFound();
@@ -133,18 +132,17 @@ public class OneLevelMatcher<T, W> {
 
 	/**
 	 * the wildcards may match in any order
-	 * 
 	 * @param nodes
 	 * @param wildcards
 	 * @return
 	 */
-	public List<List<T>> matchUnordered(List<T> nodes, List<W> wildcards) {
+	public List<List<R>> matchUnordered(List<T> nodes, List<W> wildcards) {
 		// special case - EMPTY
 		if (wildcards.size() == 1 && nodeMatch.getMatchingType(wildcards.get(0)) == MatchingType.empty) {
 			// assert w == 0 && w == wildcards.size() - 1
-			List<List<T>> result = new ArrayList<List<T>>();
+			List<List<R>> result = new ArrayList<List<R>>();
 			if (nodes.isEmpty()) {
-				result.add(new ArrayList<T>());
+				result.add(new ArrayList<R>());
 			}
 			return result;
 		}
@@ -156,7 +154,7 @@ public class OneLevelMatcher<T, W> {
 			return Collections.emptyList();
 		}
 
-		List<List<T>> result = new ArrayList<List<T>>();
+		List<List<R>> result = new ArrayList<List<R>>();
 		// the solution is the match for the first wildcard plus the match of the rest wildcards
 		W firstWildcard = wildcards.get(0);
 		List<W> nextWildcards = wildcards.subList(1, wildcards.size());
@@ -165,15 +163,15 @@ public class OneLevelMatcher<T, W> {
 			if (nodeMatch.match(firstWildcard, nodes.get(n))) {
 				if (wildcards.size() == 1) {
 					// single result
-					result.add(Collections.singletonList(nodes.get(n)));
+					result.add(Collections.singletonList(nodeMatch.buildResult(wildcards.get(0), nodes.get(n))));
 				} else {
 					// add the current result to each of the results when matching the remaining nodes and wildcards
 					List<T> nodesWithoutCurrent = listWithout(nodes, n);
 
-					List<List<T>> subresult = matchUnordered(nodesWithoutCurrent, nextWildcards);
-					for (List<T> s : subresult) {
-						List<T> oneResult = new ArrayList<T>(s.size() + 1);
-						oneResult.add(nodes.get(n));
+					List<List<R>> subresult = matchUnordered(nodesWithoutCurrent, nextWildcards);
+					for (List<R> s : subresult) {
+						List<R> oneResult = new ArrayList<R>(s.size() + 1);
+						oneResult.add(nodeMatch.buildResult(wildcards.get(0), nodes.get(n)));
 						oneResult.addAll(s);
 						result.add(oneResult);
 					}

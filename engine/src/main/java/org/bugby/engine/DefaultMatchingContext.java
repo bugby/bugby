@@ -29,9 +29,9 @@ import com.sun.source.tree.Tree;
 import com.sun.source.util.TreeScanner;
 
 public class DefaultMatchingContext implements MatchingContext {
-	private final OneLevelMatcher<Tree, TreeMatcher> oneLevelMatcher = new OneLevelMatcher<Tree, TreeMatcher>(nodeMatch());
+	private final OneLevelMatcher<Tree, TreeMatcher, MatchingPath> oneLevelMatcher = new OneLevelMatcher<Tree, TreeMatcher, MatchingPath>(
+			nodeMatch());
 
-	private final Map<String, String> variables = new HashMap<String, String>();
 	private final Map<String, CorrelationInfo> correlations = new HashMap<String, CorrelationInfo>();
 	private final Multimap<TreeMatcher, Tree> matches = HashMultimap.create();
 	private final ParsedSource parsedSource;
@@ -83,8 +83,8 @@ public class DefaultMatchingContext implements MatchingContext {
 		this.rootMatcher = rootMatcher;
 	}
 
-	private NodeMatch<Tree, TreeMatcher> nodeMatch() {
-		return new NodeMatch<Tree, TreeMatcher>() {
+	private NodeMatch<Tree, TreeMatcher, MatchingPath> nodeMatch() {
+		return new NodeMatch<Tree, TreeMatcher, MatchingPath>() {
 			@Override
 			public boolean match(TreeMatcher wildcard, Tree node) {
 				currentPath = new MatchingPath(DefaultMatchingContext.this, wildcard, node, currentPath);
@@ -118,6 +118,11 @@ public class DefaultMatchingContext implements MatchingContext {
 			@Override
 			public void solutionFound() {
 				currentPath.addSolution();
+			}
+
+			@Override
+			public MatchingPath buildResult(TreeMatcher wildcard, Tree node) {
+				return currentPath.getChild(wildcard, node);
 			}
 		};
 	}
@@ -154,8 +159,8 @@ public class DefaultMatchingContext implements MatchingContext {
 		return result;
 	}
 
-	private Multimap<TreeMatcher, Tree> validateResult(List<TreeMatcher> matchers, Multimap<TreeMatcher, Tree> result) {
-		Multimap<TreeMatcher, Tree> finalResult = result;
+	private List<List<MatchingPath>> validateResult(List<TreeMatcher> matchers, List<List<MatchingPath>> result) {
+		List<List<MatchingPath>> finalResult = result;
 		for (TreeMatcher m : matchers) {
 			finalResult = m.endMatching(finalResult, this);
 		}
@@ -171,17 +176,17 @@ public class DefaultMatchingContext implements MatchingContext {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Multimap<TreeMatcher, Tree> matchOrdered(List<TreeMatcher> matchers, List<? extends Tree> nodes) {
+	public List<List<MatchingPath>> matchOrdered(List<TreeMatcher> matchers, List<? extends Tree> nodes) {
 		startMatchers(matchers, true);
-		Multimap<TreeMatcher, Tree> result = transformResult(matchers, oneLevelMatcher.matchOrdered((List<Tree>) nodes, matchers));
+		List<List<MatchingPath>> result = oneLevelMatcher.matchOrdered((List<Tree>) nodes, matchers);
 		return validateResult(matchers, result);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Multimap<TreeMatcher, Tree> matchUnordered(List<TreeMatcher> matchers, List<? extends Tree> nodes) {
+	public List<List<MatchingPath>> matchUnordered(List<TreeMatcher> matchers, List<? extends Tree> nodes) {
 		startMatchers(matchers, false);
-		Multimap<TreeMatcher, Tree> result = transformResult(matchers, oneLevelMatcher.matchUnordered((List<Tree>) nodes, matchers));
+		List<List<MatchingPath>> result = oneLevelMatcher.matchUnordered((List<Tree>) nodes, matchers);
 		return validateResult(matchers, result);
 	}
 

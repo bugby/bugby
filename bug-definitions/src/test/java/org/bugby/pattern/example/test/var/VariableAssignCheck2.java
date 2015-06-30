@@ -1,4 +1,4 @@
-package org.bugby.pattern.example.test;
+package org.bugby.pattern.example.test.var;
 
 public class VariableAssignCheck2 {
 

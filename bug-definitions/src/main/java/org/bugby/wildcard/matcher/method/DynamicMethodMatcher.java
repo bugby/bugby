@@ -5,6 +5,7 @@ import java.util.List;
 import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
+import org.bugby.api.wildcard.MatchingPath;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
@@ -38,10 +39,11 @@ public class DynamicMethodMatcher extends DefaultTreeMatcher implements TreeMatc
 
 		//TODO here i need to put the name on the assignment table
 		//match.self(patternNode.getName().toString().equals(mt.getName().toString()));
+		List<List<MatchingPath>> paramsMatch = context.matchOrdered(parametersMatchers, mt.getParameters());
+		match.self(!paramsMatch.isEmpty());
 
 		match.unorderedChildren(mt.getThrows(), throwsMatchers);
 		match.child(mt.getReturnType(), returnTypeMatcher);
-		match.orderedChildren(mt.getParameters(), parametersMatchers);
 		match.orderedChildren(mt.getTypeParameters(), typeParametersMatchers);
 		match.child(mt.getBody(), bodyMatcher);
 

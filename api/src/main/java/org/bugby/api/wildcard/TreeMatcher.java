@@ -1,6 +1,7 @@
 package org.bugby.api.wildcard;
 
-import com.google.common.collect.Multimap;
+import java.util.List;
+
 import com.sun.source.tree.Tree;
 
 public interface TreeMatcher {
@@ -20,6 +21,6 @@ public interface TreeMatcher {
 	 * @param currentResult
 	 * @return
 	 */
-	public Multimap<TreeMatcher, Tree> endMatching(Multimap<TreeMatcher, Tree> currentResult, MatchingContext context);
+	public List<List<MatchingPath>> endMatching(List<List<MatchingPath>> currentResult, MatchingContext context);
 
 }

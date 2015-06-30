@@ -1,11 +1,14 @@
 package org.bugby.wildcard.matcher.code;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.MatchingContext;
+import org.bugby.api.wildcard.MatchingPath;
 import org.bugby.api.wildcard.TreeMatcher;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.Tree;
 
@@ -22,15 +25,14 @@ public class MissingMatcher extends DefaultTreeMatcher {
 	}
 
 	@Override
-	public Multimap<TreeMatcher, Tree> endMatching(Multimap<TreeMatcher, Tree> currentResult, MatchingContext context) {
+	public List<List<MatchingPath>> endMatching(List<List<MatchingPath>> currentResult, MatchingContext context) {
 		if (!currentResult.isEmpty()) {
 			//return empty result as there is no match
-			return HashMultimap.create();
+			return Collections.emptyList();
 		}
 		//return empty result as there is no match
-		Multimap<TreeMatcher, Tree> result = HashMultimap.create();
-		result.put(annotatedNodeMatcher, context.getCompilationUnitTree());
+		List<List<MatchingPath>> result = new ArrayList<List<MatchingPath>>();
+		result.add(Collections.singletonList(context.getCurrentMatchingPath()));
 		return result;
 	}
-
 }
