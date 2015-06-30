@@ -14,16 +14,12 @@ import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.tree.Tree;
 
 public class CompilationUnitMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final CompilationUnitTree patternNode;
 	private final List<TreeMatcher> typeMatchers;
 
 	public CompilationUnitMatcher(CompilationUnitTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
-		this.typeMatchers = build(factory, patternNode.getTypeDecls());
-	}
+		super(patternNode);
 
-	public CompilationUnitTree getPatternNode() {
-		return patternNode;
+		this.typeMatchers = build(factory, patternNode.getTypeDecls());
 	}
 
 	public List<TreeMatcher> getTypeMatchers() {

@@ -10,12 +10,12 @@ import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 
 public class VariableMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final VariableTree patternNode;
 	private final TreeMatcher typeMatcher;
 	private final TreeMatcher initMatcher;
 
 	public VariableMatcher(VariableTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
+
 		this.typeMatcher = factory.build(patternNode.getType());
 		this.initMatcher = factory.build(patternNode.getInitializer());
 	}
@@ -28,7 +28,7 @@ public class VariableMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		}
 		VariableTree mt = (VariableTree) node;
 
-		match.self(mt.getName().toString().equals(patternNode.getName().toString()));
+		match.self(mt.getName().toString().equals(((VariableTree) getPatternNode()).getName().toString()));
 		match.child(mt.getType(), typeMatcher);
 		match.child(mt.getInitializer(), initMatcher);
 

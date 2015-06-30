@@ -6,23 +6,18 @@ import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.BinaryTree;
 import com.sun.source.tree.Tree;
 
 public class BinaryMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final BinaryTree patternNode;
 	private final TreeMatcher leftMatcher;
 	private final TreeMatcher rightMatcher;
 
 	public BinaryMatcher(BinaryTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
+		;
 		this.leftMatcher = factory.build(patternNode.getLeftOperand());
 		this.rightMatcher = factory.build(patternNode.getRightOperand());
-	}
-
-	public BinaryTree getPatternNode() {
-		return patternNode;
 	}
 
 	public TreeMatcher getLeftMatcher() {
@@ -41,8 +36,7 @@ public class BinaryMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		}
 		BinaryTree mt = (BinaryTree) node;
 
-		
-		match.self(mt.getKind().equals(patternNode.getKind()));
+		match.self(mt.getKind().equals(((BinaryTree) getPatternNode()).getKind()));
 		match.child(mt.getLeftOperand(), leftMatcher);
 		match.child(mt.getRightOperand(), rightMatcher);
 

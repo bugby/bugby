@@ -6,17 +6,15 @@ import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.DoWhileLoopTree;
 import com.sun.source.tree.Tree;
 
 public class DoWhileLoopMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final DoWhileLoopTree patternNode;
 	private final TreeMatcher conditionMatcher;
 	private final TreeMatcher statementMatcher;
 
 	public DoWhileLoopMatcher(DoWhileLoopTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
 		this.conditionMatcher = factory.build(patternNode.getCondition());
 		this.statementMatcher = factory.build(patternNode.getStatement());
 	}
@@ -29,7 +27,6 @@ public class DoWhileLoopMatcher extends DefaultTreeMatcher implements TreeMatche
 		}
 		DoWhileLoopTree ct = (DoWhileLoopTree) node;
 
-		
 		match.child(ct.getCondition(), conditionMatcher);
 		match.child(ct.getStatement(), statementMatcher);
 

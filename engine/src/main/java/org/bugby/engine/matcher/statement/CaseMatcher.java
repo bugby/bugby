@@ -8,17 +8,15 @@ import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.CaseTree;
 import com.sun.source.tree.Tree;
 
 public class CaseMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final CaseTree patternNode;
 	private final TreeMatcher expressionMatcher;
 	private final List<TreeMatcher> statementsMatchers;
 
 	public CaseMatcher(CaseTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
 		this.expressionMatcher = factory.build(patternNode.getExpression());
 		this.statementsMatchers = build(factory, patternNode.getStatements());
 	}
@@ -31,7 +29,6 @@ public class CaseMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		}
 		CaseTree ct = (CaseTree) node;
 
-		
 		match.child(ct.getExpression(), expressionMatcher);
 		match.orderedChildren(ct.getStatements(), statementsMatchers);
 

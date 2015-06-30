@@ -8,17 +8,16 @@ import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.SwitchTree;
 import com.sun.source.tree.Tree;
 
 public class SwitchMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final SwitchTree patternNode;
 	private final TreeMatcher expressionMatcher;
 	private final List<TreeMatcher> casesMatchers;
 
 	public SwitchMatcher(SwitchTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
+
 		this.expressionMatcher = factory.build(patternNode.getExpression());
 		this.casesMatchers = build(factory, patternNode.getCases());
 	}
@@ -31,7 +30,6 @@ public class SwitchMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		}
 		SwitchTree mt = (SwitchTree) node;
 
-		
 		match.child(mt.getExpression(), expressionMatcher);
 		match.unorderedChildren(mt.getCases(), casesMatchers);
 

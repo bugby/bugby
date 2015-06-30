@@ -15,8 +15,9 @@ public class TestOneLevelMatcher extends CommonMatcherTest {
 		return new OneLevelMatcher<IndexedValue, Wildcard<IndexedValue>, IndexedValue>(
 				new NodeMatch<IndexedValue, Wildcard<IndexedValue>, IndexedValue>() {
 					@Override
-					public boolean match(Wildcard<IndexedValue> wildcard, IndexedValue node) {
-						return wildcard.match(node);
+					public boolean match(Wildcard<IndexedValue> wildcard, IndexedValue node, List<Wildcard<IndexedValue>> wildcards,
+							List<IndexedValue> nodes) {
+						return wildcard.match(node, wildcards, nodes);
 					}
 
 					@Override

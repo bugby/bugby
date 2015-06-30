@@ -14,6 +14,7 @@ public class CatchMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	private final TreeMatcher blockMatcher;
 
 	public CatchMatcher(CatchTree patternNode, TreeMatcherFactory factory) {
+		super(patternNode);
 		this.parameterMatcher = factory.build(patternNode.getParameter());
 		this.blockMatcher = factory.build(patternNode.getBlock());
 	}

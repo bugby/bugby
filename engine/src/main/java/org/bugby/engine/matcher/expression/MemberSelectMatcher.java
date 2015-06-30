@@ -10,11 +10,10 @@ import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.Tree;
 
 public class MemberSelectMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final MemberSelectTree patternNode;
 	private final TreeMatcher expressionMatcher;
 
 	public MemberSelectMatcher(MemberSelectTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
 		this.expressionMatcher = factory.build(patternNode.getExpression());
 	}
 
@@ -26,7 +25,7 @@ public class MemberSelectMatcher extends DefaultTreeMatcher implements TreeMatch
 		}
 		MemberSelectTree mt = (MemberSelectTree) node;
 
-		match.self(mt.getIdentifier().toString().equals(patternNode.getIdentifier().toString()));
+		match.self(mt.getIdentifier().toString().equals(((MemberSelectTree) getPatternNode()).getIdentifier().toString()));
 		match.child(mt.getExpression(), expressionMatcher);
 
 		return match.done();

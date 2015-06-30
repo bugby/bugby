@@ -165,7 +165,7 @@ public class TestPmdBasic {
 	@Test
 	public void testOverrideBothEqualsAndHashcodeBug2() {
 		//XXX what line number is correct !?
-		assertBug(OverrideBothEqualsAndHashcode2.class, OverrideBothEqualsAndHashcodeBug2.class, 3);
+		assertBug(OverrideBothEqualsAndHashcode2.class, OverrideBothEqualsAndHashcodeBug2.class, 19);
 	}
 
 	@Test

@@ -2,33 +2,60 @@ package org.bugby.wildcard.matcher.type;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import org.bugby.api.javac.InternalUtils;
 import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
+import org.bugby.api.wildcard.MatchingPath;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
+import org.bugby.api.wildcard.Variables;
 
 import com.sun.source.tree.ClassTree;
+import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.Tree;
+import com.sun.source.tree.VariableTree;
 
 public class DynamicTypeDefinitionMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final ClassTree patternNode;
 	private final TreeMatcher extendsMatcher;
 	private final List<TreeMatcher> implementsMatchers;
 	private final List<TreeMatcher> typeParametersMatchers;
-	private final List<TreeMatcher> membersMatchers;
+	private final List<TreeMatcher> methodsMatchers;
+	private final List<TreeMatcher> fieldsMatchers;
 
 	public DynamicTypeDefinitionMatcher(ClassTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
 		this.extendsMatcher = factory.build(patternNode.getExtendsClause());
 		this.implementsMatchers = build(factory, patternNode.getImplementsClause());
 		this.typeParametersMatchers = build(factory, patternNode.getTypeParameters());
-		this.membersMatchers = build(factory, removeSyntheticConstructors(patternNode.getMembers()));
+		this.methodsMatchers = build(factory, methods(removeSyntheticConstructors(patternNode.getMembers())));
+		this.fieldsMatchers = build(factory, fields(patternNode.getMembers()));
+		//TODO - I may need to add also static blocks !?
 	}
 
-	private List<? extends Tree> removeSyntheticConstructors(List<? extends Tree> members) {
+	private List<Tree> fields(List<? extends Tree> members) {
+		List<Tree> filtered = new ArrayList<Tree>(members.size());
+		for (Tree member : members) {
+			if (member instanceof VariableTree) {
+				filtered.add(member);
+			}
+		}
+		return filtered;
+	}
+
+	private List<Tree> methods(List<? extends Tree> members) {
+		List<Tree> filtered = new ArrayList<Tree>(members.size());
+		for (Tree member : members) {
+			if (member instanceof MethodTree) {
+				filtered.add(member);
+			}
+		}
+		return filtered;
+	}
+
+	private List<Tree> removeSyntheticConstructors(List<? extends Tree> members) {
 		List<Tree> filtered = new ArrayList<Tree>(members.size());
 		for (Tree member : members) {
 			if (!InternalUtils.isSyntheticConstructor(member)) {
@@ -36,10 +63,6 @@ public class DynamicTypeDefinitionMatcher extends DefaultTreeMatcher implements 
 			}
 		}
 		return filtered;
-	}
-
-	public ClassTree getPatternNode() {
-		return patternNode;
 	}
 
 	public TreeMatcher getExtendsMatcher() {
@@ -54,26 +77,42 @@ public class DynamicTypeDefinitionMatcher extends DefaultTreeMatcher implements 
 		return typeParametersMatchers;
 	}
 
-	public List<TreeMatcher> getMembersMatchers() {
-		return membersMatchers;
-	}
-
 	@Override
-	public boolean matches(Tree node, MatchingContext context) {
+	public boolean matches(final Tree node, final MatchingContext context) {
 		FluidMatcher match = matching(node, context);
 		if (!(node instanceof ClassTree)) {
 			return match.done(false);
 		}
-		ClassTree ct = (ClassTree) node;
+		final ClassTree ct = (ClassTree) node;
+		final List<Tree> methods = methods(removeSyntheticConstructors(ct.getMembers()));
+		final List<Tree> fields = fields(ct.getMembers());
 
-		//TODO here I need to assign it
-		//match.self(TreeUtils.elementFromDeclaration(patternNode).equals(TreeUtils.elementFromDeclaration(ct)));
-		match.unorderedChildren(removeSyntheticConstructors(ct.getMembers()), membersMatchers);
-		match.child(ct.getExtendsClause(), extendsMatcher);
-		match.unorderedChildren(ct.getImplementsClause(), implementsMatchers);
-		match.orderedChildren(ct.getTypeParameters(), typeParametersMatchers);
+		//match.self(TreeUtils.elementFromDeclaration((ClassTree) getPatternNode()).equals(TreeUtils.elementFromDeclaration(ct)));
+
+		Callable<Boolean> matchSolution = new Callable<Boolean>() {
+			@Override
+			public Boolean call() throws Exception {
+				FluidMatcher solutionMatch = matching(node, context);
+				solutionMatch.unorderedChildren(methods, methodsMatchers);
+				solutionMatch.child(ct.getExtendsClause(), extendsMatcher);
+				solutionMatch.unorderedChildren(ct.getImplementsClause(), implementsMatchers);
+				solutionMatch.orderedChildren(ct.getTypeParameters(), typeParametersMatchers);
+				return solutionMatch.done();
+			}
+		};
+
+		if (fieldsMatchers.isEmpty()) {
+			try {
+				match.self(matchSolution.call());
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			List<List<MatchingPath>> fieldsMatch = context.matchUnordered(fieldsMatchers, fields);
+			match.self(Variables.forAllVariables(context, fieldsMatch, matchSolution));
+		}
 
 		return match.done();
 	}
-
 }

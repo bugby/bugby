@@ -9,15 +9,15 @@ class DefaultWildcard<T> implements Wildcard<T> {
 	/**
 	 * means next node must match
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public static final Wildcard<?> BEGIN = new DefaultWildcard(MatchingType.begin);
 	/**
 	 * means the last match should've been on the last position
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public static final Wildcard<?> END = new DefaultWildcard(MatchingType.end);
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public static final Wildcard<?> EMPTY = new DefaultWildcard(MatchingType.empty);
 
 	private final T value;
@@ -44,8 +44,16 @@ class DefaultWildcard<T> implements Wildcard<T> {
 	}
 
 	@Override
-	public boolean match(T t) {
-		return t.equals(value);
+	public boolean match(T t, List<Wildcard<T>> wildcards, List<T> nodes) {
+		switch (matchingType) {
+			case begin:
+				return t == nodes.get(0);
+			case end:
+				return t == nodes.get(nodes.size() - 1);
+			default:
+				return t.equals(value);
+		}
+
 	}
 
 	public MatchingType getMatchingType() {

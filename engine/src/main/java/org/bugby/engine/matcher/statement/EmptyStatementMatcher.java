@@ -10,10 +10,9 @@ import com.sun.source.tree.EmptyStatementTree;
 import com.sun.source.tree.Tree;
 
 public class EmptyStatementMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final EmptyStatementTree patternNode;
 
 	public EmptyStatementMatcher(EmptyStatementTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
 	}
 
 	@Override

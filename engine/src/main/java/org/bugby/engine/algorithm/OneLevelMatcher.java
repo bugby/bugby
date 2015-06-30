@@ -85,7 +85,7 @@ public class OneLevelMatcher<T, W, R> {
 			W wildcard = wildcards.get(w);
 
 			// !!!XXX the order of conditions check affects how the terminals are chosen in MultiLevelMatcher
-			if (validateConstraints(constraints, nodes, n) && nodeMatch.match(wildcard, nodes.get(n))) {
+			if (validateConstraints(constraints, wildcards, nodes, n) && nodeMatch.match(wildcard, nodes.get(n), wildcards, nodes)) {
 				matchingStack.push(new MatchPosition(n, w));
 				w = advanceWildcardIndex(wildcards, w, constraints);
 			}
@@ -121,9 +121,9 @@ public class OneLevelMatcher<T, W, R> {
 		return w;
 	}
 
-	private boolean validateConstraints(List<W> constraints, List<T> nodes, int n) {
+	private boolean validateConstraints(List<W> constraints, List<W> wildcards, List<T> nodes, int n) {
 		for (W constraint : constraints) {
-			if (!nodeMatch.match(constraint, nodes.get(n))) {
+			if (!nodeMatch.match(constraint, nodes.get(n), wildcards, nodes)) {
 				return false;
 			}
 		}
@@ -160,7 +160,7 @@ public class OneLevelMatcher<T, W, R> {
 		List<W> nextWildcards = wildcards.subList(1, wildcards.size());
 
 		for (int n = 0; n < nodes.size(); ++n) {
-			if (nodeMatch.match(firstWildcard, nodes.get(n))) {
+			if (nodeMatch.match(firstWildcard, nodes.get(n), wildcards, nodes)) {
 				if (wildcards.size() == 1) {
 					// single result
 					result.add(Collections.singletonList(nodeMatch.buildResult(wildcards.get(0), nodes.get(n))));

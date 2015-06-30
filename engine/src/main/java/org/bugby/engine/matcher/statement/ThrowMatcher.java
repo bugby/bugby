@@ -6,16 +6,15 @@ import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.ThrowTree;
 import com.sun.source.tree.Tree;
 
 public class ThrowMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final ThrowTree patternNode;
 	private final TreeMatcher expressionMatcher;
 
 	public ThrowMatcher(ThrowTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
+
 		this.expressionMatcher = factory.build(patternNode.getExpression());
 	}
 
@@ -27,7 +26,6 @@ public class ThrowMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		}
 		ThrowTree mt = (ThrowTree) node;
 
-		
 		match.child(mt.getExpression(), expressionMatcher);
 
 		return match.done();

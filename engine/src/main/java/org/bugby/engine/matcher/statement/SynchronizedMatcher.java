@@ -10,18 +10,14 @@ import com.sun.source.tree.SynchronizedTree;
 import com.sun.source.tree.Tree;
 
 public class SynchronizedMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final SynchronizedTree patternNode;
 	private final TreeMatcher blockMatcher;
 	private final TreeMatcher expressionMatcher;
 
 	public SynchronizedMatcher(SynchronizedTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
+
 		this.blockMatcher = factory.build(patternNode.getBlock());
 		this.expressionMatcher = factory.build(patternNode.getExpression());
-	}
-
-	public SynchronizedTree getPatternNode() {
-		return patternNode;
 	}
 
 	@Override

@@ -6,17 +6,15 @@ import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.AssertTree;
 import com.sun.source.tree.Tree;
 
 public class AssertMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final AssertTree patternNode;
 	private final TreeMatcher conditionMatcher;
 	private final TreeMatcher detailMatcher;
 
 	public AssertMatcher(AssertTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
 		this.conditionMatcher = factory.build(patternNode.getCondition());
 		this.detailMatcher = factory.build(patternNode.getDetail());
 	}
@@ -29,7 +27,6 @@ public class AssertMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		}
 		AssertTree mt = (AssertTree) node;
 
-		
 		match.child(mt.getCondition(), conditionMatcher);
 		match.child(mt.getDetail(), detailMatcher);
 

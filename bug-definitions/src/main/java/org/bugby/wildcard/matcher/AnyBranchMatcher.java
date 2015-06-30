@@ -6,17 +6,15 @@ import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.HashMultimap;
 import com.sun.source.tree.BreakTree;
 import com.sun.source.tree.ContinueTree;
 import com.sun.source.tree.ReturnTree;
 import com.sun.source.tree.Tree;
 
 public class AnyBranchMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final Tree patternNode;
 
 	public AnyBranchMatcher(Tree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
 	}
 
 	@Override

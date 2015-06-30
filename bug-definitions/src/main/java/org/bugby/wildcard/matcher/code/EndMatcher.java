@@ -13,6 +13,7 @@ import com.sun.source.tree.Tree;
 
 public class EndMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	public EndMatcher(Tree patternNode, TreeMatcherFactory factory) {
+		super(patternNode);
 	}
 
 	@Override

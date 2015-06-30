@@ -1,9 +1,18 @@
 package org.bugby.engine.algorithm;
 
+import java.util.List;
+
 import org.bugby.api.wildcard.MatchingType;
 
 public interface NodeMatch<T, W, R> {
-	public boolean match(W wildcard, T node);
+	/**
+	 * @param wildcard
+	 * @param node
+	 * @param wildcards - the current list of the wildcards to be matched
+	 * @param nodes - the current list of nodes to be matched
+	 * @return true if the given nodes matches the given wildcard
+	 */
+	public boolean match(W wildcard, T node, List<W> wildcards, List<T> nodes);
 
 	public MatchingType getMatchingType(W wildcard);
 

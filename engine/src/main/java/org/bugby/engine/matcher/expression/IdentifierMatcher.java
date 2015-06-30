@@ -17,11 +17,10 @@ import com.sun.source.tree.PrimitiveTypeTree;
 import com.sun.source.tree.Tree;
 
 public class IdentifierMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final IdentifierTree patternNode;
 	private final TypeMirror patternType;
 
 	public IdentifierMatcher(IdentifierTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
 		Element element = TreeUtils.elementFromUse(patternNode);
 		patternType = element.asType();
 	}
@@ -39,7 +38,7 @@ public class IdentifierMatcher extends DefaultTreeMatcher implements TreeMatcher
 				TypeMirror sourceNodeType = element.asType();
 				match.self(context.compatibleTypes(patternType, sourceNodeType));
 			} else {
-				match.self(mt.getName().toString().equals(patternNode.getName().toString()));
+				match.self(mt.getName().toString().equals(((IdentifierTree) getPatternNode()).getName().toString()));
 			}
 		} else if (node instanceof PrimitiveTypeTree) {
 			PrimitiveTypeTree mt = (PrimitiveTypeTree) node;

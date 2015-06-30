@@ -14,12 +14,19 @@ abstract public class DefaultTreeMatcher implements TreeMatcher {
 
 	private final int id;
 
-	protected DefaultTreeMatcher() {
+	private final Tree patternNode;
+
+	protected DefaultTreeMatcher(Tree patternNode) {
 		id = sequence++;
+		this.patternNode = patternNode;
 	}
 
 	public int getId() {
 		return id;
+	}
+
+	public Tree getPatternNode() {
+		return patternNode;
 	}
 
 	protected FluidMatcher matching(Tree node, MatchingContext context) {
@@ -46,7 +53,7 @@ abstract public class DefaultTreeMatcher implements TreeMatcher {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <T extends ExpressionTree> T removeExpressionStatement(Tree node) {
+	protected static <T extends ExpressionTree> T removeExpressionStatement(Tree node) {
 		if (node instanceof ExpressionStatementTree) {
 			return (T) ((ExpressionStatementTree) node).getExpression();
 		}

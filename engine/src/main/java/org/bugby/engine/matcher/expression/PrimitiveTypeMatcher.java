@@ -10,10 +10,8 @@ import com.sun.source.tree.PrimitiveTypeTree;
 import com.sun.source.tree.Tree;
 
 public class PrimitiveTypeMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final PrimitiveTypeTree patternNode;
-
 	public PrimitiveTypeMatcher(PrimitiveTypeTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
 	}
 
 	@Override
@@ -23,7 +21,7 @@ public class PrimitiveTypeMatcher extends DefaultTreeMatcher implements TreeMatc
 			return match.done(false);
 		}
 		PrimitiveTypeTree mt = (PrimitiveTypeTree) node;
-		match.self(mt.getPrimitiveTypeKind() == patternNode.getPrimitiveTypeKind());
+		match.self(mt.getPrimitiveTypeKind() == ((PrimitiveTypeTree) getPatternNode()).getPrimitiveTypeKind());
 		return match.done();
 	}
 }

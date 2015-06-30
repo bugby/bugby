@@ -1,6 +1,7 @@
 package org.bugby.wildcard.matcher.method;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.FluidMatcher;
@@ -8,12 +9,12 @@ import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.MatchingPath;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
+import org.bugby.api.wildcard.Variables;
 
 import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.Tree;
 
 public class DynamicMethodMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final MethodTree patternNode;
 	private final TreeMatcher returnTypeMatcher;
 	private final List<TreeMatcher> parametersMatchers;
 	private final List<TreeMatcher> typeParametersMatchers;
@@ -21,7 +22,7 @@ public class DynamicMethodMatcher extends DefaultTreeMatcher implements TreeMatc
 	private final TreeMatcher bodyMatcher;
 
 	public DynamicMethodMatcher(MethodTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
 		this.returnTypeMatcher = factory.build(patternNode.getReturnType());
 		this.parametersMatchers = build(factory, patternNode.getParameters());
 		this.typeParametersMatchers = build(factory, patternNode.getTypeParameters());
@@ -30,31 +31,44 @@ public class DynamicMethodMatcher extends DefaultTreeMatcher implements TreeMatc
 	}
 
 	@Override
-	public boolean matches(Tree node, MatchingContext context) {
+	public boolean matches(final Tree node, final MatchingContext context) {
 		FluidMatcher match = matching(node, context);
 		if (!(node instanceof MethodTree)) {
 			return match.done(false);
 		}
-		MethodTree mt = (MethodTree) node;
+		final MethodTree mt = (MethodTree) node;
 
-		//TODO here i need to put the name on the assignment table
-		//match.self(patternNode.getName().toString().equals(mt.getName().toString()));
-		List<List<MatchingPath>> paramsMatch = context.matchOrdered(parametersMatchers, mt.getParameters());
-		match.self(!paramsMatch.isEmpty());
+		Callable<Boolean> matchSolution = new Callable<Boolean>() {
+			@Override
+			public Boolean call() throws Exception {
+				FluidMatcher solutionMatch = matching(node, context);
+				solutionMatch.unorderedChildren(mt.getThrows(), throwsMatchers);
+				solutionMatch.child(mt.getReturnType(), returnTypeMatcher);
+				solutionMatch.orderedChildren(mt.getTypeParameters(), typeParametersMatchers);
+				solutionMatch.child(mt.getBody(), bodyMatcher);
+				return solutionMatch.done();
+			}
+		};
 
-		match.unorderedChildren(mt.getThrows(), throwsMatchers);
-		match.child(mt.getReturnType(), returnTypeMatcher);
-		match.orderedChildren(mt.getTypeParameters(), typeParametersMatchers);
-		match.child(mt.getBody(), bodyMatcher);
-
+		if (parametersMatchers.isEmpty()) {
+			try {
+				match.self(matchSolution.call());
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			List<List<MatchingPath>> paramsMatch = context.matchOrdered(parametersMatchers, mt.getParameters());
+			match.self(Variables.forAllVariables(context, paramsMatch, matchSolution));
+		}
 		return match.done();
 	}
 
 	@Override
 	public String toString() {
-		return "DynamicMethodMatcher [method=" + patternNode.getName() + ", returnTypeMatcher=" + returnTypeMatcher + ", parametersMatchers="
-				+ parametersMatchers + ", typeParametersMatchers=" + typeParametersMatchers + ", throwsMatchers=" + throwsMatchers
-				+ ", bodyMatcher=" + bodyMatcher + "]";
+		return "DynamicMethodMatcher [method=" + ((MethodTree) getPatternNode()).getName() + ", returnTypeMatcher=" + returnTypeMatcher
+				+ ", parametersMatchers=" + parametersMatchers + ", typeParametersMatchers=" + typeParametersMatchers + ", throwsMatchers="
+				+ throwsMatchers + ", bodyMatcher=" + bodyMatcher + "]";
 	}
 
 }

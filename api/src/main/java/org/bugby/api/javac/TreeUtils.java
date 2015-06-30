@@ -770,10 +770,10 @@ public final class TreeUtils {
 		return correctClass && correctMethod;
 	}
 
-	public static List<Tree> descendantsOfType(Tree parent, Class<?> type) {
-		@SuppressWarnings({"unchecked", "rawtypes"})
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	public static <T extends Tree> List<T> descendantsOfType(Tree parent, Class<T> type) {
 		Set<Class<?>> types = (Set) Collections.singleton(type);
-		return descendantsOfTypes(parent, types);
+		return (List) descendantsOfTypes(parent, types);
 	}
 
 	public static List<Tree> descendantsOfTypes(final Tree parent, final Set<Class<?>> types) {

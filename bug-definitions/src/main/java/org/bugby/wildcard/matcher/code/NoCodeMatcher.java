@@ -11,6 +11,7 @@ import com.sun.source.tree.Tree;
 
 public class NoCodeMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	public NoCodeMatcher(Tree patternNode, TreeMatcherFactory factory) {
+		super(patternNode);
 	}
 
 	@Override

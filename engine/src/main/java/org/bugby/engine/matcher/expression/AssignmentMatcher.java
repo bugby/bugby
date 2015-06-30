@@ -6,17 +6,15 @@ import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.AssignmentTree;
 import com.sun.source.tree.Tree;
 
 public class AssignmentMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final AssignmentTree patternNode;
 	private final TreeMatcher variableMatcher;
 	private final TreeMatcher expressionMatcher;
 
 	public AssignmentMatcher(AssignmentTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
 		this.variableMatcher = factory.build(patternNode.getVariable());
 		this.expressionMatcher = factory.build(patternNode.getExpression());
 	}
@@ -29,7 +27,6 @@ public class AssignmentMatcher extends DefaultTreeMatcher implements TreeMatcher
 		}
 		AssignmentTree mt = (AssignmentTree) node;
 
-		
 		match.child(mt.getExpression(), expressionMatcher);
 		match.child(mt.getVariable(), variableMatcher);
 

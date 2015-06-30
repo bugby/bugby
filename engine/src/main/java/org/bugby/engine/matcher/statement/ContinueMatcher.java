@@ -10,14 +10,9 @@ import com.sun.source.tree.ContinueTree;
 import com.sun.source.tree.Tree;
 
 public class ContinueMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final ContinueTree patternNode;
 
 	public ContinueMatcher(ContinueTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
-	}
-
-	public ContinueTree getPatternNode() {
-		return patternNode;
+		super(patternNode);
 	}
 
 	@Override

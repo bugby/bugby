@@ -16,6 +16,7 @@ public class DynamicTypeInvocationMatcher extends DefaultTreeMatcher implements 
 	private final TreeMatcher typeDefMatcher;
 
 	public DynamicTypeInvocationMatcher(IdentifierTree patternNode, TreeMatcherFactory factory) {
+		super(patternNode);
 		// i need to load the type's definition here!
 		TypeElement element = (TypeElement) TreeUtils.elementFromUse(patternNode);
 		//	if (element.getQualifiedName().toString().startsWith("org.bugby")) {

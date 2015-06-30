@@ -7,6 +7,8 @@ import com.sun.source.tree.Tree;
 public interface TreeMatcher {
 	public MatchingType getMatchingType();
 
+	public Tree getPatternNode();
+
 	/**
 	 * called before starting the matching, multiple siblings with multiple nodes from the AST to be checked. Called once for each of the
 	 * siblings involved in the matching process.

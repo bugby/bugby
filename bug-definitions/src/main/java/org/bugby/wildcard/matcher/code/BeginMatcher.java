@@ -14,6 +14,7 @@ import com.sun.source.tree.Tree;
 public class BeginMatcher extends DefaultTreeMatcher implements TreeMatcher {
 
 	public BeginMatcher(Tree patternNode, TreeMatcherFactory factory) {
+		super(patternNode);
 	}
 
 	@Override

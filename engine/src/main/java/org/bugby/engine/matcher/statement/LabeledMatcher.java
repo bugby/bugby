@@ -10,11 +10,11 @@ import com.sun.source.tree.LabeledStatementTree;
 import com.sun.source.tree.Tree;
 
 public class LabeledMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final LabeledStatementTree patternNode;
 	private final TreeMatcher statementMatcher;
 
 	public LabeledMatcher(LabeledStatementTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
+
 		this.statementMatcher = factory.build(patternNode.getStatement());
 	}
 
@@ -26,7 +26,7 @@ public class LabeledMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		}
 		LabeledStatementTree mt = (LabeledStatementTree) node;
 
-		match.self(patternNode.getLabel().toString().equals(mt.getLabel().toString()));
+		match.self(((LabeledStatementTree) getPatternNode()).getLabel().toString().equals(mt.getLabel().toString()));
 		match.child(mt.getStatement(), statementMatcher);
 
 		return match.done();

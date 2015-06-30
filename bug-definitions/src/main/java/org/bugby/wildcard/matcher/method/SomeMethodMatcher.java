@@ -13,14 +13,13 @@ import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.Tree;
 
 public class SomeMethodMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final Tree patternNode;
 	private final String correlationKey;
 	private final Comparator<Tree> correlationComparator;
 
 	private final TreeMatcher delegateMatcher;
 
 	public SomeMethodMatcher(Tree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
 		// tree can be a method call or a method declaration
 		Correlation correlation = getCorrelationAnnotation(patternNode);
 		correlationKey = getCorrelationKey(correlation);

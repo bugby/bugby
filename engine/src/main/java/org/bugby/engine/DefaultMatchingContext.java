@@ -86,7 +86,7 @@ public class DefaultMatchingContext implements MatchingContext {
 	private NodeMatch<Tree, TreeMatcher, MatchingPath> nodeMatch() {
 		return new NodeMatch<Tree, TreeMatcher, MatchingPath>() {
 			@Override
-			public boolean match(TreeMatcher wildcard, Tree node) {
+			public boolean match(TreeMatcher wildcard, Tree node, List<TreeMatcher> wildcards, List<Tree> nodes) {
 				currentPath = new MatchingPath(DefaultMatchingContext.this, wildcard, node, currentPath);
 				boolean ok = wildcard.matches(node, DefaultMatchingContext.this);
 				MatchingPath oldPath = currentPath;

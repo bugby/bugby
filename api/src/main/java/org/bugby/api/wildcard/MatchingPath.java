@@ -8,7 +8,6 @@ import com.sun.source.tree.Tree;
 
 /**
  * this represents the path to a matching pair (matcher, node)
- * 
  * @author acraciun
  */
 public class MatchingPath {
@@ -75,9 +74,9 @@ public class MatchingPath {
 			child.remove();
 		}
 		children.clear();
-		for (MatchingValueKey key : valueKeys) {
-			context.removeValue(key);
-		}
+		//		for (MatchingValueKey key : valueKeys) {
+		//			context.removeValue(key);
+		//		}
 		parent = null;
 	}
 

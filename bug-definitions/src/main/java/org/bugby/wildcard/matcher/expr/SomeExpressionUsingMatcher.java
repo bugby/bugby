@@ -15,12 +15,11 @@ import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.Tree;
 
 public class SomeExpressionUsingMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final MethodInvocationTree patternNode;
 	private final List<TreeMatcher> argumentsMatchers;
 
 	public SomeExpressionUsingMatcher(Tree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = removeExpressionStatement(patternNode);
-		this.argumentsMatchers = build(factory, this.patternNode.getArguments());
+		super(removeExpressionStatement(patternNode));
+		this.argumentsMatchers = build(factory, ((MethodInvocationTree) getPatternNode()).getArguments());
 	}
 
 	@Override

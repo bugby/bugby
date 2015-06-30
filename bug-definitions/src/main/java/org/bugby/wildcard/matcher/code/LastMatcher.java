@@ -11,6 +11,7 @@ import com.sun.source.tree.Tree;
 public class LastMatcher extends DefaultTreeMatcher implements TreeMatcher {
 
 	public LastMatcher(Tree patternNode, TreeMatcherFactory factory) {
+		super(patternNode);
 		// WildcardPatternBuildContext buildContext
 		// buildContext.pushAnnotationNode((MethodCallExpr) currentPatternSourceNode);
 	}

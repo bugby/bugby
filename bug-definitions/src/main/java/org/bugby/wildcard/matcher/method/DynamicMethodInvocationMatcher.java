@@ -12,13 +12,12 @@ import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.Tree;
 
 public class DynamicMethodInvocationMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final MethodInvocationTree patternNode;
 	private final TreeMatcher methodSelectMatcher;
 	private final List<TreeMatcher> typeArgumentsMathers;
 	private final List<TreeMatcher> argumentsMatchers;
 
 	public DynamicMethodInvocationMatcher(MethodInvocationTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
 		this.methodSelectMatcher = factory.build(patternNode.getMethodSelect());
 		this.typeArgumentsMathers = build(factory, patternNode.getTypeArguments());
 		this.argumentsMatchers = build(factory, patternNode.getArguments());

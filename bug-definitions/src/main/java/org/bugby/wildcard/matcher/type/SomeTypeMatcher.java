@@ -10,11 +10,10 @@ import com.sun.source.tree.IdentifierTree;
 import com.sun.source.tree.Tree;
 
 public class SomeTypeMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final Tree patternNode;
 	private final TreeMatcher delegateMatcher;
 
 	public SomeTypeMatcher(Tree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
 		if (patternNode instanceof ClassTree) {
 			delegateMatcher = new DynamicTypeDefinitionMatcher((ClassTree) patternNode, factory);
 		} else if (patternNode instanceof IdentifierTree) {

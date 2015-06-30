@@ -8,12 +8,10 @@ import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.Tree;
 
 public class NewClassMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final NewClassTree patternNode;
 	private final TreeMatcher enclosingExpressionMatcher;
 	private final List<TreeMatcher> typeArgumentsMatchers;
 	private final TreeMatcher identifierMatcher;
@@ -21,7 +19,7 @@ public class NewClassMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	private final TreeMatcher classBodyMatcher;
 
 	public NewClassMatcher(NewClassTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
 		this.enclosingExpressionMatcher = factory.build(patternNode.getEnclosingExpression());
 		this.typeArgumentsMatchers = build(factory, patternNode.getTypeArguments());
 		this.identifierMatcher = factory.build(patternNode.getIdentifier());
@@ -37,7 +35,6 @@ public class NewClassMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		}
 		NewClassTree mt = (NewClassTree) node;
 
-		
 		match.child(mt.getEnclosingExpression(), enclosingExpressionMatcher);
 		match.child(mt.getIdentifier(), identifierMatcher);
 		match.child(mt.getClassBody(), classBodyMatcher);

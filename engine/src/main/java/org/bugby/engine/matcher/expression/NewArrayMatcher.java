@@ -8,18 +8,16 @@ import org.bugby.api.wildcard.MatchingContext;
 import org.bugby.api.wildcard.TreeMatcher;
 import org.bugby.api.wildcard.TreeMatcherFactory;
 
-import com.google.common.collect.Multimap;
 import com.sun.source.tree.NewArrayTree;
 import com.sun.source.tree.Tree;
 
 public class NewArrayMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final NewArrayTree patternNode;
 	private final TreeMatcher typeMatcher;
 	private final List<TreeMatcher> dimensionsMatchers;
 	private final List<TreeMatcher> initializersMatchers;
 
 	public NewArrayMatcher(NewArrayTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
+		super(patternNode);
 		this.typeMatcher = factory.build(patternNode.getType());
 		this.dimensionsMatchers = build(factory, patternNode.getDimensions());
 		this.initializersMatchers = build(factory, patternNode.getInitializers());
@@ -33,7 +31,6 @@ public class NewArrayMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		}
 		NewArrayTree mt = (NewArrayTree) node;
 
-		
 		match.child(mt.getType(), typeMatcher);
 		match.orderedChildren(mt.getDimensions(), dimensionsMatchers);
 		match.orderedChildren(mt.getInitializers(), initializersMatchers);

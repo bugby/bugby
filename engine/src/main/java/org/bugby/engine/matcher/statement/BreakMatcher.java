@@ -10,14 +10,8 @@ import com.sun.source.tree.BreakTree;
 import com.sun.source.tree.Tree;
 
 public class BreakMatcher extends DefaultTreeMatcher implements TreeMatcher {
-	private final BreakTree patternNode;
-
 	public BreakMatcher(BreakTree patternNode, TreeMatcherFactory factory) {
-		this.patternNode = patternNode;
-	}
-
-	public BreakTree getPatternNode() {
-		return patternNode;
+		super(patternNode);
 	}
 
 	@Override
