@@ -43,7 +43,7 @@ public class SomeCodeMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		Callable<Boolean> matchSolution = new Callable<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
-				FluidMatcher solutionMatch = matching(node, context);
+				FluidMatcher solutionMatch = partialMatching(node, context);
 				solutionMatch.child(mt.getBody(), bodyMatcher);
 				return solutionMatch.done();
 			}
@@ -57,6 +57,7 @@ public class SomeCodeMatcher extends DefaultTreeMatcher implements TreeMatcher {
 				e.printStackTrace();
 			}
 		} else {
+			//TODO probably I should match with the wrappers of the variable's types instead of the variables themselves!
 			List<List<MatchingPath>> paramsMatch = context.matchUnordered(parametersMatchers, Variables.extractAllVariables(mt));
 			match.self(Variables.forAllVariables(context, paramsMatch, matchSolution));
 		}

@@ -4,17 +4,12 @@ import static org.bugby.pattern.example.MatchingHelper.assertBug;
 import static org.bugby.pattern.example.MatchingHelper.assertNoBug;
 
 import org.bugby.bugs.findbugs.AmbiguousInvocationOfOuterOrInner;
-import org.bugby.bugs.findbugs.AmbiguousInvocationOfOuterOrInner2;
 import org.bugby.bugs.findbugs.CheckImmutable;
 import org.bugby.bugs.findbugs.CloneableWithoutClone;
 import org.bugby.bugs.findbugs.CollectionRemoveAll;
 import org.junit.Test;
 
 public class TestFindbugs {
-	@Test
-	public void testAmbiguousInvocationOfOuterOrInner1() {
-		assertBug(AmbiguousInvocationOfOuterOrInner2.class, AmbiguousInvocationOfOuterOrInner2Check2.class, 18);
-	}
 
 	@Test
 	public void testAmbiguousInvocationOfOuterOrInner2() {

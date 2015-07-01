@@ -57,7 +57,7 @@ public class BlockMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		Callable<Boolean> matchSolution = new Callable<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
-				FluidMatcher solutionMatch = matching(node, context);
+				FluidMatcher solutionMatch = partialMatching(node, context);
 				solutionMatch.orderedChildren(statements, statementsMatchers);
 				return solutionMatch.done();
 			}

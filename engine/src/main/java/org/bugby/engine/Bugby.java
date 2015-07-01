@@ -19,6 +19,9 @@ import com.sun.source.tree.Tree;
 public class Bugby {
 
 	private static String toString(Object obj) {
+		if (obj instanceof TreeMatcher) {
+			return obj.getClass().getSimpleName() + "#" + ((TreeMatcher) obj).getId();
+		}
 		return obj.getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(obj));
 	}
 

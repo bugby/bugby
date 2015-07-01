@@ -40,7 +40,7 @@ public class ForLoopMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		Callable<Boolean> matchSolution = new Callable<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
-				FluidMatcher solutionMatch = matching(node, context);
+				FluidMatcher solutionMatch = partialMatching(node, context);
 				solutionMatch.unorderedChildren(ct.getUpdate(), updateMatchers);
 				solutionMatch.child(ct.getCondition(), conditionMatcher);
 				solutionMatch.child(ct.getStatement(), statementMatcher);

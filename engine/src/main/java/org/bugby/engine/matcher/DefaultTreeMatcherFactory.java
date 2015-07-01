@@ -13,12 +13,15 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 import org.bugby.annotation.BadExample;
 import org.bugby.annotation.GoodExample;
 import org.bugby.annotation.GoodExampleTrigger;
+import org.bugby.api.javac.ElementWrapperTree;
 import org.bugby.api.javac.InternalUtils;
+import org.bugby.api.javac.ParsedSource;
 import org.bugby.api.javac.SourceParser;
 import org.bugby.api.javac.TreeUtils;
 import org.bugby.api.wildcard.Correlation;
@@ -27,6 +30,7 @@ import org.bugby.api.wildcard.TreeMatcherFactory;
 import org.bugby.engine.WildcardDictionary;
 import org.bugby.engine.matcher.declaration.ClassMatcher;
 import org.bugby.engine.matcher.declaration.MethodMatcher;
+import org.bugby.engine.matcher.declaration.TypeWithoutSourceMatcher;
 import org.bugby.engine.matcher.expression.ArrayAccessMatcher;
 import org.bugby.engine.matcher.expression.AssignmentMatcher;
 import org.bugby.engine.matcher.expression.BinaryMatcher;
@@ -109,9 +113,10 @@ import com.sun.source.tree.WhileLoopTree;
 
 public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 	private static Set<Class<? extends Annotation>> skipAnnotations = new HashSet<Class<? extends Annotation>>(Arrays.asList(GoodExample.class,
-			GoodExampleTrigger.class, BadExample.class, SuppressWarnings.class, Override.class, Correlation.class));
+		GoodExampleTrigger.class, BadExample.class, SuppressWarnings.class, Override.class, Correlation.class));
 
-	private static final Map<Class<? extends Tree>, Class<? extends TreeMatcher>> matcherClasses = new HashMap<Class<? extends Tree>, Class<? extends TreeMatcher>>();
+	private static final Map<Class<? extends Tree>, Class<? extends TreeMatcher>> matcherClasses =
+			new HashMap<Class<? extends Tree>, Class<? extends TreeMatcher>>();
 	static {
 		matcherClasses.put(ClassTree.class, ClassMatcher.class);
 		matcherClasses.put(MethodTree.class, MethodMatcher.class);
@@ -157,6 +162,7 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 	}
 	private final WildcardDictionary wildcardDictionary;
 	private final ClassLoader builtProjectClassLoader;
+	private ParsedSource parsedSource;
 
 	public DefaultTreeMatcherFactory(WildcardDictionary wildcardDictionary, ClassLoader builtProjectClassLoader) {
 		this.wildcardDictionary = wildcardDictionary;
@@ -210,15 +216,46 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		return clz.getName().replace(".class", "").replace('.', File.separatorChar) + ".java";
 	}
 
+	private static final String[] SOURCE_PATHS = {"src/main/java", "src/test/java"};
+
+	private static File sourcePath(String fileName) {
+		for (String p : SOURCE_PATHS) {
+			File f = new File(p, fileName);
+			if (f.exists()) {
+				return f;
+			}
+		}
+		throw new RuntimeException("Cannot find file:" + fileName);
+	}
+
 	@Override
 	public TreeMatcher buildForType(String type) {
 		// TODO here I need a mechanism to find the source of a given type
-		final String BUG_DEF_PATH = "src/main/java/";
-		return buildFromFile(new File(BUG_DEF_PATH, type.replace('.', File.separatorChar) + ".java"));
+		if (type.startsWith("org.bugby")) {
+			CompilationUnitMatcher cuMatcher =
+					(CompilationUnitMatcher) buildFromFile(sourcePath(type.replace('.', File.separatorChar) + ".java"));
+			return cuMatcher.getTypeMatchers().get(0);
+		}
+		TypeElement element = parsedSource.getElements().getTypeElement(type);
+		return new TypeWithoutSourceMatcher(new ElementWrapperTree(element), element.asType());
+	}
+
+	public Tree loadTypeDefinition(String type) {
+		if (type.startsWith("org.bugby")) {
+			File file = sourcePath(type.replace('.', File.separatorChar) + ".java");
+			ParsedSource typeParsedSource = SourceParser.parse(file, builtProjectClassLoader, "UTF-8");
+			CompilationUnitTree cu = typeParsedSource.getCompilationUnitTree();
+			//TODO should look into actual type names
+			return cu.getTypeDecls().get(0);
+		}
+		TypeElement element = parsedSource.getElements().getTypeElement(type);
+		return new ElementWrapperTree(element);
 	}
 
 	public TreeMatcher buildFromFile(File file) {
-		CompilationUnitTree cu = SourceParser.parse(file, builtProjectClassLoader, "UTF-8").getCompilationUnitTree();
+		//TODO the source should not be kept as field
+		parsedSource = SourceParser.parse(file, builtProjectClassLoader, "UTF-8");
+		CompilationUnitTree cu = parsedSource.getCompilationUnitTree();
 
 		return build(cu);
 	}
@@ -259,9 +296,8 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 	}
 
 	/**
-	 * adds the annotation matchers that would affect the patternNodeMatcher behaviour. Please note that this only
-	 * applies to nodes that can have annotations.
-	 * 
+	 * adds the annotation matchers that would affect the patternNodeMatcher behaviour. Please note that this only applies to nodes that can have
+	 * annotations.
 	 * @param patternNode
 	 * @param patternNodeMatcher
 	 * @return
@@ -279,8 +315,7 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 	 * @param annotation
 	 * @param patternNode
 	 * @param patternNodeMatcher
-	 * @return an matcher adding the annotation specific functionality or patternNodeMatcher if no corresponding matcher
-	 *         was found
+	 * @return an matcher adding the annotation specific functionality or patternNodeMatcher if no corresponding matcher was found
 	 */
 	private TreeMatcher addAnnotationMatcher(AnnotationTree annotation, Tree patternNode, TreeMatcher patternNodeMatcher) {
 		TypeMirror type = InternalUtils.typeOf(annotation.getAnnotationType());

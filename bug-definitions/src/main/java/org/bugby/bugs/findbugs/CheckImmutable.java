@@ -2,11 +2,11 @@ package org.bugby.bugs.findbugs;
 
 import javax.annotation.concurrent.Immutable;
 
-import org.bugby.annotation.GoodExample;
+import org.bugby.annotation.BadExample;
 import org.bugby.annotation.IgnoreFromMatching;
 import org.bugby.wildcard.SomeType;
 
-@GoodExample
+@BadExample
 @Immutable
 public class CheckImmutable {
 	private final SomeType someField;

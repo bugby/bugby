@@ -41,7 +41,7 @@ public class DynamicMethodMatcher extends DefaultTreeMatcher implements TreeMatc
 		Callable<Boolean> matchSolution = new Callable<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
-				FluidMatcher solutionMatch = matching(node, context);
+				FluidMatcher solutionMatch = partialMatching(node, context);
 				solutionMatch.unorderedChildren(mt.getThrows(), throwsMatchers);
 				solutionMatch.child(mt.getReturnType(), returnTypeMatcher);
 				solutionMatch.orderedChildren(mt.getTypeParameters(), typeParametersMatchers);

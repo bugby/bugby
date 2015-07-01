@@ -12,17 +12,30 @@ public class FluidMatcher {
 	private final TreeMatcher matcher;
 	private boolean currentMatch = true;
 	private static int level = 0;
+	private final boolean partial;
 
 	public FluidMatcher(MatchingContext context, Tree node, TreeMatcher matcher) {
+		this(context, node, matcher, false);
+	}
+
+	public FluidMatcher(MatchingContext context, Tree node, TreeMatcher matcher, boolean partial) {
 		this.context = context;
 		this.node = node;
 		this.matcher = matcher;
-		System.out.println(Strings.repeat("  ", level) + ">> " + toString(matcher) + " on " + toString(node) + " ["
-				+ node.toString().replace("\n", "  ") + "]");
+		this.partial = partial;
+		if (partial) {
+			System.out.println(Strings.repeat("  ", level) + "[ #" + matcher.getId());
+		} else {
+			System.out.println(Strings.repeat("  ", level) + ">> " + toString(matcher) + " on " + toString(node) + " ["
+					+ node.toString().replace("\n", "  ") + "]");
+		}
 		level++;
 	}
 
 	private String toString(Object obj) {
+		if (obj instanceof TreeMatcher) {
+			return obj.getClass().getSimpleName() + "#" + ((TreeMatcher) obj).getId();
+		}
 		return obj.getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(obj));
 	}
 
@@ -63,11 +76,11 @@ public class FluidMatcher {
 
 	public boolean done() {
 		level--;
-		if (currentMatch) {
-			// matches - but put in error to view it better
-			System.out.println(Strings.repeat("  ", level) + "<<  " + toString(matcher) + " = " + currentMatch);
+		// matches - but put in error to view it better
+		if (partial) {
+			System.out.println(Strings.repeat("  ", level) + "] #" + matcher.getId() + " = " + currentMatch);
 		} else {
-			System.out.println(Strings.repeat("  ", level) + "<< " + toString(matcher) + " = " + currentMatch);
+			System.out.println(Strings.repeat("  ", level) + "<<  " + toString(matcher) + " = " + currentMatch);
 		}
 
 		return currentMatch;

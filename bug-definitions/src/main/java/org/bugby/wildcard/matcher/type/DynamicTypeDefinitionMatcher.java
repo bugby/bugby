@@ -92,7 +92,7 @@ public class DynamicTypeDefinitionMatcher extends DefaultTreeMatcher implements 
 		Callable<Boolean> matchSolution = new Callable<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
-				FluidMatcher solutionMatch = matching(node, context);
+				FluidMatcher solutionMatch = partialMatching(node, context);
 				solutionMatch.unorderedChildren(methods, methodsMatchers);
 				solutionMatch.child(ct.getExtendsClause(), extendsMatcher);
 				solutionMatch.unorderedChildren(ct.getImplementsClause(), implementsMatchers);

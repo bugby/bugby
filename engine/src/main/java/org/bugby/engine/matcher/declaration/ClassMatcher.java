@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.bugby.api.javac.InternalUtils;
-import org.bugby.api.javac.TreeUtils;
 import org.bugby.api.wildcard.DefaultTreeMatcher;
 import org.bugby.api.wildcard.FluidMatcher;
 import org.bugby.api.wildcard.MatchingContext;
@@ -88,12 +87,12 @@ public class ClassMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		final List<Tree> methods = methods(removeSyntheticConstructors(ct.getMembers()));
 		final List<Tree> fields = fields(ct.getMembers());
 
-		match.self(TreeUtils.elementFromDeclaration((ClassTree) getPatternNode()).equals(TreeUtils.elementFromDeclaration(ct)));
+		//match.self(TreeUtils.elementFromDeclaration((ClassTree) getPatternNode()).equals(TreeUtils.elementFromDeclaration(ct)));
 
 		Callable<Boolean> matchSolution = new Callable<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
-				FluidMatcher solutionMatch = matching(node, context);
+				FluidMatcher solutionMatch = partialMatching(node, context);
 				solutionMatch.unorderedChildren(methods, methodsMatchers);
 				solutionMatch.child(ct.getExtendsClause(), extendsMatcher);
 				solutionMatch.unorderedChildren(ct.getImplementsClause(), implementsMatchers);

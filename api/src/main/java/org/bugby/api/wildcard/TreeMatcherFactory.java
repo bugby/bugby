@@ -1,5 +1,7 @@
 package org.bugby.api.wildcard;
 
+import org.bugby.api.javac.ElementWrapperTree;
+
 import com.sun.source.tree.Tree;
 
 /**
@@ -14,4 +16,11 @@ public interface TreeMatcherFactory {
 	public TreeMatcher build(Tree patternNode);
 
 	public TreeMatcher buildForType(String type);
+
+	/**
+	 * tries to parse the given type name. In case the source of the given type is unavailable a {@link ElementWrapperTree} must be returned
+	 * @param type
+	 * @return
+	 */
+	public Tree loadTypeDefinition(String type);
 }

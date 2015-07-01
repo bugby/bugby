@@ -43,14 +43,16 @@ public class SomeVariableDefMatcher extends DefaultTreeMatcher implements TreeMa
 			return match.done(false);
 		}
 
-		match.self(context.compatibleTypes(patternVariableElement.asType(), sourceVarElement.asType()));
+		//match.self(context.compatibleTypes(patternVariableElement.asType(), sourceVarElement.asType()));
 
 		if (node instanceof VariableTree) {
 			VariableTree mt = (VariableTree) node;
-			//match.child(mt.getType(), typeMatcher);
+			match.child(mt.getType(), typeMatcher);
 			if (initMatcher != null) {
 				match.child(mt.getInitializer(), initMatcher);
 			}
+		} else {
+			match.child(node, typeMatcher);
 		}
 
 		return match.done();

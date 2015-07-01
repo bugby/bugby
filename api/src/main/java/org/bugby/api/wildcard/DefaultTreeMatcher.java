@@ -33,6 +33,10 @@ abstract public class DefaultTreeMatcher implements TreeMatcher {
 		return new FluidMatcher(context, node, this);
 	}
 
+	protected FluidMatcher partialMatching(Tree node, MatchingContext context) {
+		return new FluidMatcher(context, node, this, true);
+	}
+
 	public static List<TreeMatcher> build(TreeMatcherFactory factory, List<? extends Tree> nodes) {
 		if (nodes.isEmpty()) {
 			return Collections.emptyList();

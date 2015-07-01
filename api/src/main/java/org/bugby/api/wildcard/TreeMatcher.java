@@ -5,6 +5,8 @@ import java.util.List;
 import com.sun.source.tree.Tree;
 
 public interface TreeMatcher {
+	public int getId();
+
 	public MatchingType getMatchingType();
 
 	public Tree getPatternNode();
