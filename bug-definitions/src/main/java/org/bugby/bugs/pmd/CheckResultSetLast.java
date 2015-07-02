@@ -5,10 +5,10 @@ import static org.bugby.wildcard.Wildcards.someValue;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.bugby.annotation.BadExample;
-import org.bugby.annotation.IgnoreFromMatching;
+import org.bugby.api.IgnoreFromMatching;
+import org.bugby.api.Pattern;
 
-@BadExample
+@Pattern
 public class CheckResultSetLast {
 	// TODO i should tell to ignore the throws
 	public void someCode() throws SQLException {

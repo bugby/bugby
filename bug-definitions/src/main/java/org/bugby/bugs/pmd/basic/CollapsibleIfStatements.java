@@ -4,9 +4,9 @@ import static org.bugby.wildcard.Wildcards.begin;
 import static org.bugby.wildcard.Wildcards.end;
 import static org.bugby.wildcard.Wildcards.someCondition;
 
-import org.bugby.annotation.BadExample;
+import org.bugby.api.Pattern;
 
-@BadExample
+@Pattern
 public class CollapsibleIfStatements {
 
 	public void someCode() {

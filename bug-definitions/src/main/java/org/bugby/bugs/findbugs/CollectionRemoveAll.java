@@ -2,9 +2,9 @@ package org.bugby.bugs.findbugs;
 
 import java.util.Collection;
 
-import org.bugby.annotation.BadExample;
+import org.bugby.api.Pattern;
 
-@BadExample
+@Pattern
 public class CollectionRemoveAll {
 	public void someCode(Collection<?> someVar) {
 		// someVar can also be field, variable, parameter etc

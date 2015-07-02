@@ -2,10 +2,10 @@ package org.bugby.bugs.findbugs;
 
 import static org.bugby.wildcard.Wildcards.someValue;
 
-import org.bugby.annotation.BadExample;
+import org.bugby.api.Pattern;
 import org.bugby.wildcard.Missing;
 
-@BadExample
+@Pattern
 public class CloneableWithoutClone implements Cloneable {
 	@Override
 	@Missing

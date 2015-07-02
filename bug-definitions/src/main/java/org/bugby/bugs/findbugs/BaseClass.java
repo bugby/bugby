@@ -1,6 +1,6 @@
 package org.bugby.bugs.findbugs;
 
-import org.bugby.api.wildcard.Correlation;
+import org.bugby.api.Correlation;
 import org.bugby.wildcard.correlation.SameMethodSignature;
 
 public class BaseClass {

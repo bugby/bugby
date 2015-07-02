@@ -5,8 +5,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 
-import org.bugby.engine.Bugby;
-import org.bugby.engine.MatchResult;
+import org.bugby.Bugby;
+import org.bugby.matcher.MatchResult;
 
 import com.sun.source.tree.Tree;
 

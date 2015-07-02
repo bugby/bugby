@@ -1,8 +1,8 @@
 package org.bugby.pattern.example.test.var;
 
-import org.bugby.annotation.BadExample;
+import org.bugby.api.Pattern;
 
-@BadExample
+@Pattern
 public class VariableAssignFor {
 	public void someCode() {
 		for (int someVar = 0;;) {

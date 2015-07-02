@@ -1,10 +1,10 @@
 package org.bugby.bugs.findbugs;
 
-import org.bugby.annotation.BadExample;
-import org.bugby.api.wildcard.Correlation;
+import org.bugby.api.Correlation;
+import org.bugby.api.Pattern;
 import org.bugby.wildcard.correlation.SameMethodSignature;
 
-@BadExample
+@Pattern
 public class AmbiguousInvocationOfOuterOrInner {
 
 	@Correlation(key = "sameOuterAndInnerSuper", comparator = SameMethodSignature.class)

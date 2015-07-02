@@ -1,8 +1,8 @@
 package org.bugby.pattern.example.test.var;
 
-import org.bugby.annotation.BadExample;
+import org.bugby.api.Pattern;
 
-@BadExample
+@Pattern
 public class VariableAssignField {
 	int someField1;
 	int someField2;

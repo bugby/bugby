@@ -3,9 +3,9 @@ package org.bugby.bugs.pmd.basic;
 import static org.bugby.wildcard.Wildcards.someExpressionUsing;
 import static org.bugby.wildcard.Wildcards.someValue;
 
-import org.bugby.annotation.BadExample;
+import org.bugby.api.Pattern;
 
-@BadExample
+@Pattern
 public class JumbledIncrementer {
 	public void someCode() {
 		for (Object someVar1 = someValue();;) { // only references 'i'

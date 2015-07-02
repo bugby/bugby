@@ -1,9 +1,9 @@
 package org.bugby.bugs.pmd.basic;
 
-import org.bugby.annotation.BadExample;
+import org.bugby.api.Pattern;
 import org.bugby.wildcard.Wildcards;
 
-@BadExample
+@Pattern
 public class EmptySwitchStatements {
 	public void someCode() {
 		switch (Wildcards.<Integer> someValue()) {

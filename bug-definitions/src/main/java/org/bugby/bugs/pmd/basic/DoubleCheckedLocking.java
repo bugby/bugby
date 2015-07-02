@@ -2,7 +2,7 @@ package org.bugby.bugs.pmd.basic;
 
 import static org.bugby.wildcard.Wildcards.someValue;
 
-import org.bugby.annotation.BadExample;
+import org.bugby.api.Pattern;
 import org.bugby.wildcard.SomeType;
 
 /**
@@ -12,7 +12,7 @@ import org.bugby.wildcard.SomeType;
  * 
  * @author acraciun
  */
-@BadExample
+@Pattern
 public class DoubleCheckedLocking {
 	SomeType someField;
 

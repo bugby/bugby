@@ -3,9 +3,9 @@ package org.bugby.pattern.example.pmd.basic;
 import java.util.Collections;
 import java.util.List;
 
-import org.bugby.annotation.BadExample;
+import org.bugby.api.Pattern;
 
-@BadExample
+@Pattern
 public class DontCallThreadRunCheck3 {
 	public void someCode() {
 		// does not work in PMD

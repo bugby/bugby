@@ -13,7 +13,7 @@ public class TestVariableAssignCustomType {
 
 	@Test
 	public void testAssign2() {
-		assertBug(VariableAssignCustomType.class, VariableAssignCustomTypeCheck2.class, 7);
+		assertBug(VariableAssignCustomType.class, VariableAssignCustomTypeCheck2.class, 12);
 	}
 
 }

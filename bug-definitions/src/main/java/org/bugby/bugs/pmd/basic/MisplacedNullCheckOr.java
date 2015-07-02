@@ -2,10 +2,10 @@ package org.bugby.bugs.pmd.basic;
 
 import static org.bugby.wildcard.Wildcards.someConditionUsing;
 
-import org.bugby.annotation.BadExample;
+import org.bugby.api.Pattern;
 import org.bugby.wildcard.Wildcards;
 
-@BadExample
+@Pattern
 public class MisplacedNullCheckOr {
 	public void someCode(Object someVar) {
 
