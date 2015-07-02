@@ -193,7 +193,14 @@ public class DefaultMatchingContext implements MatchingContext {
 	@Override
 	public boolean matches() {
 		currentPath = rootPath = new MatchingPath(this, rootMatcher, getCompilationUnitTree(), null);
-		return rootMatcher.matches(parsedSource.getCompilationUnitTree(), this);
+		for (Tree cls : getCompilationUnitTree().getTypeDecls()) {
+			//TODO may cleanup between matches
+			boolean ok = rootMatcher.matches(cls, this);
+			if (ok) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -217,7 +224,7 @@ public class DefaultMatchingContext implements MatchingContext {
 					}
 					return super.visitBlock(node, p);
 				}
-			}.scan(parsedSource.getCompilationUnitTree(), true);
+			}.scan(getCompilationUnitTree(), true);
 		}
 		return childrenListByNode.get(node);
 	}

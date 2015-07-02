@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNotNull;
 import java.io.File;
 
 import org.bugby.Bugby;
+import org.bugby.api.TreeMatcher;
+import org.bugby.api.TreeMatcherFactory;
 import org.bugby.matcher.MatchResult;
 
 import com.sun.source.tree.Tree;
@@ -30,8 +32,18 @@ public class MatchingHelper {
 		throw new RuntimeException("Cannot find file:" + fileName);
 	}
 
+	private static MatchResult match(Class<?> bugClass, Class<?> testClass) {
+		TreeMatcherFactory matcherFactory = Bugby.newTreeMatcherFactory(Thread.currentThread().getContextClassLoader());
+		TreeMatcher rootMatcher = matcherFactory.buildForType(bugClass.getName());
+		matcherFactory.dumpMatcher(rootMatcher);
+		System.out.println("-------------------------");
+
+		MatchResult matches = matcherFactory.match(rootMatcher, matcherFactory.parseSource(testClass.getName()));
+		return matches;
+	}
+
 	public static void assertBug(Class<?> bugClass, Class<?> testClass, int line) {
-		MatchResult matches = Bugby.check(sourcePath(bugClass), sourcePath(testClass));
+		MatchResult matches = match(bugClass, testClass);
 		Tree node = matches.getBestMatch();
 
 		assertNotNull("Expected a best match", node);
@@ -39,8 +51,7 @@ public class MatchingHelper {
 	}
 
 	public static void assertNoBug(Class<?> bugClass, Class<?> testClass) {
-		MatchResult matches = Bugby.check(sourcePath(bugClass), sourcePath(testClass));
-
+		MatchResult matches = match(bugClass, testClass);
 		assertEquals("Should not match", 0, matches.getMatches().size());
 	}
 }

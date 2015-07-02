@@ -3,8 +3,10 @@ package org.bugby.matcher;
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,6 +19,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 import org.bugby.api.Correlation;
+import org.bugby.api.MatchingContext;
 import org.bugby.api.Pattern;
 import org.bugby.api.TreeMatcher;
 import org.bugby.api.TreeMatcherFactory;
@@ -65,6 +68,8 @@ import org.bugby.matcher.statement.TryMatcher;
 import org.bugby.matcher.statement.VariableMatcher;
 import org.bugby.matcher.statement.WhileLoopMatcher;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.ArrayAccessTree;
 import com.sun.source.tree.AssertTree;
@@ -161,8 +166,8 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 	private final ClassLoader builtProjectClassLoader;
 	private ParsedSource parsedSource;
 
-	public DefaultTreeMatcherFactory(WildcardDictionary wildcardDictionary, ClassLoader builtProjectClassLoader) {
-		this.wildcardDictionary = wildcardDictionary;
+	public DefaultTreeMatcherFactory(ClassLoader builtProjectClassLoader) {
+		this.wildcardDictionary = new WildcardDictionary();
 		this.builtProjectClassLoader = builtProjectClassLoader;
 	}
 
@@ -207,11 +212,11 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		return null;
 	}
 
-	private static String sourceFileName(Class<?> clz) {
-		return clz.getName().replace(".class", "").replace('.', File.separatorChar) + ".java";
-	}
+	//	private static String sourceFileName(Class<?> clz) {
+	//		return clz.getName().replace(".class", "").replace('.', File.separatorChar) + ".java";
+	//	}
 
-	private static final String[] SOURCE_PATHS = {"src/main/java", "src/test/java"};
+	private static final String[] SOURCE_PATHS = {"src/main/java", "src/test/java", "../core/src/main/java"};
 
 	private static File sourcePath(String fileName) {
 		for (String p : SOURCE_PATHS) {
@@ -223,28 +228,8 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		throw new RuntimeException("Cannot find file:" + fileName);
 	}
 
-	@Override
-	public TreeMatcher buildForType(String type) {
-		// TODO here I need a mechanism to find the source of a given type
-		if (type.startsWith("org.bugby")) {
-			CompilationUnitMatcher cuMatcher =
-					(CompilationUnitMatcher) buildFromFile(sourcePath(type.replace('.', File.separatorChar) + ".java"));
-			return cuMatcher.getTypeMatchers().get(0);
-		}
-		TypeElement element = parsedSource.getElements().getTypeElement(type);
-		return new TypeWithoutSourceMatcher(new ElementWrapperTree(element), element.asType());
-	}
-
-	public Tree loadTypeDefinition(String type) {
-		if (type.startsWith("org.bugby")) {
-			File file = sourcePath(type.replace('.', File.separatorChar) + ".java");
-			ParsedSource typeParsedSource = SourceParser.parse(file, builtProjectClassLoader, "UTF-8");
-			CompilationUnitTree cu = typeParsedSource.getCompilationUnitTree();
-			//TODO should look into actual type names
-			return cu.getTypeDecls().get(0);
-		}
-		TypeElement element = parsedSource.getElements().getTypeElement(type);
-		return new ElementWrapperTree(element);
+	private File sourceFile(String className) {
+		return sourcePath(className.replace('.', File.separatorChar) + ".java");
 	}
 
 	public TreeMatcher buildFromFile(File file) {
@@ -253,6 +238,34 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		CompilationUnitTree cu = parsedSource.getCompilationUnitTree();
 
 		return build(cu);
+	}
+
+	@Override
+	public TreeMatcher buildForType(String type) {
+		// TODO here I need a mechanism to find the source of a given type
+		if (type.startsWith("org.bugby")) {
+			CompilationUnitMatcher cuMatcher = (CompilationUnitMatcher) buildFromFile(sourceFile(type));
+			return cuMatcher.getTypeMatchers().get(0);
+		}
+		TypeElement element = parsedSource.getElements().getTypeElement(type);
+		return new TypeWithoutSourceMatcher(new ElementWrapperTree(element), element.asType());
+	}
+
+	@Override
+	public Tree loadTypeDefinition(String type) {
+		if (type.startsWith("org.bugby")) {
+			ParsedSource typeParsedSource = parseSource(type);
+			CompilationUnitTree cu = typeParsedSource.getCompilationUnitTree();
+			//TODO should look into actual type names
+			return cu.getTypeDecls().get(0);
+		}
+		TypeElement element = parsedSource.getElements().getTypeElement(type);
+		return new ElementWrapperTree(element);
+	}
+
+	@Override
+	public ParsedSource parseSource(String className) {
+		return SourceParser.parse(sourceFile(className), builtProjectClassLoader, "UTF-8");
 	}
 
 	@Override
@@ -385,5 +398,72 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		// }
 
 		return false;
+	}
+
+	private static String toString(Object obj) {
+		if (obj instanceof TreeMatcher) {
+			return obj.getClass().getSimpleName() + "#" + ((TreeMatcher) obj).getId();
+		}
+		return obj.getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(obj));
+	}
+
+	@Override
+	public void dumpMatcher(TreeMatcher matcher) {
+		dumpMatcher("", matcher);
+	}
+
+	public void dumpMatcher(String indent, TreeMatcher matcher) {
+		Field[] fields = matcher.getClass().getDeclaredFields();
+		try {
+			for (Field field : fields) {
+				field.setAccessible(true);
+				// simple field
+				if (TreeMatcher.class.isAssignableFrom(field.getType())) {
+					TreeMatcher fieldValue = (TreeMatcher) field.get(matcher);
+					if (fieldValue != null) {
+						System.out.println(indent + field.getName() + " = " + toString(fieldValue));
+						dumpMatcher(indent + "  ", fieldValue);
+					}
+					continue;
+				}
+				// list field
+				if (List.class.isAssignableFrom(field.getType())) {// TODO check list of tree matcher
+					List<TreeMatcher> fieldValue = (List<TreeMatcher>) field.get(matcher);
+					if (fieldValue != null && !fieldValue.isEmpty()) {
+						int i = 0;
+						for (TreeMatcher f : fieldValue) {
+							System.out.println(indent + field.getName() + "[" + i + "] = " + toString(f));
+							++i;
+							dumpMatcher(indent + "  ", f);
+						}
+					}
+					continue;
+				}
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public MatchResult match(TreeMatcher rootMatcher, ParsedSource source) {
+		MatchingContext context = new DefaultMatchingContext(rootMatcher, source);
+		boolean ok = context.matches();
+		Multimap<TreeMatcher, Tree> matches = context.getMatches();
+		if (!ok) {
+			matches = HashMultimap.create();
+		}
+
+		System.out.println("FULLMATCH:------------");
+
+		for (Map.Entry<TreeMatcher, Collection<Tree>> entry : matches.asMap().entrySet()) {
+			System.out.println(entry.getKey().getClass() + " on " + entry.getValue());
+		}
+		return new MatchResult(source, matches);
+	}
+
+	public void addWildcardsFromClass(Class<?> wildcardClass) {
+		WildcardDictionaryFromFile.addWildcardsFromFile(wildcardDictionary, builtProjectClassLoader, parseSource(wildcardClass.getName()));
 	}
 }

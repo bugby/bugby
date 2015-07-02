@@ -28,10 +28,12 @@ abstract public class DefaultTreeMatcher implements TreeMatcher {
 		this.patternNode = patternNode;
 	}
 
+	@Override
 	public int getId() {
 		return id;
 	}
 
+	@Override
 	public Tree getPatternNode() {
 		return patternNode;
 	}

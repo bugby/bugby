@@ -1,6 +1,8 @@
 package org.bugby.api;
 
+import org.bugby.matcher.MatchResult;
 import org.bugby.matcher.javac.ElementWrapperTree;
+import org.bugby.matcher.javac.ParsedSource;
 
 import com.sun.source.tree.Tree;
 
@@ -23,4 +25,10 @@ public interface TreeMatcherFactory {
 	 * @return
 	 */
 	public Tree loadTypeDefinition(String type);
+
+	public ParsedSource parseSource(String typeName);
+
+	public void dumpMatcher(TreeMatcher matcher);
+
+	public MatchResult match(TreeMatcher rootMatcher, ParsedSource source);
 }

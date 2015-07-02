@@ -1,14 +1,11 @@
 package org.bugby.matcher;
 
-import java.io.File;
-
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 import org.bugby.api.Pattern;
 import org.bugby.matcher.javac.ElementUtils;
 import org.bugby.matcher.javac.ParsedSource;
-import org.bugby.matcher.javac.SourceParser;
 import org.bugby.matcher.javac.TreeUtils;
 
 import com.sun.source.tree.AnnotationTree;
@@ -18,9 +15,7 @@ import com.sun.source.tree.VariableTree;
 import com.sun.source.util.TreeScanner;
 
 public class WildcardDictionaryFromFile {
-	public static void addWildcardsFromFile(WildcardDictionary dictionary, ClassLoader builtProjectClassLoader, File file) {
-		ParsedSource parsedSource = SourceParser.parse(file, builtProjectClassLoader, "UTF-8");
-
+	public static void addWildcardsFromFile(WildcardDictionary dictionary, ClassLoader builtProjectClassLoader, ParsedSource parsedSource) {
 		new WildcardVisitor(builtProjectClassLoader).scan(parsedSource.getCompilationUnitTree(), dictionary);
 	}
 
