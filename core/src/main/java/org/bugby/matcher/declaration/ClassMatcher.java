@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import javax.lang.model.element.Element;
+
 import org.bugby.api.FluidMatcher;
 import org.bugby.api.MatchingContext;
 import org.bugby.api.MatchingPath;
+import org.bugby.api.PatternListMatchingType;
 import org.bugby.api.TreeMatcher;
 import org.bugby.api.TreeMatcherFactory;
 import org.bugby.api.Variables;
 import org.bugby.matcher.DefaultTreeMatcher;
 import org.bugby.matcher.javac.InternalUtils;
+import org.bugby.matcher.javac.TreeUtils;
 
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.MethodTree;
@@ -19,6 +23,8 @@ import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 
 public class ClassMatcher extends DefaultTreeMatcher implements TreeMatcher {
+	private final TreeMatcher modifiersMatcher;
+	private final TypeMatching typeMatching;
 	private final TreeMatcher extendsMatcher;
 	private final List<TreeMatcher> implementsMatchers;
 	private final List<TreeMatcher> typeParametersMatchers;
@@ -27,6 +33,11 @@ public class ClassMatcher extends DefaultTreeMatcher implements TreeMatcher {
 
 	public ClassMatcher(ClassTree patternNode, TreeMatcherFactory factory) {
 		super(patternNode);
+
+		Element element = TreeUtils.elementFromDeclaration(patternNode);
+		modifiersMatcher = new ModifiersMatcher(element.getAnnotation(ModifiersMatching.class), patternNode.getModifiers(), factory);
+		this.typeMatching = element.getAnnotation(TypeMatching.class);
+
 		this.extendsMatcher = factory.build(patternNode.getExtendsClause());
 		this.implementsMatchers = build(factory, patternNode.getImplementsClause());
 		this.typeParametersMatchers = build(factory, patternNode.getTypeParameters());
@@ -77,6 +88,30 @@ public class ClassMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		return typeParametersMatchers;
 	}
 
+	protected boolean isNameMatching() {
+		return typeMatching != null && typeMatching.matchName();
+	}
+
+	protected PatternListMatchingType getFieldsMatching() {
+		return typeMatching != null ? typeMatching.matchFields() : PatternListMatchingType.partial;
+	}
+
+	protected PatternListMatchingType getMethodsMatching() {
+		return typeMatching != null ? typeMatching.matchMethods() : PatternListMatchingType.partial;
+	}
+
+	protected PatternListMatchingType getExtendsMatching() {
+		return typeMatching != null ? typeMatching.matchExtends() : PatternListMatchingType.partial;
+	}
+
+	protected PatternListMatchingType getImplementsMatching() {
+		return typeMatching != null ? typeMatching.matchImplements() : PatternListMatchingType.partial;
+	}
+
+	protected PatternListMatchingType getTypeParametersMatching() {
+		return typeMatching != null ? typeMatching.matchTypeParameters() : PatternListMatchingType.partial;
+	}
+
 	@Override
 	public boolean matches(final Tree node, final MatchingContext context) {
 		FluidMatcher match = matching(node, context);
@@ -87,21 +122,30 @@ public class ClassMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		final List<Tree> methods = methods(removeSyntheticConstructors(ct.getMembers()));
 		final List<Tree> fields = fields(ct.getMembers());
 
-		//match.self(TreeUtils.elementFromDeclaration((ClassTree) getPatternNode()).equals(TreeUtils.elementFromDeclaration(ct)));
-
 		Callable<Boolean> matchSolution = new Callable<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
 				FluidMatcher solutionMatch = partialMatching(node, context);
-				solutionMatch.unorderedChildren(methods, methodsMatchers);
-				solutionMatch.child(ct.getExtendsClause(), extendsMatcher);
-				solutionMatch.unorderedChildren(ct.getImplementsClause(), implementsMatchers);
-				solutionMatch.orderedChildren(ct.getTypeParameters(), typeParametersMatchers);
+				if (isNameMatching()) {
+					solutionMatch.self(TreeUtils.elementFromDeclaration((ClassTree) getPatternNode()).getQualifiedName()
+							.equals(TreeUtils.elementFromDeclaration(ct).getQualifiedName()));
+				}
+				solutionMatch.self(modifiersMatcher.matches(ct.getModifiers(), context));
+
+				solutionMatch.unorderedChildren(methods, methodsMatchers, getMethodsMatching());
+				solutionMatch.child(ct.getExtendsClause(), extendsMatcher, getExtendsMatching());
+
+				solutionMatch.unorderedChildren(ct.getImplementsClause(), implementsMatchers, getImplementsMatching());
+				solutionMatch.orderedChildren(ct.getTypeParameters(), typeParametersMatchers, getTypeParametersMatching());
 				return solutionMatch.done();
 			}
 		};
 
-		if (fieldsMatchers.isEmpty()) {
+		if (getFieldsMatching() == PatternListMatchingType.exact && fieldsMatchers.size() != fields.size()) {
+			return match.done(false);
+		}
+
+		if (fieldsMatchers.isEmpty() || getFieldsMatching() == PatternListMatchingType.ignore) {
 			try {
 				match.self(matchSolution.call());
 			}

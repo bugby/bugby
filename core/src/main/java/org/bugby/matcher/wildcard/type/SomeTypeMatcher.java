@@ -15,7 +15,7 @@ public class SomeTypeMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	public SomeTypeMatcher(Tree patternNode, TreeMatcherFactory factory) {
 		super(patternNode);
 		if (patternNode instanceof ClassTree) {
-			delegateMatcher = new DynamicTypeDefinitionMatcher((ClassTree) patternNode, factory);
+			delegateMatcher = null;//new DynamicTypeDefinitionMatcher((ClassTree) patternNode, factory);
 		} else if (patternNode instanceof IdentifierTree) {
 			delegateMatcher = new DynamicTypeInvocationMatcher((IdentifierTree) patternNode, factory);
 		} else {

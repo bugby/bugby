@@ -44,21 +44,44 @@ public class FluidMatcher {
 	}
 
 	public FluidMatcher child(Tree child, TreeMatcher childMatcher) {
-		return matchChildren(list(child), list(childMatcher), false);
+		return child(child, childMatcher, PatternListMatchingType.partial);
+	}
+
+	public FluidMatcher child(Tree child, TreeMatcher childMatcher, PatternListMatchingType matchingType) {
+		return matchChildren(list(child), list(childMatcher), false, matchingType);
 	}
 
 	public FluidMatcher unorderedChildren(List<? extends Tree> children, List<TreeMatcher> matchers) {
-		return matchChildren(children, matchers, false);
+		return unorderedChildren(children, matchers, PatternListMatchingType.partial);
+	}
+
+	public FluidMatcher unorderedChildren(List<? extends Tree> children, List<TreeMatcher> matchers, PatternListMatchingType matchingType) {
+		return matchChildren(children, matchers, false, matchingType);
 	}
 
 	public FluidMatcher orderedChildren(List<? extends Tree> children, List<TreeMatcher> matchers) {
-		return matchChildren(children, matchers, true);
+		return orderedChildren(children, matchers, PatternListMatchingType.partial);
 	}
 
-	protected FluidMatcher matchChildren(List<? extends Tree> children, List<TreeMatcher> matchers, boolean ordered) {
+	public FluidMatcher orderedChildren(List<? extends Tree> children, List<TreeMatcher> matchers, PatternListMatchingType matchingType) {
+		return matchChildren(children, matchers, true, matchingType);
+	}
+
+	protected FluidMatcher matchChildren(List<? extends Tree> children, List<TreeMatcher> matchers, boolean ordered,
+			PatternListMatchingType matchingType) {
 		if (!currentMatch) {
 			return this;
 		}
+		if (matchingType == PatternListMatchingType.ignore) {
+			return this;
+		}
+		if (matchingType == PatternListMatchingType.exact && children.size() != matchers.size()) {
+			//in this case the two lists need to be of the same size
+			//TODO should i check only the normal type matchers!?
+			currentMatch = false;
+			return this;
+		}
+
 		if (matchers.isEmpty()) {
 			currentMatch = true;
 			return this;
