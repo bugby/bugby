@@ -1,10 +1,8 @@
 package org.bugby.wildcard;
 
-public class SomeRuntimeException extends RuntimeException {
+import org.bugby.api.Pattern;
 
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
+@Pattern
+public class SomeRuntimeException extends RuntimeException {
 
 }

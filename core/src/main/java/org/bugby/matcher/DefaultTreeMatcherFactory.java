@@ -42,6 +42,7 @@ import org.bugby.matcher.expression.ParenthesizedMatcher;
 import org.bugby.matcher.expression.PrimitiveTypeMatcher;
 import org.bugby.matcher.expression.TypeCastMatcher;
 import org.bugby.matcher.expression.UnaryMatcher;
+import org.bugby.matcher.javac.ElementUtils;
 import org.bugby.matcher.javac.ElementWrapperTree;
 import org.bugby.matcher.javac.InternalUtils;
 import org.bugby.matcher.javac.ParsedSource;
@@ -188,14 +189,10 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		if (node instanceof VariableTree) {
 			return ((VariableTree) node).getName().toString();
 		}
-		if (node instanceof ClassTree) {
-			Element element = TreeUtils.elementFromDeclaration((ClassTree) node);
-			if (element.getAnnotation(Pattern.class) != null) {
-				// XXX: this should be done differently, probably in the annotation
-				return "SomeType";
-			}
-			return ((ClassTree) node).getSimpleName().toString();
-		}
+		//		if (node instanceof ClassTree) {
+		//			Element element = TreeUtils.elementFromDeclaration((ClassTree) node);
+		//			return ((ClassTree) node).getSimpleName().toString();
+		//		}
 		if (node instanceof MethodTree) {
 			return ((MethodTree) node).getName().toString();
 		}
@@ -274,13 +271,29 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 			return null;
 		}
 		Class<? extends TreeMatcher> matcherClass = null;
-		String name = getMatcherName(patternNode);
-		if (name != null) {
-			// remove the ending digits
-			String baseName = name.replaceAll("\\d+$", "");
-			matcherClass = wildcardDictionary.findMatcherClass(baseName);
+		//1. try from @Pattern
+		TypeMirror matcherClassMirror = (TypeMirror) getAnnotationValue(patternNode, Pattern.class, "value");
+		if (matcherClassMirror != null) {
+			try {
+				matcherClass = (Class<? extends TreeMatcher>) Class.forName(matcherClassMirror.toString());
+			}
+			catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
+		//2. try by name
+		if (matcherClass == null) {
+			String name = getMatcherName(patternNode);
+			if (name != null) {
+				// remove the ending digits
+				String baseName = name.replaceAll("\\d+$", "");
+				matcherClass = wildcardDictionary.findMatcherClass(baseName);
+			}
+		}
+
+		//3. default
 		if (matcherClass == null) {
 			matcherClass = getDefaultMatcherClass(patternNode);
 		}
@@ -344,6 +357,22 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 			throw new RuntimeException("Cannont create annotation matcher of type:" + matcherClass.getName() + " with node of type:"
 					+ patternNode.getClass().getName() + ":" + e, e);
 		}
+	}
+
+	private Object getAnnotationValue(Tree node, Class<?> annotationClass, String key) {
+		if (node instanceof MethodTree) {
+			Element el = TreeUtils.elementFromDeclaration((MethodTree) node);
+			return ElementUtils.getAnnotationValue(el, annotationClass, key);
+		}
+		if (node instanceof ClassTree) {
+			Element el = TreeUtils.elementFromDeclaration((ClassTree) node);
+			return ElementUtils.getAnnotationValue(el, annotationClass, key);
+		}
+		if (node instanceof VariableTree) {
+			Element el = TreeUtils.elementFromDeclaration((VariableTree) node);
+			return ElementUtils.getAnnotationValue(el, annotationClass, key);
+		}
+		return null;
 	}
 
 	private List<? extends AnnotationTree> getAnnotationTrees(Tree node) {
