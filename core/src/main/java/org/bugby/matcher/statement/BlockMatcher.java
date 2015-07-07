@@ -25,7 +25,7 @@ public class BlockMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	public BlockMatcher(BlockTree patternNode, TreeMatcherFactory factory) {
 		super(patternNode);
 		this.statementsMatchers = build(factory, filterOutVariables(patternNode.getStatements()));
-		this.variablesMatchers = build(factory, TreeUtils.descendantsOfType(patternNode, VariableTree.class));
+		this.variablesMatchers = build(factory, filterVariables(patternNode.getStatements()));
 	}
 
 	private List<StatementTree> filterOutVariables(List<? extends StatementTree> statements) {
@@ -33,6 +33,16 @@ public class BlockMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		for (StatementTree s : statements) {
 			if (!(s instanceof VariableTree)) {
 				result.add(s);
+			}
+		}
+		return result;
+	}
+
+	private List<VariableTree> filterVariables(List<? extends StatementTree> statements) {
+		List<VariableTree> result = new ArrayList<VariableTree>(statements.size());
+		for (StatementTree s : statements) {
+			if (s instanceof VariableTree) {
+				result.add((VariableTree) s);
 			}
 		}
 		return result;
