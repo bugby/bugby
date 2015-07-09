@@ -14,6 +14,7 @@ import org.bugby.api.TreeMatcher;
 import org.bugby.api.TreeMatcherFactory;
 import org.bugby.api.Variables;
 import org.bugby.matcher.DefaultTreeMatcher;
+import org.bugby.matcher.javac.ElementWrapperTree;
 import org.bugby.matcher.javac.InternalUtils;
 import org.bugby.matcher.javac.TreeUtils;
 
@@ -115,6 +116,12 @@ public class ClassMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	@Override
 	public boolean matches(final Tree node, final MatchingContext context) {
 		FluidMatcher match = matching(node, context);
+		if (node instanceof ElementWrapperTree) {
+			Element sourceElement = ((ElementWrapperTree) node).getElement();
+			Element patternElement = TreeUtils.elementFromDeclaration((ClassTree) getPatternNode());
+			return match.done(context.compatibleTypes(patternElement.asType(), sourceElement.asType()));
+		}
+
 		if (!(node instanceof ClassTree)) {
 			return match.done(false);
 		}

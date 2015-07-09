@@ -43,18 +43,15 @@ public class IdentifierTypeMatcher extends DefaultTreeMatcher implements TreeMat
 			//1. check if the assignment was already done (see variables)
 			//2. i need to see if i load the corresponding sources
 			Element element = TreeUtils.elementFromUse((ExpressionTree) node);
-
-			//if (element instanceof TypeElement) {
 			Tree sourceNodeTypeDef = factory.loadTypeDefinition(element.asType().toString());
 			match.self(typeDefMatcher.matches(sourceNodeTypeDef, context));
-			//			} else {
-			//				match.self(false);
-			//			}
+
 		} else if (node instanceof PrimitiveTypeTree) {
 			PrimitiveTypeTree mt = (PrimitiveTypeTree) node;
 			PrimitiveType primitiveType = context.getParsedSource().getTypes().getPrimitiveType(mt.getPrimitiveTypeKind());
 			TypeMirror sourceNodeType = context.getParsedSource().getTypes().boxedClass(primitiveType).asType();
-			match.self(context.compatibleTypes(patternType, sourceNodeType));
+
+			match.self(typeDefMatcher.matches(new ElementWrapperTree(context.getParsedSource().getTypes().asElement(sourceNodeType)), context));
 		}
 		return match.done();
 	}

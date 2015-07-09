@@ -4,7 +4,7 @@ public class EmptyTryBlockBug {
 	public void bar() {
 		try {
 		}
-		catch (Exception e) {
+		catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		}
 	}

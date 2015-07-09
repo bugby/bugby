@@ -74,6 +74,7 @@ import org.bugby.matcher.statement.WhileLoopMatcher;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.primitives.Primitives;
 import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.ArrayAccessTree;
 import com.sun.source.tree.AssertTree;
@@ -251,8 +252,26 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		return new TypeWithoutSourceMatcher(new ElementWrapperTree(element), element.asType());
 	}
 
+	private boolean isPrimitive(String type) {
+		if (type.contains(".")) {
+			return false;
+		}
+		for (Class<?> cls : Primitives.allPrimitiveTypes()) {
+			if (cls.getName().equals(type)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public Tree loadTypeDefinition(String type) {
+		if (isPrimitive(type)) {
+			Element el2 = parsedSource.getTypes().asElement(parsedSource.getTypes().getPrimitiveType(javax.lang.model.type.TypeKind.INT));
+			TypeElement element = parsedSource.getElements().getTypeElement(type);
+			return new ElementWrapperTree(element);
+		}
+
 		ParsedSource typeParsedSource;
 		if (type.startsWith("org.bugby")) {
 			typeParsedSource = parseSource(type);
@@ -263,8 +282,6 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		//TODO should look into actual type names
 		return cu.getTypeDecls().get(0);
 
-		//		TypeElement element = parsedSource.getElements().getTypeElement(type);
-		//		return new ElementWrapperTree(element);
 	}
 
 	@Override

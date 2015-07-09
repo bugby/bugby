@@ -9,7 +9,7 @@ import org.bugby.wildcard.SomeType;
 @Pattern
 @Immutable
 public class CheckImmutable {
-	private final SomeType someField;
+	private final Object someField;
 
 	/**
 	 * i need this constructor only for eclipse to allow the final field. this is not part of the matching
