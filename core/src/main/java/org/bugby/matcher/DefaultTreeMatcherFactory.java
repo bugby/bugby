@@ -1,6 +1,8 @@
 package org.bugby.matcher;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -18,6 +20,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
+import org.bugby.SourceFromReflection;
 import org.bugby.api.Correlation;
 import org.bugby.api.MatchingContext;
 import org.bugby.api.Pattern;
@@ -250,19 +253,41 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 
 	@Override
 	public Tree loadTypeDefinition(String type) {
+		ParsedSource typeParsedSource;
 		if (type.startsWith("org.bugby")) {
-			ParsedSource typeParsedSource = parseSource(type);
-			CompilationUnitTree cu = typeParsedSource.getCompilationUnitTree();
-			//TODO should look into actual type names
-			return cu.getTypeDecls().get(0);
+			typeParsedSource = parseSource(type);
+		} else {
+			typeParsedSource = parseFakeSource(type);
 		}
-		TypeElement element = parsedSource.getElements().getTypeElement(type);
-		return new ElementWrapperTree(element);
+		CompilationUnitTree cu = typeParsedSource.getCompilationUnitTree();
+		//TODO should look into actual type names
+		return cu.getTypeDecls().get(0);
+
+		//		TypeElement element = parsedSource.getElements().getTypeElement(type);
+		//		return new ElementWrapperTree(element);
 	}
 
 	@Override
 	public ParsedSource parseSource(String className) {
 		return SourceParser.parse(sourceFile(className), builtProjectClassLoader, "UTF-8");
+	}
+
+	private ParsedSource parseFakeSource(String className) {
+		try {
+			Class<?> cls = builtProjectClassLoader.loadClass(className);
+			SourceFromReflection src = new SourceFromReflection();
+			FileWriter f = new FileWriter("target/" + cls.getSimpleName() + ".java");
+			src.generateSource(cls, f);
+			f.close();
+			return SourceParser.parse(new File("target/" + cls.getSimpleName() + ".java"), builtProjectClassLoader, "UTF-8");
+		}
+		catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import org.bugby.matcher.DefaultTreeMatcher;
 import org.bugby.matcher.javac.ElementWrapperTree;
 import org.bugby.matcher.javac.TreeUtils;
 
+import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.IdentifierTree;
 import com.sun.source.tree.PrimitiveTypeTree;
 import com.sun.source.tree.Tree;
@@ -28,7 +29,8 @@ public class TypeWithoutSourceMatcher extends DefaultTreeMatcher {
 	@Override
 	public boolean matches(Tree node, MatchingContext context) {
 		FluidMatcher match = matching(node, context);
-		if (!(node instanceof IdentifierTree) && !(node instanceof PrimitiveTypeTree) && !(node instanceof ElementWrapperTree)) {
+		if (!(node instanceof IdentifierTree) && !(node instanceof PrimitiveTypeTree) && !(node instanceof ElementWrapperTree)
+				&& !(node instanceof ClassTree)) {
 			return match.done(false);
 		}
 		if (node instanceof IdentifierTree) {
@@ -39,6 +41,10 @@ public class TypeWithoutSourceMatcher extends DefaultTreeMatcher {
 		} else if (node instanceof ElementWrapperTree) {
 			ElementWrapperTree mt = (ElementWrapperTree) node;
 			match.self(context.compatibleTypes(patternType, mt.getElement().asType()));
+		} else if (node instanceof ClassTree) {
+			ClassTree mt = (ClassTree) node;
+			Element element = TreeUtils.elementFromDeclaration(mt);
+			match.self(context.compatibleTypes(patternType, element.asType()));
 		}
 		return match.done();
 	}

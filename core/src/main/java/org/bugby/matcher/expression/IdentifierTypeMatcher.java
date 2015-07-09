@@ -12,7 +12,9 @@ import org.bugby.matcher.DefaultTreeMatcher;
 import org.bugby.matcher.javac.ElementWrapperTree;
 import org.bugby.matcher.javac.TreeUtils;
 
+import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.IdentifierTree;
+import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.PrimitiveTypeTree;
 import com.sun.source.tree.Tree;
 
@@ -32,14 +34,15 @@ public class IdentifierTypeMatcher extends DefaultTreeMatcher implements TreeMat
 	@Override
 	public boolean matches(Tree node, MatchingContext context) {
 		FluidMatcher match = matching(node, context);
-		if (!(node instanceof IdentifierTree) && !(node instanceof PrimitiveTypeTree) && !(node instanceof ElementWrapperTree)) {
+		if (!(node instanceof IdentifierTree) && !(node instanceof PrimitiveTypeTree) && !(node instanceof ElementWrapperTree)
+				&& !(node instanceof MemberSelectTree)) {
 			return match.done(false);
 		}
-		if (node instanceof IdentifierTree) {
+		if (node instanceof IdentifierTree || node instanceof MemberSelectTree) {
 			//0. i need to make the difference between matching a random variable or a variable as required by the SomeCodeMatcher
 			//1. check if the assignment was already done (see variables)
 			//2. i need to see if i load the corresponding sources
-			Element element = TreeUtils.elementFromUse((IdentifierTree) node);
+			Element element = TreeUtils.elementFromUse((ExpressionTree) node);
 
 			//if (element instanceof TypeElement) {
 			Tree sourceNodeTypeDef = factory.loadTypeDefinition(element.asType().toString());
