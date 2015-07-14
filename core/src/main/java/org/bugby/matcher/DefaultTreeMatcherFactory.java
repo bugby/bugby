@@ -22,12 +22,14 @@ import javax.lang.model.type.TypeMirror;
 
 import org.bugby.SourceFromReflection;
 import org.bugby.api.Correlation;
+import org.bugby.api.IgnoreFromMatching;
 import org.bugby.api.MatchingContext;
 import org.bugby.api.Pattern;
 import org.bugby.api.TreeMatcher;
 import org.bugby.api.TreeMatcherFactory;
 import org.bugby.matcher.declaration.ClassMatcher;
 import org.bugby.matcher.declaration.MethodMatcher;
+import org.bugby.matcher.declaration.ParameterizedTypeMatcher;
 import org.bugby.matcher.declaration.TypeWithoutSourceMatcher;
 import org.bugby.matcher.expression.ArrayAccessMatcher;
 import org.bugby.matcher.expression.AssignmentMatcher;
@@ -105,6 +107,7 @@ import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.NewArrayTree;
 import com.sun.source.tree.NewClassTree;
+import com.sun.source.tree.ParameterizedTypeTree;
 import com.sun.source.tree.ParenthesizedTree;
 import com.sun.source.tree.PrimitiveTypeTree;
 import com.sun.source.tree.ReturnTree;
@@ -135,6 +138,7 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		matcherClasses.put(ConditionalExpressionTree.class, ConditionalMatcher.class);
 		matcherClasses.put(IdentifierTree.class, IdentifierMatcher.class);
 		matcherClasses.put(PrimitiveTypeTree.class, PrimitiveTypeMatcher.class);
+		matcherClasses.put(ParameterizedTypeTree.class, ParameterizedTypeMatcher.class);
 		matcherClasses.put(InstanceOfTree.class, InstanceofMatcher.class);
 		matcherClasses.put(LiteralTree.class, LiteralMatcher.class);
 		matcherClasses.put(MemberSelectTree.class, MemberSelectMatcher.class);
@@ -242,7 +246,9 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 	}
 
 	@Override
-	public TreeMatcher buildForType(String type) {
+	public TreeMatcher buildForType(String aType) {
+		//remove the type argument if needed
+		String type = aType.replaceAll("<.*>", "");
 		// TODO here I need a mechanism to find the source of a given type
 		if (type.startsWith("org.bugby")) {
 			CompilationUnitMatcher cuMatcher = (CompilationUnitMatcher) buildFromFile(sourceFile(type));
@@ -265,9 +271,10 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 	}
 
 	@Override
-	public Tree loadTypeDefinition(String type) {
+	public Tree loadTypeDefinition(String aType) {
+		//remove the type argument if needed
+		String type = aType.replaceAll("<.*>", "");
 		if (isPrimitive(type)) {
-			Element el2 = parsedSource.getTypes().asElement(parsedSource.getTypes().getPrimitiveType(javax.lang.model.type.TypeKind.INT));
 			TypeElement element = parsedSource.getElements().getTypeElement(type);
 			return new ElementWrapperTree(element);
 		}
@@ -417,6 +424,22 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		return null;
 	}
 
+	private boolean hasAnnotation(Tree node, Class<?> annotationClass) {
+		if (node instanceof MethodTree) {
+			Element el = TreeUtils.elementFromDeclaration((MethodTree) node);
+			return ElementUtils.getAnnotationMirror(el, annotationClass) != null;
+		}
+		if (node instanceof ClassTree) {
+			Element el = TreeUtils.elementFromDeclaration((ClassTree) node);
+			return ElementUtils.getAnnotationMirror(el, annotationClass) != null;
+		}
+		if (node instanceof VariableTree) {
+			Element el = TreeUtils.elementFromDeclaration((VariableTree) node);
+			return ElementUtils.getAnnotationMirror(el, annotationClass) != null;
+		}
+		return false;
+	}
+
 	private List<? extends AnnotationTree> getAnnotationTrees(Tree node) {
 		if (node instanceof MethodTree) {
 			return ((MethodTree) node).getModifiers().getAnnotations();
@@ -464,9 +487,9 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		if (node instanceof AnnotationTree) {
 			return skip((AnnotationTree) node);
 		}
-		// if (NodeUtils.hasAnnotation(node, IgnoreFromMatching.class)) {
-		// return true;
-		// }
+		if (hasAnnotation(node, IgnoreFromMatching.class)) {
+			return true;
+		}
 
 		return false;
 	}

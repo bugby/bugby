@@ -18,17 +18,17 @@ public class TestFindbugs {
 
 	@Test
 	public void testCheckImmutable1() {
-		assertBug(CheckImmutable.class, CheckImmutableCheck1.class, 18);
+		assertNoBug(CheckImmutable.class, CheckImmutableCheck1.class);
 	}
 
 	@Test
 	public void testCheckImmutable2() {
-		assertBug(CheckImmutable.class, CheckImmutableCheck2.class, 18);
+		assertBug(CheckImmutable.class, CheckImmutableCheck2.class, 7);
 	}
 
 	@Test
 	public void testCheckImmutable3() {
-		assertBug(CheckImmutable.class, CheckImmutableCheck3.class, 18);
+		assertNoBug(CheckImmutable.class, CheckImmutableCheck3.class);
 	}
 
 	@Test

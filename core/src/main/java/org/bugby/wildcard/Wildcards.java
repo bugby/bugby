@@ -13,9 +13,6 @@ import org.bugby.matcher.wildcard.expr.SomeExpressionThrowingMatcher;
 import org.bugby.matcher.wildcard.expr.SomeExpressionUsingMatcher;
 import org.bugby.matcher.wildcard.expr.SomeValueMatcher;
 import org.bugby.matcher.wildcard.method.SomeMethodMatcher;
-import org.bugby.matcher.wildcard.var.SomeFieldMatcher;
-import org.bugby.matcher.wildcard.var.SomeParamMatcher;
-import org.bugby.matcher.wildcard.var.SomeVariableMatcher;
 
 @SuppressWarnings("unused")
 public class Wildcards {
@@ -29,24 +26,6 @@ public class Wildcards {
 	public static int someInteger = 0;
 	public static long someLong = 0;
 	public static boolean someBoolean = true;
-
-	/**
-	 * matches any field
-	 */
-	@Pattern(SomeFieldMatcher.class)
-	public static SomeType someField;
-
-	/**
-	 * matches any parameter
-	 */
-	@Pattern(SomeParamMatcher.class)
-	public static SomeType someParam;
-
-	/**
-	 * matches any variable
-	 */
-	@Pattern(SomeVariableMatcher.class)
-	public static SomeType someVar;
 
 	/**
 	 * matches any expression of any type

@@ -381,12 +381,19 @@ public final class TreeUtils {
 		return InternalUtils.symbol(node);
 	}
 
+	public static Element elementFromUse(ParameterizedTypeTree node) {
+		return InternalUtils.symbol(node);
+	}
+
+	public static Element elementFromUse(Tree node) {
+		return InternalUtils.symbol(node);
+	}
+
 	// Specialization for return type.
 	public static final ExecutableElement elementFromUse(MethodInvocationTree node) {
 		return (ExecutableElement) elementFromUse((ExpressionTree) node);
 	}
 
-	// Specialization for return type.
 	public static final ExecutableElement elementFromUse(NewClassTree node) {
 		return (ExecutableElement) elementFromUse((ExpressionTree) node);
 	}
@@ -798,5 +805,6 @@ public final class TreeUtils {
 		}.scan(parent, true);
 		return descendants;
 	}
+
 }
 // CHECKSTYLE:ON

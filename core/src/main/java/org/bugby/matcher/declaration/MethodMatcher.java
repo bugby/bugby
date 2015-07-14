@@ -45,24 +45,33 @@ public class MethodMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	}
 
 	protected PatternListMatchingType getTypeParametersMatching() {
-		return override || methodMatching != null ? methodMatching.matchTypeParameters() : PatternListMatchingType.partial;
+		if (override) {
+			return PatternListMatchingType.exact;
+		}
+		return methodMatching != null ? methodMatching.matchTypeParameters() : PatternListMatchingType.partial;
 	}
 
 	protected PatternListMatchingType getThrowsMatching() {
-		return override || methodMatching != null ? methodMatching.matchThrows() : PatternListMatchingType.partial;
+		if (override) {
+			return PatternListMatchingType.exact;
+		}
+		return methodMatching != null ? methodMatching.matchThrows() : PatternListMatchingType.partial;
 	}
 
 	protected PatternListMatchingType getParametersMatching() {
-		return override || methodMatching != null ? methodMatching.matchThrows() : PatternListMatchingType.partial;
+		if (override) {
+			return PatternListMatchingType.exact;
+		}
+		return methodMatching != null ? methodMatching.matchParameters() : PatternListMatchingType.partial;
 	}
 
 	protected boolean isNameMatching() {
-		return override || methodMatching != null ? methodMatching.matchName() : false;
+		return override || (methodMatching != null ? methodMatching.matchName() : false);
 	}
 
 	protected boolean isReturnTypeMatching() {
 		//void return is considered as "not present". To check on the result type for voids you need to set the @MethodMatching(matchReturnType=true);
-		return override || methodMatching != null ? methodMatching.matchReturnType() : !isVoidReturn();
+		return override || (methodMatching != null ? methodMatching.matchReturnType() : !isVoidReturn());
 	}
 
 	protected boolean isVoidReturn() {
@@ -77,15 +86,13 @@ public class MethodMatcher extends DefaultTreeMatcher implements TreeMatcher {
 			return match.done(false);
 		}
 		final MethodTree mt = (MethodTree) node;
-		match.self(((MethodTree) getPatternNode()).getName().toString().equals(mt.getName().toString()));
 
 		Callable<Boolean> matchSolution = new Callable<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
 				FluidMatcher solutionMatch = partialMatching(node, context);
 				if (isNameMatching()) {
-					solutionMatch.self(TreeUtils.elementFromDeclaration((MethodTree) getPatternNode()).getSimpleName()
-							.equals(TreeUtils.elementFromDeclaration(mt).getSimpleName()));
+					solutionMatch.self(((MethodTree) getPatternNode()).getName().toString().equals(mt.getName().toString()));
 				}
 				solutionMatch.self(modifiersMatcher.matches(mt.getModifiers(), context));
 				solutionMatch.unorderedChildren(mt.getThrows(), throwsMatchers, getThrowsMatching());
