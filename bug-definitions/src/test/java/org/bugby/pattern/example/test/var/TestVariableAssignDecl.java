@@ -7,7 +7,7 @@ import org.junit.Test;
 public class TestVariableAssignDecl {
 	@Test
 	public void testAssign1() {
-		assertBug(VariableAssignDecl.class, VariableAssignDeclCheck1.class, 9);
+		assertBug(VariableAssignDecl.class, VariableAssignDeclCheck1.class, 8);
 	}
 
 }

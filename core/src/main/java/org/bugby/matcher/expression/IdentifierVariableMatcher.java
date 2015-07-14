@@ -34,11 +34,16 @@ public class IdentifierVariableMatcher extends DefaultTreeMatcher implements Tre
 		if (!(node instanceof IdentifierTree)) {
 			return match.done(false);
 		}
+		IdentifierTree mt = (IdentifierTree) node;
+
+		if (((IdentifierTree) getPatternNode()).getName().toString().equals("this") && mt.getName().toString().equals("this")) {
+			//this matches this - TODO what about super !?
+			return match.done(true);
+		}
 		Element sourceVarElement = getVariableElement(node);
 		if (sourceVarElement == null) {
 			return match.done(false);
 		}
-		IdentifierTree mt = (IdentifierTree) node;
 
 		//TODO - use annotation
 		//match.self(mt.getName().toString().equals(((IdentifierTree) getPatternNode()).getName().toString()));

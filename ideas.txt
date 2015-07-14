@@ -1,11 +1,15 @@
-- use annotations like @Not or @Correlation to add new matchers -> need a way to define annotation as matchers
-- when i have @Not - it matches if NO match exists, should make sure it's not affected by SOME matches
-- remove @GoodExample and replace it with @BadExample -> @BugExample (or problem example).
- put @Not for what was in the @GoodExample and not in the trigger
-
-
-
 - TreeWrapper
 - special matchers for code size and complexity
-- VariableMatcher should be by default !?
 - all definitions (class, method, variable/field, should create a "matching table") especially when calling methods of external types
+
+
+----------------
+MISSING
+- AnnotationTree
+- ArrayTypeTree
+- TypeParameterTree
+- WildcardTree
+- handle inner types
+- correlations
+- handle pattern type assignments - like with variables
+- handle method invocations of pattern types

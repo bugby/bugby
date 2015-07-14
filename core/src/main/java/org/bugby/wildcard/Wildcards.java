@@ -12,7 +12,6 @@ import org.bugby.matcher.wildcard.expr.SomeConditionUsingMatcher;
 import org.bugby.matcher.wildcard.expr.SomeExpressionThrowingMatcher;
 import org.bugby.matcher.wildcard.expr.SomeExpressionUsingMatcher;
 import org.bugby.matcher.wildcard.expr.SomeValueMatcher;
-import org.bugby.matcher.wildcard.method.SomeMethodMatcher;
 
 @SuppressWarnings("unused")
 public class Wildcards {
@@ -85,11 +84,6 @@ public class Wildcards {
 
 	@Pattern(NoCodeMatcher.class)
 	public static void noCode() {
-		//
-	}
-
-	@Pattern(SomeMethodMatcher.class)
-	public static void someMethod() {
 		//
 	}
 
