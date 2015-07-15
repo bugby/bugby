@@ -56,7 +56,7 @@ public class MatchCountMatcher extends DefaultTreeMatcher {
 
 	@Override
 	public List<List<MatchingPath>> endMatching(List<List<MatchingPath>> currentResult, MatchingContext context) {
-		int count = context.getValue(matchingKey);
+		int count = (Integer) context.getValue(matchingKey);
 		if (count >= min && count <= max) {
 			return super.endMatching(currentResult, context);
 		}

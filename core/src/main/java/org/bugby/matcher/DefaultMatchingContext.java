@@ -220,7 +220,7 @@ public class DefaultMatchingContext implements MatchingContext {
 				@Override
 				public Boolean visitBlock(BlockTree node, Boolean p) {
 					for (StatementTree stmt : node.getStatements()) {
-						childrenListByNode.put(stmt, (List<Tree>) node.getStatements());
+						childrenListByNode.put(stmt, (List) node.getStatements());
 					}
 					return super.visitBlock(node, p);
 				}

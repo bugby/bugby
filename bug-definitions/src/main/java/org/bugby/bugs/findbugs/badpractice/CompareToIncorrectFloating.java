@@ -1,6 +1,6 @@
 package org.bugby.bugs.findbugs.badpractice;
 
-import static org.bugby.wildcard.Wildcards.someValue;
+import static org.bugby.wildcard.Wildcards.someIntValue;
 
 import org.bugby.api.Pattern;
 
@@ -14,6 +14,6 @@ import org.bugby.api.Pattern;
 public class CompareToIncorrectFloating {
 	public int compareTo(Object obj) {
 		//TODO if (val1 > val2 ? 1 : val1 < val2 ? -1 : 0) ...
-		return someValue();
+		return someIntValue();
 	}
 }

@@ -36,6 +36,16 @@ public class Wildcards {
 	}
 
 	@Pattern(SomeValueMatcher.class)
+	public static int someIntValue() {
+		return 0;
+	}
+
+	@Pattern(SomeValueMatcher.class)
+	public static boolean someBooleanValue() {
+		return false;
+	}
+
+	@Pattern(SomeValueMatcher.class)
 	public static <T> T someTypedValue(Class<T> type) {
 		return null;
 	}

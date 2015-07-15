@@ -1,6 +1,6 @@
 package org.bugby.bugs.findbugs.badpractice;
 
-import static org.bugby.wildcard.Wildcards.someValue;
+import static org.bugby.wildcard.Wildcards.someIntValue;
 
 import org.bugby.wildcard.SomeTypeExcepting;
 
@@ -13,6 +13,6 @@ import org.bugby.wildcard.SomeTypeExcepting;
  */
 public class CovariantAbstractSelf {
 	public int compareTo(SomeTypeExcepting<Object> obj) {
-		return someValue();
+		return someIntValue();
 	}
 }
