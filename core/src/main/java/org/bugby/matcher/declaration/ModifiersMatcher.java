@@ -1,22 +1,54 @@
 package org.bugby.matcher.declaration;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 
 import org.bugby.api.FluidMatcher;
 import org.bugby.api.MatchingContext;
+import org.bugby.api.PatternConfig;
 import org.bugby.api.TreeMatcher;
 import org.bugby.api.TreeMatcherFactory;
 import org.bugby.matcher.DefaultTreeMatcher;
+import org.bugby.matcher.javac.ElementUtils;
+import org.bugby.matcher.javac.TreeUtils;
 
+import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.ModifiersTree;
 import com.sun.source.tree.Tree;
 
 public class ModifiersMatcher extends DefaultTreeMatcher implements TreeMatcher {
+	private static final Set<String> IGNORED_ANNOTATIONS = new HashSet<>(Arrays.asList(Override.class.getName(),
+			SuppressWarnings.class.getName()));
+
 	private final ModifiersMatching matching;
+	private final List<TreeMatcher> annotationsMatchers;
 
 	public ModifiersMatcher(ModifiersMatching matching, ModifiersTree patternNode, TreeMatcherFactory factory) {
 		super(patternNode);
 		this.matching = matching;
+		this.annotationsMatchers = build(factory, filterAnnotations(patternNode.getAnnotations()));
+	}
+
+	private List<? extends Tree> filterAnnotations(List<? extends AnnotationTree> annotations) {
+		List<AnnotationTree> filtered = new ArrayList<>(annotations.size());
+		for (AnnotationTree ann : annotations) {
+			Element annTypeElement = TreeUtils.elementFromUse(ann.getAnnotationType());
+			if (IGNORED_ANNOTATIONS.contains(annTypeElement.toString())) {
+				continue;
+			}
+			boolean isPatternConfig = ElementUtils.getAnnotationMirror(annTypeElement, PatternConfig.class) != null;
+			if (!isPatternConfig) {
+				filtered.add(ann);
+			}
+		}
+
+		return filtered;
 	}
 
 	private boolean check(boolean doCheck, ModifiersTree sourceNode, Modifier... flags) {
@@ -48,6 +80,7 @@ public class ModifiersMatcher extends DefaultTreeMatcher implements TreeMatcher 
 		match.self(check(matching != null ? matching.SYNCHRONIZED() : false, mt, Modifier.SYNCHRONIZED));
 		match.self(check(matching != null ? matching.TRANSIENT() : false, mt, Modifier.TRANSIENT));
 		match.self(check(matching != null ? matching.VOLATILE() : false, mt, Modifier.VOLATILE));
+		match.unorderedChildren(mt.getAnnotations(), annotationsMatchers);
 
 		return match.done();
 	}

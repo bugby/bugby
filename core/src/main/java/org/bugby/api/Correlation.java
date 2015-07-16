@@ -15,6 +15,7 @@ import com.sun.source.tree.Tree;
  * 
  */
 @Retention(RetentionPolicy.RUNTIME)
+@PatternConfig
 public @interface Correlation {
 	String key();
 

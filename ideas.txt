@@ -5,7 +5,6 @@
 
 ----------------
 TODO
-- AnnotationTree
 - ArrayTypeTree
 - TypeParameterTree
 - WildcardTree
