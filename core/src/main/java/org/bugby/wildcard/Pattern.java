@@ -1,7 +1,9 @@
-package org.bugby.api;
+package org.bugby.wildcard;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import org.bugby.api.TreeMatcher;
 
 //@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

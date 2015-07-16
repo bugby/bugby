@@ -14,7 +14,6 @@ TODO
 - handle method invocations of pattern types
 - EmptySwitchStatements -> switch without code
 - UnnecessaryConversionTemporary -> have an annotation to say primitive type whenever i but "int"
-- match on annotatons of types, fields and methods
 - @Or to have multilple someCode()
 - match on literals with regex
 

@@ -1,4 +1,4 @@
-package org.bugby.api;
+package org.bugby.wildcard;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

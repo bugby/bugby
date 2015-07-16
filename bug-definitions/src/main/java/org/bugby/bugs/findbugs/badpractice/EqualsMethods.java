@@ -3,7 +3,7 @@ package org.bugby.bugs.findbugs.badpractice;
 import static org.bugby.wildcard.Wildcards.someBooleanValue;
 import static org.bugby.wildcard.Wildcards.someExpressionUsing;
 
-import org.bugby.api.Pattern;
+import org.bugby.wildcard.Pattern;
 
 /**
  * BC: Equals method should not assume anything about the type of its argument (BC_EQUALS_METHOD_SHOULD_WORK_FOR_ALL_OBJECTS) The equals(Object

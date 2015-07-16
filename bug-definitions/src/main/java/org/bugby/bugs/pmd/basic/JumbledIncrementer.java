@@ -3,7 +3,7 @@ package org.bugby.bugs.pmd.basic;
 import static org.bugby.wildcard.Wildcards.someExpressionUsing;
 import static org.bugby.wildcard.Wildcards.someValue;
 
-import org.bugby.api.Pattern;
+import org.bugby.wildcard.Pattern;
 
 @Pattern
 public class JumbledIncrementer {

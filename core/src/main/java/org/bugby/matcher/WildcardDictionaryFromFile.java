@@ -3,10 +3,11 @@ package org.bugby.matcher;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
-import org.bugby.api.Pattern;
 import org.bugby.matcher.javac.ElementUtils;
 import org.bugby.matcher.javac.ParsedSource;
 import org.bugby.matcher.javac.TreeUtils;
+import org.bugby.wildcard.Pattern;
+import org.bugby.wildcard.PseudoAnnotation;
 
 import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.ClassTree;
@@ -26,7 +27,7 @@ public class WildcardDictionaryFromFile {
 			this.builtProjectClassLoader = builtProjectClassLoader;
 		}
 
-		@SuppressWarnings({"rawtypes", "unchecked"})
+		@SuppressWarnings({ "rawtypes", "unchecked" })
 		private void addMatcher(WildcardDictionary dictionary, String name, TypeMirror wildcardAnnotation) {
 			if (wildcardAnnotation != null) {
 				Class clz;
@@ -35,33 +36,55 @@ public class WildcardDictionaryFromFile {
 					dictionary.addMatcherClass(name, clz);
 				}
 				catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		}
 
+		private void addPseudoAnnotation(WildcardDictionary dictionary, String name, TypeMirror wildcardAnnotation) {
+			if (wildcardAnnotation != null) {
+				Class clz;
+				try {
+
+					clz = builtProjectClassLoader.loadClass(wildcardAnnotation.toString());
+					dictionary.addPseudoAnnotation(name, clz);
+				}
+				catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		}
+
 		@Override
 		public Boolean visitMethod(MethodTree node, WildcardDictionary d) {
-			TypeMirror wildcardAnnotation =
-					(TypeMirror) ElementUtils.getAnnotationValue(TreeUtils.elementFromDeclaration(node), Pattern.class, "value");
-			addMatcher(d, node.getName().toString(), wildcardAnnotation);
+			TypeMirror wildcardAnnotation = (TypeMirror) ElementUtils.getAnnotationValue(TreeUtils.elementFromDeclaration(node), Pattern.class,
+					"value");
+			if (wildcardAnnotation != null) {
+				addMatcher(d, node.getName().toString(), wildcardAnnotation);
+			}
+			wildcardAnnotation = (TypeMirror) ElementUtils.getAnnotationValue(TreeUtils.elementFromDeclaration(node), PseudoAnnotation.class,
+					"value");
+			if (wildcardAnnotation != null) {
+				addPseudoAnnotation(d, node.getName().toString(), wildcardAnnotation);
+			}
 			return super.visitMethod(node, d);
 		}
 
 		@Override
 		public Boolean visitVariable(VariableTree node, WildcardDictionary d) {
-			TypeMirror wildcardAnnotation =
-					(TypeMirror) ElementUtils.getAnnotationValue(TreeUtils.elementFromDeclaration(node), Pattern.class, "value");
+			TypeMirror wildcardAnnotation = (TypeMirror) ElementUtils.getAnnotationValue(TreeUtils.elementFromDeclaration(node), Pattern.class,
+					"value");
 			addMatcher(d, node.getName().toString(), wildcardAnnotation);
 			return super.visitVariable(node, d);
 		}
 
 		@Override
 		public Boolean visitClass(ClassTree node, WildcardDictionary d) {
-			TypeMirror wildcardAnnotation =
-					(TypeMirror) ElementUtils.getAnnotationValue(TreeUtils.elementFromDeclaration(node), Pattern.class, "value");
-			//TODO - annotation matchers should probably be full name here
+			TypeMirror wildcardAnnotation = (TypeMirror) ElementUtils.getAnnotationValue(TreeUtils.elementFromDeclaration(node), Pattern.class,
+					"value");
+			// TODO - annotation matchers should probably be full name here
 			TypeElement element = TreeUtils.elementFromDeclaration(node);
 			addMatcher(d, element.getQualifiedName().toString(), wildcardAnnotation);
 			addMatcher(d, node.getSimpleName().toString(), wildcardAnnotation);
@@ -70,10 +93,11 @@ public class WildcardDictionaryFromFile {
 
 		@Override
 		public Boolean visitAnnotation(AnnotationTree node, WildcardDictionary d) {
-			//			TypeMirror wildcardAnnotation = (TypeMirror) ElementUtils.getAnnotationValue(TreeUtils.elementFromDeclaration(node), Wildcard.class,
-			//					"value");
-			//			addMatcher(d, node.getName().toString(), wildcardAnnotation);
-			//			d.addAnnotation(node.getAnnotationType().toString());
+			// TypeMirror wildcardAnnotation = (TypeMirror)
+			// ElementUtils.getAnnotationValue(TreeUtils.elementFromDeclaration(node), Wildcard.class,
+			// "value");
+			// addMatcher(d, node.getName().toString(), wildcardAnnotation);
+			// d.addAnnotation(node.getAnnotationType().toString());
 			return super.visitAnnotation(node, d);
 		}
 

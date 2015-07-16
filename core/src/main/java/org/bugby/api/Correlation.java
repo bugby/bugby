@@ -4,6 +4,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Comparator;
 
+import org.bugby.wildcard.PatternConfig;
+
 import com.sun.source.tree.Tree;
 
 /**

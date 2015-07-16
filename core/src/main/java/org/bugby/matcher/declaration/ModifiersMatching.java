@@ -3,7 +3,7 @@ package org.bugby.matcher.declaration;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import org.bugby.api.PatternConfig;
+import org.bugby.wildcard.PatternConfig;
 
 @Retention(RetentionPolicy.RUNTIME)
 @PatternConfig

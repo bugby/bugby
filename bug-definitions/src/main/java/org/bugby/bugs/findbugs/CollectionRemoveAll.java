@@ -2,7 +2,7 @@ package org.bugby.bugs.findbugs;
 
 import java.util.Collection;
 
-import org.bugby.api.Pattern;
+import org.bugby.wildcard.Pattern;
 
 @Pattern
 public class CollectionRemoveAll {

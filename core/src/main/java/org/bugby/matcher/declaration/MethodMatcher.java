@@ -34,7 +34,7 @@ public class MethodMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		modifiersMatcher = new ModifiersMatcher(element.getAnnotation(ModifiersMatching.class), patternNode.getModifiers(), factory);
 
 		this.methodMatching = element.getAnnotation(MethodMatching.class);
-		//TODO I should rather look if it's a real override and not rely on the annotation
+		// TODO I should rather look if it's a real override and not rely on the annotation
 		this.override = element.getAnnotation(Override.class) != null;
 
 		this.returnTypeMatcher = factory.build(patternNode.getReturnType());
@@ -52,9 +52,7 @@ public class MethodMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	}
 
 	protected PatternListMatchingType getThrowsMatching() {
-		if (override) {
-			return PatternListMatchingType.exact;
-		}
+		// throws is a bit different as it may differ from the overriden method
 		return methodMatching != null ? methodMatching.matchThrows() : PatternListMatchingType.partial;
 	}
 
@@ -70,7 +68,8 @@ public class MethodMatcher extends DefaultTreeMatcher implements TreeMatcher {
 	}
 
 	protected boolean isReturnTypeMatching() {
-		//void return is considered as "not present". To check on the result type for voids you need to set the @MethodMatching(matchReturnType=true);
+		// void return is considered as "not present". To check on the result type for voids you need to set the
+		// @MethodMatching(matchReturnType=true);
 		return override || (methodMatching != null ? methodMatching.matchReturnType() : !isVoidReturn());
 	}
 

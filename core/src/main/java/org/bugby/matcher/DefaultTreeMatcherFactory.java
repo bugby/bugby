@@ -22,9 +22,7 @@ import javax.lang.model.type.TypeMirror;
 
 import org.bugby.SourceFromReflection;
 import org.bugby.api.Correlation;
-import org.bugby.api.IgnoreFromMatching;
 import org.bugby.api.MatchingContext;
-import org.bugby.api.Pattern;
 import org.bugby.api.TreeMatcher;
 import org.bugby.api.TreeMatcherFactory;
 import org.bugby.matcher.declaration.AnnotationMatcher;
@@ -74,6 +72,8 @@ import org.bugby.matcher.statement.ThrowMatcher;
 import org.bugby.matcher.statement.TryMatcher;
 import org.bugby.matcher.statement.VariableMatcher;
 import org.bugby.matcher.statement.WhileLoopMatcher;
+import org.bugby.wildcard.IgnoreFromMatching;
+import org.bugby.wildcard.Pattern;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -112,6 +112,7 @@ import com.sun.source.tree.ParameterizedTypeTree;
 import com.sun.source.tree.ParenthesizedTree;
 import com.sun.source.tree.PrimitiveTypeTree;
 import com.sun.source.tree.ReturnTree;
+import com.sun.source.tree.StatementTree;
 import com.sun.source.tree.SwitchTree;
 import com.sun.source.tree.SynchronizedTree;
 import com.sun.source.tree.ThrowTree;
@@ -175,6 +176,8 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 	private final WildcardDictionary wildcardDictionary;
 	private final ClassLoader builtProjectClassLoader;
 	private ParsedSource parsedSource;
+
+	private Set<Class<? extends Annotation>> pseudoAnnotations = new HashSet<>();
 
 	public DefaultTreeMatcherFactory(ClassLoader builtProjectClassLoader) {
 		this.wildcardDictionary = new WildcardDictionary();
@@ -320,6 +323,9 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		if (skip(patternNode)) {
 			return null;
 		}
+		if (collectPseudoAnnotation(patternNode)) {
+			return null;
+		}
 		Class<? extends TreeMatcher> matcherClass = null;
 		// 1. try from @Pattern
 		TypeMirror matcherClassMirror = (TypeMirror) getAnnotationValue(patternNode, Pattern.class, "value");
@@ -356,6 +362,7 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 			// TODO find here compatible constructor
 			Constructor<?> constructor = matcherClass.getDeclaredConstructors()[0];
 			TreeMatcher patternNodeMatcher = (TreeMatcher) constructor.newInstance(patternNode, this);
+			patternNodeMatcher = addPseudoAnnotationMatchers(patternNode, patternNodeMatcher);
 			patternNodeMatcher = addAnnotationMatchers(patternNode, patternNodeMatcher);
 			return patternNodeMatcher;
 		}
@@ -364,6 +371,34 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 					+ patternNode.getClass().getName() + ":" + e, e);
 		}
 
+	}
+
+	private boolean collectPseudoAnnotation(Tree patternNode) {
+		if (patternNode instanceof ExpressionStatementTree) {
+			ExpressionStatementTree stmt = (ExpressionStatementTree) patternNode;
+			// TODO add here both calls Type.$ann() or $ann();
+			if (stmt.getExpression() instanceof MethodInvocationTree) {
+				MethodInvocationTree method = (MethodInvocationTree) stmt.getExpression();
+				Class<? extends Annotation> ann = wildcardDictionary.getPseudoAnnotation(method.getMethodSelect().toString());
+				if (ann != null) {
+					pseudoAnnotations.add(ann);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private TreeMatcher addPseudoAnnotationMatchers(Tree patternNode, TreeMatcher aPatternNodeMatcher) {
+		if (!(patternNode instanceof StatementTree)) {
+			return aPatternNodeMatcher;
+		}
+		TreeMatcher patternNodeMatcher = aPatternNodeMatcher;
+		for (Class<? extends Annotation> annotationCls : pseudoAnnotations) {
+			patternNodeMatcher = addPseudoAnnotationMatcher(annotationCls, patternNode, patternNodeMatcher);
+		}
+		pseudoAnnotations.clear();
+		return patternNodeMatcher;
 	}
 
 	/**
@@ -402,6 +437,27 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 			// TODO find here compatible constructor
 			Constructor<?> constructor = matcherClass.getDeclaredConstructors()[0];
 			TreeMatcher annotationNodeMatcher = (TreeMatcher) constructor.newInstance(annotation, patternNode, patternNodeMatcher);
+
+			return annotationNodeMatcher;
+		}
+		catch (Exception e) {
+			throw new RuntimeException("Cannont create annotation matcher of type:" + matcherClass.getName() + " with node of type:"
+					+ patternNode.getClass().getName() + ":" + e, e);
+		}
+	}
+
+	private TreeMatcher addPseudoAnnotationMatcher(Class<? extends Annotation> annotationCls, Tree patternNode, TreeMatcher patternNodeMatcher) {
+		String matcherName = annotationCls.getName();
+		Class<? extends TreeMatcher> matcherClass = wildcardDictionary.findMatcherClass(matcherName);
+		if (matcherClass == null) {
+			return patternNodeMatcher;
+		}
+
+		try {
+			// TODO find here compatible constructor
+			Constructor<?> constructor = matcherClass.getDeclaredConstructors()[0];
+			// TODO create annotation instance here !?annotationCls.newInstance()
+			TreeMatcher annotationNodeMatcher = (TreeMatcher) constructor.newInstance(null, patternNode, patternNodeMatcher);
 
 			return annotationNodeMatcher;
 		}
