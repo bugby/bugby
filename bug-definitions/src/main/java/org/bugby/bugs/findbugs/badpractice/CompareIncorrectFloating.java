@@ -4,6 +4,8 @@ import static org.bugby.wildcard.Wildcards.someExpressionUsing;
 import static org.bugby.wildcard.Wildcards.someFloatValue;
 import static org.bugby.wildcard.Wildcards.someIntValue;
 
+import java.util.Comparator;
+
 import org.bugby.api.Pattern;
 
 /**
@@ -13,9 +15,10 @@ import org.bugby.api.Pattern;
  * static methods which handle all the special cases correctly. @author acraciun
  */
 @Pattern
-public class CompareToIncorrectFloating implements Comparable<Object> {
+public class CompareIncorrectFloating implements Comparator<Object> {
+
 	@Override
-	public int compareTo(Object obj) {
+	public int compare(Object o1, Object o2) {
 		someExpressionUsing(someFloatValue() > someFloatValue());
 		//TODO same for someExpressionUsing(someFloatValue() < someFloatValue());
 		return someIntValue();

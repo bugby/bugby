@@ -1,0 +1,4 @@
+CO_ABSTRECT_SELF -> not possible with java 6+ !?
+CO_SELF_NO_OBJECT -> not possible with java 6+ !?
+DE_MIGHT_DROP -> same as PMD empty catch
+DE_MIGHT_IGNORE -> same as PMD empty catch

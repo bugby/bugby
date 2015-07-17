@@ -1,7 +1,5 @@
 package org.bugby.wildcard;
 
-import org.bugby.api.Pattern;
-import org.bugby.api.WildcardAnnotation;
 import org.bugby.matcher.wildcard.AnyBranchMatcher;
 import org.bugby.matcher.wildcard.code.BeginMatcher;
 import org.bugby.matcher.wildcard.code.EndMatcher;
@@ -15,11 +13,6 @@ import org.bugby.matcher.wildcard.expr.SomeValueMatcher;
 
 @SuppressWarnings("unused")
 public class Wildcards {
-	// annotations
-	@WildcardAnnotation
-	public @interface IgnoreInitialization {
-
-	}
 
 	// LITERALS
 	public static int someInteger = 0;
@@ -28,6 +21,7 @@ public class Wildcards {
 
 	/**
 	 * matches any expression of any type
+	 * 
 	 * @return
 	 */
 	@Pattern(SomeValueMatcher.class)
@@ -37,6 +31,16 @@ public class Wildcards {
 
 	@Pattern(SomeValueMatcher.class)
 	public static int someIntValue() {
+		return 0;
+	}
+
+	@Pattern(SomeValueMatcher.class)
+	public static float someFloatValue() {
+		return 0;
+	}
+
+	@Pattern(SomeValueMatcher.class)
+	public static double someDoubleValue() {
 		return 0;
 	}
 
@@ -51,8 +55,10 @@ public class Wildcards {
 	}
 
 	/**
-	 * matches any expression. The clazz parameter that represents the class of the exception to be thrown is not checked. It has only the role
-	 * to allow throwing the desired exception. This is usually used when the pattern concentrates more on the "catch" part of an block.
+	 * matches any expression. The clazz parameter that represents the class of the exception to be thrown is not
+	 * checked. It has only the role to allow throwing the desired exception. This is usually used when the pattern
+	 * concentrates more on the "catch" part of an block.
+	 * 
 	 * @param clazz
 	 * @return
 	 * @throws T
@@ -103,11 +109,12 @@ public class Wildcards {
 	}
 
 	/**
-	 * matches any block of code or an entire method. It can be used as a method definition only, not as a method call! Example:
+	 * matches any block of code or an entire method. It can be used as a method definition only, not as a method call!
+	 * Example:
 	 *
 	 * <pre>
 	 * public void someCode() {
-	 * 	//... other matchers
+	 * 	// ... other matchers
 	 * }
 	 * </pre>
 	 */

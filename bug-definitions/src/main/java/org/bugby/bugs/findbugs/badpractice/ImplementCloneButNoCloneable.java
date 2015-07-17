@@ -2,6 +2,7 @@ package org.bugby.bugs.findbugs.badpractice;
 
 import static org.bugby.wildcard.Wildcards.someValue;
 
+import org.bugby.api.Pattern;
 import org.bugby.wildcard.MissingInterface;
 
 /**
@@ -10,6 +11,7 @@ import org.bugby.wildcard.MissingInterface;
  * to control how subclasses can clone themselves), but just make sure that this is what you intended.
  * @author acraciun
  */
+@Pattern
 public class ImplementCloneButNoCloneable implements MissingInterface<Cloneable> {
 	@Override
 	public Object clone() {
