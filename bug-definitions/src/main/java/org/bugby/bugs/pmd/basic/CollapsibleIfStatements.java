@@ -4,7 +4,7 @@ import static org.bugby.wildcard.Wildcards.begin;
 import static org.bugby.wildcard.Wildcards.end;
 import static org.bugby.wildcard.Wildcards.someCondition;
 
-import org.bugby.api.Pattern;
+import org.bugby.wildcard.Pattern;
 
 @Pattern
 public class CollapsibleIfStatements {

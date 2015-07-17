@@ -2,7 +2,7 @@ package org.bugby.bugs.findbugs.badpractice;
 
 import static org.bugby.wildcard.Wildcards.someExpressionUsing;
 
-import org.bugby.api.Pattern;
+import org.bugby.wildcard.Pattern;
 
 /**
  *

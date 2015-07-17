@@ -37,7 +37,11 @@ public class IdentifierVariableMatcher extends DefaultTreeMatcher implements Tre
 		IdentifierTree mt = (IdentifierTree) node;
 
 		if (((IdentifierTree) getPatternNode()).getName().toString().equals("this") && mt.getName().toString().equals("this")) {
-			//this matches this - TODO what about super !?
+			// this matches this - TODO what about super !?
+			return match.done(true);
+		}
+		if (((IdentifierTree) getPatternNode()).getName().toString().equals("super") && mt.getName().toString().equals("super")) {
+			// this matches this - TODO what about super !?
 			return match.done(true);
 		}
 		Element sourceVarElement = getVariableElement(node);
@@ -45,8 +49,8 @@ public class IdentifierVariableMatcher extends DefaultTreeMatcher implements Tre
 			return match.done(false);
 		}
 
-		//TODO - use annotation
-		//match.self(mt.getName().toString().equals(((IdentifierTree) getPatternNode()).getName().toString()));
+		// TODO - use annotation
+		// match.self(mt.getName().toString().equals(((IdentifierTree) getPatternNode()).getName().toString()));
 
 		MatchingValueKey matchingKey = new MatchingValueKey("VAR", patternVariableElement);
 		Element currentMapping = context.getValue(matchingKey);

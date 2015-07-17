@@ -3,7 +3,7 @@ package org.bugby.bugs.pmd.basic;
 import static org.bugby.wildcard.Wildcards.noCode;
 import static org.bugby.wildcard.Wildcards.someExpressionThrowing;
 
-import org.bugby.api.Pattern;
+import org.bugby.wildcard.Pattern;
 import org.bugby.wildcard.SomeException;
 
 @Pattern

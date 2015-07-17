@@ -13,6 +13,7 @@ import org.bugby.api.TreeMatcherFactory;
 
 import com.sun.source.tree.ExpressionStatementTree;
 import com.sun.source.tree.ExpressionTree;
+import com.sun.source.tree.ReturnTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 
@@ -75,6 +76,11 @@ abstract public class DefaultTreeMatcher implements TreeMatcher {
 			return (T) node;
 		}
 
+		// TODO - should I have this optional?
+		if (node instanceof ReturnTree) {
+			return (T) ((ReturnTree) node).getExpression();
+		}
+
 		if (node instanceof VariableTree) {
 			return (T) ((VariableTree) node).getInitializer();
 		}
@@ -102,23 +108,26 @@ abstract public class DefaultTreeMatcher implements TreeMatcher {
 	// }
 
 	/**
-	 * called before starting the matching, multiple siblings with multiple nodes from the AST to be checked. Called once for each of the
-	 * siblings involved in the matching process.
+	 * called before starting the matching, multiple siblings with multiple nodes from the AST to be checked. Called
+	 * once for each of the siblings involved in the matching process.
+	 * 
 	 * @param ordered
 	 */
 	@Override
 	public void startMatching(boolean ordered, MatchingContext context) {
-		//does nothing
+		// does nothing
 	}
 
 	/**
-	 * called once the matching was returned by the multiple matchers. The matcher has a chance to alter the final result returned to the caller
+	 * called once the matching was returned by the multiple matchers. The matcher has a chance to alter the final
+	 * result returned to the caller
+	 * 
 	 * @param currentResult
 	 * @return
 	 */
 	@Override
 	public List<List<MatchingPath>> endMatching(List<List<MatchingPath>> currentResult, MatchingContext context) {
-		//does nothing
+		// does nothing
 		return currentResult;
 	}
 }

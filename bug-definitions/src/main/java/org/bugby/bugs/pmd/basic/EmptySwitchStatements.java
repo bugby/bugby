@@ -1,6 +1,6 @@
 package org.bugby.bugs.pmd.basic;
 
-import org.bugby.api.Pattern;
+import org.bugby.wildcard.Pattern;
 import org.bugby.wildcard.Wildcards;
 
 @Pattern

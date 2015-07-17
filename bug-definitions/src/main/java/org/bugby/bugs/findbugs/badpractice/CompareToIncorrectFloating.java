@@ -4,7 +4,7 @@ import static org.bugby.wildcard.Wildcards.someExpressionUsing;
 import static org.bugby.wildcard.Wildcards.someFloatValue;
 import static org.bugby.wildcard.Wildcards.someIntValue;
 
-import org.bugby.api.Pattern;
+import org.bugby.wildcard.Pattern;
 
 /**
  * Co: compareTo()/compare() incorrectly handles float or double value (CO_COMPARETO_INCORRECT_FLOATING) This method compares double or float

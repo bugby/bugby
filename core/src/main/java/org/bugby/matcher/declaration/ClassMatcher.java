@@ -44,7 +44,7 @@ public class ClassMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		this.typeParametersMatchers = build(factory, patternNode.getTypeParameters());
 		this.methodsMatchers = build(factory, methods(removeSyntheticConstructors(patternNode.getMembers())));
 		this.fieldsMatchers = build(factory, fields(patternNode.getMembers()));
-		//TODO - I may need to add also static blocks !?
+		// TODO - I may need to add also static blocks !?
 	}
 
 	private List<Tree> fields(List<? extends Tree> members) {

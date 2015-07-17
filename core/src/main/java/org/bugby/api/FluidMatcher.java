@@ -27,7 +27,7 @@ public class FluidMatcher {
 			System.out.println(Strings.repeat("  ", level) + "[ #" + matcher.getId());
 		} else {
 			System.out.println(Strings.repeat("  ", level) + ">> " + toString(matcher) + " on " + toString(node) + " ["
-					+ node.toString().replace("\n", "  ") + "]");
+					+ node.toString().replaceAll("[\\r\\n]+", " | ").replaceAll("[\\t]+", " ") + "]");
 		}
 		level++;
 	}
@@ -40,7 +40,7 @@ public class FluidMatcher {
 	}
 
 	protected <T> List<T> list(T element) {
-		return element == null ? Collections.<T> emptyList() : Collections.singletonList(element);
+		return element == null ? Collections.<T>emptyList() : Collections.singletonList(element);
 	}
 
 	public FluidMatcher child(Tree child, TreeMatcher childMatcher) {
@@ -76,8 +76,8 @@ public class FluidMatcher {
 			return this;
 		}
 		if (matchingType == PatternListMatchingType.exact && children.size() != matchers.size()) {
-			//in this case the two lists need to be of the same size
-			//TODO should i check only the normal type matchers!?
+			// in this case the two lists need to be of the same size
+			// TODO should i check only the normal type matchers!?
 			currentMatch = false;
 			return this;
 		}

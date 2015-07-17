@@ -3,7 +3,7 @@ package org.bugby.bugs.findbugs;
 import static org.bugby.wildcard.Wildcards.someTypedValue;
 import static org.bugby.wildcard.Wildcards.someValue;
 
-import org.bugby.api.Pattern;
+import org.bugby.wildcard.Pattern;
 import org.bugby.wildcard.SomeType;
 
 @Pattern
