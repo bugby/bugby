@@ -2,8 +2,8 @@ package org.bugby.bugs.findbugs.badpractice;
 
 import static org.bugby.wildcard.Wildcards.someValue;
 
-import org.bugby.api.Pattern;
 import org.bugby.wildcard.MissingInterface;
+import org.bugby.wildcard.Pattern;
 
 /**
  * CN: Class defines clone() but doesn't implement Cloneable (CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE) <br>
