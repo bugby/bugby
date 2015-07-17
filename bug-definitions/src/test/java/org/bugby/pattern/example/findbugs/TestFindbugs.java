@@ -6,7 +6,7 @@ import static org.bugby.pattern.example.MatchingHelper.assertNoBug;
 import org.bugby.bugs.findbugs.AmbiguousInvocationOfOuterOrInner;
 import org.bugby.bugs.findbugs.CheckImmutable;
 import org.bugby.bugs.findbugs.CloneableWithoutClone;
-import org.bugby.bugs.findbugs.CollectionRemoveAll;
+import org.bugby.bugs.findbugs.badpractice.CollectionRemoveAll;
 import org.junit.Test;
 
 public class TestFindbugs {

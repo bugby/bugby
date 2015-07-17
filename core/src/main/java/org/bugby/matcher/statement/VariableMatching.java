@@ -17,4 +17,7 @@ public @interface VariableMatching {
 
 	public boolean matchInitializer() default true;
 
+	//TODO need to think this through - the idea is to be able to tell that it's ok to have anytype EXCEPTING the one listed
+	public boolean matchTypeOpposite() default false;
+
 }
