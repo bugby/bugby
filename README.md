@@ -11,20 +11,22 @@ all the rest are perfectly safe!
 
 My believe is that the number of bug definitions **must be much, much higher** than 800.
 It's true that not everybody uses tools for static code analysis (I don't have a real statistics here).
-But the probable reason that the number of existing bug definitions is so low is that is quite **hard to write new rules** using this tools.
+But the probable reason that the number of existing bug definitions is so low is that it's quite **hard to write new rules** using these tools.
 
-The teams should invest in these rules like they do in unit tests. But the cool thing about these rule is that once they apply to a project, they actually apply to **all** the projects written with the same libraries. So it's like writing unit tests for **future code** (even more powerful than TDD!)
+The teams should invest in these rules like they do in unit tests. But the cool thing about these rules is that once they apply to a project, they actually apply to **all** the projects written with the same libraries. So it's like writing unit tests for **future code** (even more powerful than TDD!)
 
 Have a look for example at this [Findbugs definition source](http://code.google.com/p/findbugs/source/browse/findbugs/src/java/edu/umd/cs/findbugs/detect/FindPuzzlers.java) or this [PMD definition source](https://github.com/pmd/pmd/blob/master/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/basic/DoubleCheckedLockingRule.java).
-Of course there are shorter definitions. PMD even tried to introduce a XPATH-like language definition, that alse becomes quite complex for more difficult rules.
+Of course there are shorter definitions that you can find in their repositories. PMD even introduced a XPATH-like language, that this becomes also quite complex for more difficult rules.
 
-One more problem is that is quite confusing if you need both Findbugs or PMD (as their scope sometimes overlaps) or in which situation you should use one or this other. But in fact is quite easy to figure this out if you know how the two tools do thier job.
-Findbugs uses bytecode access, so it can detect bugs when more classes are involved. But is very hard to write complex rules.
+As their scope sometimes overlaps, it's quite unclear if you need both Findbugs or PMD or in which situation you should use one or the other. But in fact it's quite easy to figure this out if you know how the two tools do thier job.
+Findbugs uses bytecode access, so it can detect bugs when more classes are involved. But it's very hard to write complex rules.
 PMD uses the code's AST, but it's harder to detect bugs involving more than one class.
 
 Bugby uses Java code itself to define the patterns, almost like copying and pasting the code that contains the bug's definition.
 This way you can define very complex patterns without learning a new language, nor having to play with the hard-to-understand binary code API used by Findbugs.
+
 What you need to learn is a dozen of annotations and a dozen of constructions that will help you to create powerful patterns that will not yield false positives.
+
 In case the available *wildcards* are not enough, more advanced user can still create new wildcards using the standard [Java Compiler Tree API](http://docs.oracle.com/javase/7/docs/jdk/api/javac/tree/index.html).
 
 ## Some Examples
@@ -40,7 +42,7 @@ public class DontCallThreadRun {
 }
 ```
 
-Here is another one where in PMD the XPath language is no longer enough:
+Here is another one where in PMD the XPath language cannot express the rule:
 
 ```java
 @Pattern
@@ -60,7 +62,7 @@ public class DoubleCheckedLocking {
 }
 ```
 
-Here is a rule that correspond to the Findbugs rule EQ_COMPARETO_USE_OBJECT_EQUALS:
+Here is a rule that corresponds to the Findbugs rule EQ_COMPARETO_USE_OBJECT_EQUALS:
 
 ```java
 @Pattern
@@ -85,11 +87,11 @@ Here's the list of what Bugby intends to offer:
 * Rich wildcard and pattern API
 * The definition of more than 90% of existing Findbugs and PMD rules written using the API
 * A Maven plugin to easily execute the rules on an existing project
-* A strategy to easily provide rules with a Maven library
+* A mechanism to easily provide new rules along with a Maven library
 
-The idea is to provide all this by the **end of 2015**.
+The plan is to provide all this by the **end of 2015**.
 
-Once this is done, you should normally safely replace your Findbugs and PMD rules.
+Once this is done, you should normally safely replace your Findbugs and PMD rules with Bugby rules.
 And then start adding new rules like creating future-proof unit tests.
 
 Read below details about these ideas.
