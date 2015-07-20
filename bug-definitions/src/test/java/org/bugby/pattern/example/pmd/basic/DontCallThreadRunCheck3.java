@@ -3,7 +3,7 @@ package org.bugby.pattern.example.pmd.basic;
 import java.util.Collections;
 import java.util.List;
 
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.Pattern;
 
 @Pattern
 public class DontCallThreadRunCheck3 {

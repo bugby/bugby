@@ -2,7 +2,7 @@ package org.bugby.bugs.pmd.basic;
 
 import static org.bugby.wildcard.Wildcards.someExpressionUsing;
 
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.Pattern;
 
 /**
  * Avoid unnecessary temporaries when converting primitives to Strings

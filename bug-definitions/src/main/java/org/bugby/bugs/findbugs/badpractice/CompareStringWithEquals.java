@@ -2,7 +2,7 @@ package org.bugby.bugs.findbugs.badpractice;
 
 import static org.bugby.wildcard.Wildcards.someExpressionUsing;
 
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.Pattern;
 
 /**
  * ES: Comparison of String parameter using == or != (ES_COMPARING_PARAMETER_STRING_WITH_EQ/ES_COMPARING_STRINGS_WITH_EQ)

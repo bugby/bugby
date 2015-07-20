@@ -2,8 +2,8 @@ package org.bugby.bugs.findbugs;
 
 import javax.annotation.concurrent.Immutable;
 
-import org.bugby.matcher.declaration.ModifiersMatching;
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.ModifiersMatching;
+import org.bugby.api.annotation.Pattern;
 
 @Pattern
 @Immutable

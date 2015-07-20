@@ -3,9 +3,9 @@ package org.bugby.bugs.findbugs.badpractice;
 import static org.bugby.wildcard.WildcardAnnotations.$Missing;
 import static org.bugby.wildcard.Wildcards.someExpressionUsing;
 
-import org.bugby.api.PatternListMatchingType;
-import org.bugby.matcher.declaration.MethodMatching;
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.MethodMatching;
+import org.bugby.api.annotation.Pattern;
+import org.bugby.api.annotation.PatternListMatchingType;
 
 /**
  * Class implements Cloneable but does not define or use the clone method. CN: clone method does not call super.clone()

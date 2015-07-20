@@ -3,7 +3,7 @@ package org.bugby.bugs.pmd;
 import static org.bugby.wildcard.Wildcards.anyBranch;
 import static org.bugby.wildcard.Wildcards.end;
 
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.Pattern;
 
 @Pattern
 public class AvoidBranchingStatementAsLastInLoop {

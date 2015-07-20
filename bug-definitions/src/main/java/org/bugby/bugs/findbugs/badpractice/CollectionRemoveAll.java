@@ -2,7 +2,7 @@ package org.bugby.bugs.findbugs.badpractice;
 
 import java.util.Collection;
 
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.Pattern;
 
 /**
  *

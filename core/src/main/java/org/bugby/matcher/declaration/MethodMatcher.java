@@ -8,10 +8,12 @@ import javax.lang.model.element.Element;
 import org.bugby.api.FluidMatcher;
 import org.bugby.api.MatchingContext;
 import org.bugby.api.MatchingPath;
-import org.bugby.api.PatternListMatchingType;
 import org.bugby.api.TreeMatcher;
 import org.bugby.api.TreeMatcherFactory;
 import org.bugby.api.Variables;
+import org.bugby.api.annotation.MethodMatching;
+import org.bugby.api.annotation.ModifiersMatching;
+import org.bugby.api.annotation.PatternListMatchingType;
 import org.bugby.matcher.DefaultTreeMatcher;
 import org.bugby.matcher.javac.TreeUtils;
 

@@ -1,10 +1,10 @@
 package org.bugby;
 
-import org.bugby.api.OrSet;
 import org.bugby.api.TreeMatcherFactory;
+import org.bugby.api.annotation.MatchCount;
+import org.bugby.api.annotation.Missing;
+import org.bugby.api.annotation.OrSet;
 import org.bugby.matcher.DefaultTreeMatcherFactory;
-import org.bugby.wildcard.MatchCount;
-import org.bugby.wildcard.Missing;
 import org.bugby.wildcard.SomeType;
 import org.bugby.wildcard.WildcardAnnotations;
 import org.bugby.wildcard.Wildcards;

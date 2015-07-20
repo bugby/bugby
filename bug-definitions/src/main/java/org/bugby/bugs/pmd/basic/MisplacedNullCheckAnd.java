@@ -2,7 +2,7 @@ package org.bugby.bugs.pmd.basic;
 
 import static org.bugby.wildcard.Wildcards.someConditionUsing;
 
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.Pattern;
 import org.bugby.wildcard.Wildcards;
 
 @Pattern

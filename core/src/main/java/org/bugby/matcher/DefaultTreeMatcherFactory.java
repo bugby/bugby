@@ -21,10 +21,12 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 import org.bugby.SourceFromReflection;
-import org.bugby.api.Correlation;
 import org.bugby.api.MatchingContext;
 import org.bugby.api.TreeMatcher;
 import org.bugby.api.TreeMatcherFactory;
+import org.bugby.api.annotation.Correlation;
+import org.bugby.api.annotation.IgnoreFromMatching;
+import org.bugby.api.annotation.Pattern;
 import org.bugby.matcher.declaration.AnnotationMatcher;
 import org.bugby.matcher.declaration.ClassMatcher;
 import org.bugby.matcher.declaration.MethodMatcher;
@@ -72,8 +74,6 @@ import org.bugby.matcher.statement.ThrowMatcher;
 import org.bugby.matcher.statement.TryMatcher;
 import org.bugby.matcher.statement.VariableMatcher;
 import org.bugby.matcher.statement.WhileLoopMatcher;
-import org.bugby.wildcard.IgnoreFromMatching;
-import org.bugby.wildcard.Pattern;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;

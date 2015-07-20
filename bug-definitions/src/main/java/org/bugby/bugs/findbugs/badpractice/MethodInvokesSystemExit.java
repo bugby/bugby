@@ -2,7 +2,7 @@ package org.bugby.bugs.findbugs.badpractice;
 
 import static org.bugby.wildcard.Wildcards.someIntValue;
 
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.Pattern;
 
 /**
  * Dm: Method invokes System.exit(...) (DM_EXIT)

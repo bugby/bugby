@@ -3,8 +3,8 @@ package org.bugby.bugs.findbugs.badpractice;
 import static org.bugby.wildcard.Wildcards.someBooleanValue;
 import static org.bugby.wildcard.Wildcards.someIntValue;
 
-import org.bugby.wildcard.Missing;
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.Missing;
+import org.bugby.api.annotation.Pattern;
 
 /**
  *

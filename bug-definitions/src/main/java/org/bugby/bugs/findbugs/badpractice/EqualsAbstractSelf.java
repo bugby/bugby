@@ -2,8 +2,8 @@ package org.bugby.bugs.findbugs.badpractice;
 
 import static org.bugby.wildcard.Wildcards.someBooleanValue;
 
-import org.bugby.matcher.statement.VariableMatching;
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.Pattern;
+import org.bugby.api.annotation.VariableMatching;
 
 /**
  *

@@ -5,8 +5,8 @@ import static org.bugby.wildcard.Wildcards.someValue;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.bugby.wildcard.IgnoreFromMatching;
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.IgnoreFromMatching;
+import org.bugby.api.annotation.Pattern;
 
 @Pattern
 public class CheckResultSetLast {

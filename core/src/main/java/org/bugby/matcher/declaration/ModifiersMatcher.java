@@ -13,10 +13,11 @@ import org.bugby.api.FluidMatcher;
 import org.bugby.api.MatchingContext;
 import org.bugby.api.TreeMatcher;
 import org.bugby.api.TreeMatcherFactory;
+import org.bugby.api.annotation.ModifiersMatching;
+import org.bugby.api.annotation.PatternConfig;
 import org.bugby.matcher.DefaultTreeMatcher;
 import org.bugby.matcher.javac.ElementUtils;
 import org.bugby.matcher.javac.TreeUtils;
-import org.bugby.wildcard.PatternConfig;
 
 import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.ModifiersTree;

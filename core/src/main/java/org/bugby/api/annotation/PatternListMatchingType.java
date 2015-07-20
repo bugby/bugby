@@ -1,4 +1,4 @@
-package org.bugby.api;
+package org.bugby.api.annotation;
 
 /**
  * it is used to describe how a matching between a list of patterns should be applied to the target source nodes.

@@ -1,7 +1,7 @@
 package org.bugby.bugs.pmd.basic;
 
-import org.bugby.wildcard.Missing;
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.Missing;
+import org.bugby.api.annotation.Pattern;
 import org.bugby.wildcard.Wildcards;
 
 @Pattern

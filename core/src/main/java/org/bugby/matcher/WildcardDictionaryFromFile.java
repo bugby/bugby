@@ -3,11 +3,11 @@ package org.bugby.matcher;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
+import org.bugby.api.annotation.Pattern;
+import org.bugby.api.annotation.PseudoAnnotation;
 import org.bugby.matcher.javac.ElementUtils;
 import org.bugby.matcher.javac.ParsedSource;
 import org.bugby.matcher.javac.TreeUtils;
-import org.bugby.wildcard.Pattern;
-import org.bugby.wildcard.PseudoAnnotation;
 
 import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.ClassTree;

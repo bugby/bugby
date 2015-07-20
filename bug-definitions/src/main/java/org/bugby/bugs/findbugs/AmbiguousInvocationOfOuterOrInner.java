@@ -1,7 +1,7 @@
 package org.bugby.bugs.findbugs;
 
-import org.bugby.api.Correlation;
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.Correlation;
+import org.bugby.api.annotation.Pattern;
 import org.bugby.wildcard.correlation.SameMethodSignature;
 
 @Pattern

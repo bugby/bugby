@@ -3,6 +3,8 @@ package org.bugby.api;
 import java.util.Collections;
 import java.util.List;
 
+import org.bugby.api.annotation.PatternListMatchingType;
+
 import com.google.common.base.Strings;
 import com.sun.source.tree.Tree;
 

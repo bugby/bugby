@@ -10,9 +10,9 @@ import org.bugby.api.MatchingPath;
 import org.bugby.api.MatchingValueKey;
 import org.bugby.api.TreeMatcher;
 import org.bugby.api.TreeMatcherExecutionType;
+import org.bugby.api.annotation.MatchCount;
 import org.bugby.matcher.DefaultTreeMatcher;
 import org.bugby.matcher.javac.TreeUtils;
-import org.bugby.wildcard.MatchCount;
 
 import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.Tree;

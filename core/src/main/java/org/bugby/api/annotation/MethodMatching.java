@@ -1,12 +1,9 @@
-package org.bugby.matcher.declaration;
+package org.bugby.api.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import org.bugby.api.PatternListMatchingType;
-import org.bugby.wildcard.PatternConfig;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR})

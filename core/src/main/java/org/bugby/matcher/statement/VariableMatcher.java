@@ -6,9 +6,10 @@ import org.bugby.api.FluidMatcher;
 import org.bugby.api.MatchingContext;
 import org.bugby.api.TreeMatcher;
 import org.bugby.api.TreeMatcherFactory;
+import org.bugby.api.annotation.ModifiersMatching;
+import org.bugby.api.annotation.VariableMatching;
 import org.bugby.matcher.DefaultTreeMatcher;
 import org.bugby.matcher.declaration.ModifiersMatcher;
-import org.bugby.matcher.declaration.ModifiersMatching;
 import org.bugby.matcher.javac.TreeUtils;
 
 import com.sun.source.tree.IdentifierTree;

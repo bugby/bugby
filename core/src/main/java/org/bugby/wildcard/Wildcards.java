@@ -1,5 +1,6 @@
 package org.bugby.wildcard;
 
+import org.bugby.api.annotation.Pattern;
 import org.bugby.matcher.wildcard.AnyBranchMatcher;
 import org.bugby.matcher.wildcard.code.BeginMatcher;
 import org.bugby.matcher.wildcard.code.EndMatcher;

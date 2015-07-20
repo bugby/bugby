@@ -1,4 +1,4 @@
-package org.bugby.wildcard;
+package org.bugby.api.annotation;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;

@@ -1,11 +1,9 @@
-package org.bugby.api;
+package org.bugby.api.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import org.bugby.matcher.wildcard.code.OrSetMatcher;
-import org.bugby.wildcard.Pattern;
-import org.bugby.wildcard.PatternConfig;
 
 /**
  *

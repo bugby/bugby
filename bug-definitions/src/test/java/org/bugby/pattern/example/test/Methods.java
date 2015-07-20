@@ -1,7 +1,7 @@
 package org.bugby.pattern.example.test;
 
-import org.bugby.wildcard.MatchCount;
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.MatchCount;
+import org.bugby.api.annotation.Pattern;
 
 @Pattern
 public class Methods {

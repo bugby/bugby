@@ -1,5 +1,8 @@
 package org.bugby.wildcard;
 
+import org.bugby.api.annotation.Missing;
+import org.bugby.api.annotation.Pattern;
+import org.bugby.api.annotation.PseudoAnnotation;
 import org.bugby.matcher.wildcard.code.LastMatcher;
 
 /**

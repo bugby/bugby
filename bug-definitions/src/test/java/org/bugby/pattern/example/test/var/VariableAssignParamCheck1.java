@@ -1,6 +1,6 @@
 package org.bugby.pattern.example.test.var;
 
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.Pattern;
 
 @Pattern
 public class VariableAssignParamCheck1 {

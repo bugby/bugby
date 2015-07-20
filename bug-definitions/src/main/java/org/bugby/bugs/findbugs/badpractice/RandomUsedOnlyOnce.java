@@ -4,7 +4,7 @@ import static org.bugby.wildcard.Wildcards.someExpressionUsing;
 
 import java.util.Random;
 
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.Pattern;
 
 /**
  * DMI: Random object created and used only once (DMI_RANDOM_USED_ONLY_ONCE)

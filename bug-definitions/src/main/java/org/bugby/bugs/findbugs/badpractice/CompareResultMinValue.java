@@ -1,6 +1,6 @@
 package org.bugby.bugs.findbugs.badpractice;
 
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.Pattern;
 
 /**
  * Co: compareTo()/compare() returns Integer.MIN_VALUE (CO_COMPARETO_RESULTS_MIN_VALUE) In some situation, this compareTo or compare method <br>

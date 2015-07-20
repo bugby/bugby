@@ -8,9 +8,9 @@ import javax.lang.model.element.Element;
 import org.bugby.api.MatchingContext;
 import org.bugby.api.MatchingPath;
 import org.bugby.api.MatchingValueKey;
-import org.bugby.api.OrSet;
 import org.bugby.api.TreeMatcher;
 import org.bugby.api.TreeMatcherExecutionType;
+import org.bugby.api.annotation.OrSet;
 import org.bugby.matcher.DefaultTreeMatcher;
 import org.bugby.matcher.javac.TreeUtils;
 

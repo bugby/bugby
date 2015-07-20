@@ -3,7 +3,7 @@ package org.bugby.bugs.pmd;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.Pattern;
 
 @Pattern
 public class CheckResultSetFirst {

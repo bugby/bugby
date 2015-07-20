@@ -1,6 +1,6 @@
 package org.bugby.pattern.example.pmd.basic;
 
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.Pattern;
 
 @Pattern
 public class DontCallThreadRunCheck1 {

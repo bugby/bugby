@@ -2,8 +2,8 @@ package org.bugby.bugs.findbugs;
 
 import static org.bugby.wildcard.Wildcards.someValue;
 
-import org.bugby.wildcard.Missing;
-import org.bugby.wildcard.Pattern;
+import org.bugby.api.annotation.Missing;
+import org.bugby.api.annotation.Pattern;
 
 @Pattern
 public class CloneableWithoutClone implements Cloneable {
