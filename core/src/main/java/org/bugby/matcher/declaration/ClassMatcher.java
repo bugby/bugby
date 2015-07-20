@@ -3,12 +3,12 @@ package org.bugby.matcher.declaration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.lang.model.element.Element;
 
 import org.bugby.api.FluidMatcher;
 import org.bugby.api.MatchingContext;
-import org.bugby.api.MatchingPath;
 import org.bugby.api.TreeMatcher;
 import org.bugby.api.TreeMatcherFactory;
 import org.bugby.api.Variables;
@@ -131,7 +131,7 @@ public class ClassMatcher extends DefaultTreeMatcher implements TreeMatcher {
 		final List<Tree> methods = methods(removeSyntheticConstructors(ct.getMembers()));
 		final List<Tree> fields = fields(ct.getMembers());
 
-		Callable<Boolean> matchSolution = new Callable<Boolean>() {
+		final Callable<Boolean> matchSolution = new Callable<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
 				FluidMatcher solutionMatch = partialMatching(node, context);
@@ -162,8 +162,9 @@ public class ClassMatcher extends DefaultTreeMatcher implements TreeMatcher {
 				e.printStackTrace();
 			}
 		} else {
-			List<List<MatchingPath>> fieldsMatch = context.matchUnordered(fieldsMatchers, fields);
-			match.self(Variables.forAllVariables(context, fieldsMatch, matchSolution));
+			final AtomicBoolean foundMatch = new AtomicBoolean(false);
+			context.matchUnordered(fieldsMatchers, fields, Variables.variablesForEachSolution(context, matchSolution, foundMatch));
+			match.self(foundMatch.get());
 		}
 
 		return match.done();

@@ -16,7 +16,7 @@ public class MissingMatcher extends DefaultTreeMatcher {
 	private final TreeMatcher annotatedNodeMatcher;
 
 	public MissingMatcher(AnnotationTree annotationNode, Tree annotatedNode, TreeMatcher annotatedNodeMatcher) {
-		super(annotationNode);
+		super(annotatedNode);
 		this.annotatedNodeMatcher = annotatedNodeMatcher;
 	}
 

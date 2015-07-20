@@ -119,6 +119,11 @@ abstract public class DefaultTreeMatcher implements TreeMatcher {
 		return TreeMatcherExecutionType.keep;
 	}
 
+	@Override
+	public void removeFromMatch(Tree node, MatchingContext context) {
+		//does nothing
+	}
+
 	/**
 	 * called once the matching was returned by the multiple matchers. The matcher has a chance to alter the final result returned to the caller
 	 *

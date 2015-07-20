@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -41,25 +42,29 @@ public class Variables {
 		}
 	}
 
-	public static boolean forAllVariables(MatchingContext context, List<List<MatchingPath>> solutions, Callable<Boolean> match) {
-		for (List<MatchingPath> solution : solutions) {
-			//set variables
-			Variables.setVariables(context, solution);
-			boolean ok;
-			try {
-				ok = match.call();
+	public static SolutionFoundCallback variablesForEachSolution(final MatchingContext context, final Callable<Boolean> matchSolution,
+			final AtomicBoolean foundMatch) {
+		return new SolutionFoundCallback() {
+			@Override
+			public void solutionFound(List<MatchingPath> solution) {
+				if (foundMatch.get()) {
+					//keep the first solution
+					//TODO shall i search more !?
+					return;
+				}
+				Variables.setVariables(context, solution);
+				boolean ok = false;
+				try {
+					ok = matchSolution.call();
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+				//cleanup
+				Variables.removeVariables(context, solution);
+				foundMatch.set(ok);
 			}
-			catch (Exception e) {
-				e.printStackTrace();
-				continue;
-			}
-			//cleanup
-			Variables.removeVariables(context, solution);
-			if (ok) {
-				return true;
-			}
-		}
-		return false;
+		};
 	}
 
 	public static List<Tree> extractAllVariables(Tree node) {

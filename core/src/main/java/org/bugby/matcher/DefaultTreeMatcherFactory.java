@@ -125,9 +125,10 @@ import com.sun.source.tree.WhileLoopTree;
 
 public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 	private static Set<Class<? extends Annotation>> skipAnnotations = new HashSet<Class<? extends Annotation>>(Arrays.asList(Pattern.class,
-			SuppressWarnings.class, Override.class, Correlation.class));
+		SuppressWarnings.class, Override.class, Correlation.class));
 
-	private static final Map<Class<? extends Tree>, Class<? extends TreeMatcher>> matcherClasses = new HashMap<Class<? extends Tree>, Class<? extends TreeMatcher>>();
+	private static final Map<Class<? extends Tree>, Class<? extends TreeMatcher>> matcherClasses =
+			new HashMap<Class<? extends Tree>, Class<? extends TreeMatcher>>();
 	static {
 		matcherClasses.put(ClassTree.class, ClassMatcher.class);
 		matcherClasses.put(MethodTree.class, MethodMatcher.class);
@@ -225,7 +226,7 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 	// return clz.getName().replace(".class", "").replace('.', File.separatorChar) + ".java";
 	// }
 
-	private static final String[] SOURCE_PATHS = { "src/main/java", "src/test/java", "../core/src/main/java" };
+	private static final String[] SOURCE_PATHS = {"src/main/java", "src/test/java", "../core/src/main/java"};
 
 	private static File sourcePath(String fileName) {
 		for (String p : SOURCE_PATHS) {
@@ -331,7 +332,7 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		TypeMirror matcherClassMirror = (TypeMirror) getAnnotationValue(patternNode, Pattern.class, "value");
 		if (matcherClassMirror != null) {
 			try {
-				matcherClass = (Class<? extends TreeMatcher>) Class.forName(matcherClassMirror.toString());
+				matcherClass = (Class<? extends TreeMatcher>) builtProjectClassLoader.loadClass(matcherClassMirror.toString());
 			}
 			catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
@@ -402,9 +403,9 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 	}
 
 	/**
-	 * adds the annotation matchers that would affect the patternNodeMatcher behaviour. Please note that this only
-	 * applies to nodes that can have annotations.
-	 * 
+	 * adds the annotation matchers that would affect the patternNodeMatcher behaviour. Please note that this only applies to nodes that can have
+	 * annotations.
+	 *
 	 * @param patternNode
 	 * @param patternNodeMatcher
 	 * @return
@@ -422,8 +423,7 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 	 * @param annotation
 	 * @param patternNode
 	 * @param patternNodeMatcher
-	 * @return an matcher adding the annotation specific functionality or patternNodeMatcher if no corresponding matcher
-	 *         was found
+	 * @return an matcher adding the annotation specific functionality or patternNodeMatcher if no corresponding matcher was found
 	 */
 	private TreeMatcher addAnnotationMatcher(AnnotationTree annotation, Tree patternNode, TreeMatcher patternNodeMatcher) {
 		TypeMirror type = InternalUtils.typeOf(annotation.getAnnotationType());
@@ -602,7 +602,7 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 
 	@Override
 	public MatchResult match(TreeMatcher rootMatcher, ParsedSource source) {
-		MatchingContext context = new DefaultMatchingContext(rootMatcher, source);
+		MatchingContext context = new DefaultMatchingContext(builtProjectClassLoader, rootMatcher, source);
 		boolean ok = context.matches();
 		Multimap<TreeMatcher, Tree> matches = context.getMatches();
 		if (!ok) {

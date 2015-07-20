@@ -2,12 +2,12 @@ package org.bugby.matcher.declaration;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.lang.model.element.Element;
 
 import org.bugby.api.FluidMatcher;
 import org.bugby.api.MatchingContext;
-import org.bugby.api.MatchingPath;
 import org.bugby.api.TreeMatcher;
 import org.bugby.api.TreeMatcherFactory;
 import org.bugby.api.Variables;
@@ -118,8 +118,9 @@ public class MethodMatcher extends DefaultTreeMatcher implements TreeMatcher {
 				e.printStackTrace();
 			}
 		} else {
-			List<List<MatchingPath>> paramsMatch = context.matchOrdered(parametersMatchers, mt.getParameters());
-			match.self(Variables.forAllVariables(context, paramsMatch, matchSolution));
+			final AtomicBoolean foundMatch = new AtomicBoolean(false);
+			context.matchOrdered(parametersMatchers, mt.getParameters(), Variables.variablesForEachSolution(context, matchSolution, foundMatch));
+			match.self(foundMatch.get());
 		}
 
 		return match.done();

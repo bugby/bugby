@@ -46,6 +46,17 @@ public class SourceFromReflection {
 		}
 	}
 
+	protected void printDefaultValue(Class<?> type, PrintWriter print) {
+		if (type.equals(Character.class) || type.equals(char.class)) {
+			print.print("' '");
+			return;
+		}
+		print.print(Defaults.defaultValue(type));
+		if (type.equals(Float.class) || type.equals(float.class)) {
+			print.print("f");
+		}
+	}
+
 	protected void printType(Type genericType, PrintWriter print) {
 		if (genericType instanceof GenericArrayType) {
 			printType(((GenericArrayType) genericType).getGenericComponentType(), print);
@@ -68,12 +79,16 @@ public class SourceFromReflection {
 		print.print(" ");
 		print.print(field.getName());
 		if (Modifier.isFinal(field.getModifiers())) {
-			print.print("=" + Defaults.defaultValue(field.getType()));
+			print.print("=");
+			printDefaultValue(field.getType(), print);
 		}
 		print.println(";");
 	}
 
 	protected void printMethod(Method method, PrintWriter print) {
+		if (method.isBridge() || method.isSynthetic()) {
+			return;
+		}
 		printModifiers(method.getModifiers(), print);
 		printTypeParameters(method.getTypeParameters(), print);
 		printType(method.getGenericReturnType(), print);
@@ -96,7 +111,9 @@ public class SourceFromReflection {
 
 		print.println("{");
 		if (!method.getReturnType().equals(void.class)) {
-			print.println("return " + Defaults.defaultValue(method.getReturnType()) + ";");
+			print.print("return ");
+			printDefaultValue(method.getReturnType(), print);
+			print.println(";");
 		}
 		print.println("}");
 	}

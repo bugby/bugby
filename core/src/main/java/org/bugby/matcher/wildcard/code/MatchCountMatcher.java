@@ -24,7 +24,7 @@ public class MatchCountMatcher extends DefaultTreeMatcher {
 	private final TreeMatcher annotatedNodeMatcher;
 
 	public MatchCountMatcher(AnnotationTree annotationNode, Tree annotatedNode, TreeMatcher annotatedNodeMatcher) {
-		super(annotationNode);
+		super(annotatedNode);
 		Element element = TreeUtils.getElementFromDeclaration(annotatedNode);
 		MatchCount ann = element.getAnnotation(MatchCount.class);
 		if (ann == null) {

@@ -33,23 +33,40 @@ public class OneLevelMatcher<T, W, R> {
 		this.nodeMatch = nodeMatch;
 	}
 
+	public List<List<R>> matchOrdered(List<T> nodes, List<W> wildcards) {
+		return matchOrdered(nodes, wildcards, null);
+	}
+
+	private List<List<R>> matchEmpty(List<T> nodes, List<W> wildcards, AlgoSolutionFoundCallback<R> solutionFoundCallback) {
+		// special case - EMPTY
+		if (wildcards.size() == 1 && nodeMatch.getMatchingType(wildcards.get(0)) == MatchingType.empty) {
+			// assert w == 0 && w == wildcards.size() - 1
+			List<List<R>> matchings = new ArrayList<List<R>>();
+			if (nodes.isEmpty()) {
+				matchings.add(new ArrayList<R>());
+				nodeMatch.solutionFound();
+				if (solutionFoundCallback != null) {
+					solutionFoundCallback.solutionFound(matchings.get(0));
+				}
+			}
+			return matchings;
+		}
+		return null;
+	}
+
 	/**
 	 * the wildcards have to be matched in order
 	 * @param nodes
 	 * @param wildcards
 	 * @return
 	 */
-	public List<List<R>> matchOrdered(List<T> nodes, List<W> wildcards) {
+	public List<List<R>> matchOrdered(List<T> nodes, List<W> wildcards, AlgoSolutionFoundCallback<R> solutionFoundCallback) {
 		Stack<MatchPosition> matchingStack = new Stack<MatchPosition>();
-		List<List<R>> matchings = new ArrayList<List<R>>();
-		// special case - EMPTY
-		if (wildcards.size() == 1 && nodeMatch.getMatchingType(wildcards.get(0)) == MatchingType.empty) {
-			// assert w == 0 && w == wildcards.size() - 1
-			if (nodes.isEmpty()) {
-				matchings.add(new ArrayList<R>());
-			}
+		List<List<R>> matchings = matchEmpty(nodes, wildcards, solutionFoundCallback);
+		if (matchings != null) {
 			return matchings;
 		}
+		matchings = new ArrayList<List<R>>();
 
 		matchingStack.push(new MatchPosition(-1, 0));
 
@@ -69,6 +86,9 @@ public class OneLevelMatcher<T, W, R> {
 					}
 					matchings.add(oneMatch);
 					nodeMatch.solutionFound();
+					if (solutionFoundCallback != null) {
+						solutionFoundCallback.solutionFound(oneMatch);
+					}
 				}
 			}
 		}
@@ -130,20 +150,20 @@ public class OneLevelMatcher<T, W, R> {
 		return true;
 	}
 
+	public List<List<R>> matchUnordered(List<T> nodes, List<W> wildcards) {
+		return matchUnordered(nodes, wildcards, null);
+	}
+
 	/**
 	 * the wildcards may match in any order
 	 * @param nodes
 	 * @param wildcards
 	 * @return
 	 */
-	public List<List<R>> matchUnordered(List<T> nodes, List<W> wildcards) {
+	public List<List<R>> matchUnordered(List<T> nodes, List<W> wildcards, AlgoSolutionFoundCallback<R> solutionFoundCallback) {
 		// special case - EMPTY
-		if (wildcards.size() == 1 && nodeMatch.getMatchingType(wildcards.get(0)) == MatchingType.empty) {
-			// assert w == 0 && w == wildcards.size() - 1
-			List<List<R>> result = new ArrayList<List<R>>();
-			if (nodes.isEmpty()) {
-				result.add(new ArrayList<R>());
-			}
+		List<List<R>> result = matchEmpty(nodes, wildcards, solutionFoundCallback);
+		if (result != null) {
 			return result;
 		}
 
@@ -154,7 +174,7 @@ public class OneLevelMatcher<T, W, R> {
 			return Collections.emptyList();
 		}
 
-		List<List<R>> result = new ArrayList<List<R>>();
+		result = new ArrayList<List<R>>();
 		// the solution is the match for the first wildcard plus the match of the rest wildcards
 		W firstWildcard = wildcards.get(0);
 		List<W> nextWildcards = wildcards.subList(1, wildcards.size());
@@ -177,6 +197,9 @@ public class OneLevelMatcher<T, W, R> {
 					}
 				}
 				nodeMatch.solutionFound();
+				if (solutionFoundCallback != null) {
+					solutionFoundCallback.solutionFound(result.get(result.size() - 1));
+				}
 				nodeMatch.removedNodeFromMatch(firstWildcard, nodes.get(n));
 			}
 		}

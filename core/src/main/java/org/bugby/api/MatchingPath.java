@@ -74,9 +74,7 @@ public class MatchingPath {
 			child.remove();
 		}
 		children.clear();
-		//		for (MatchingValueKey key : valueKeys) {
-		//			context.removeValue(key);
-		//		}
+		matcher.removeFromMatch(sourceNode, context);
 		parent = null;
 	}
 

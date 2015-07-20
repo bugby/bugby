@@ -23,7 +23,7 @@ public class OrSetMatcher extends DefaultTreeMatcher {
 	private final TreeMatcher annotatedNodeMatcher;
 
 	public OrSetMatcher(AnnotationTree annotationNode, Tree annotatedNode, TreeMatcher annotatedNodeMatcher) {
-		super(annotationNode);
+		super(annotatedNode);
 		Element element = TreeUtils.getElementFromDeclaration(annotatedNode);
 		OrSet ann = element.getAnnotation(OrSet.class);
 		if (ann == null) {

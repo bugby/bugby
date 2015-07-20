@@ -2,10 +2,10 @@ package org.bugby.matcher.wildcard.code;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.bugby.api.FluidMatcher;
 import org.bugby.api.MatchingContext;
-import org.bugby.api.MatchingPath;
 import org.bugby.api.TreeMatcher;
 import org.bugby.api.TreeMatcherFactory;
 import org.bugby.api.Variables;
@@ -58,8 +58,11 @@ public class SomeCodeMatcher extends DefaultTreeMatcher implements TreeMatcher {
 			}
 		} else {
 			//TODO probably I should match with the wrappers of the variable's types instead of the variables themselves!
-			List<List<MatchingPath>> paramsMatch = context.matchUnordered(parametersMatchers, Variables.extractAllVariables(mt));
-			match.self(Variables.forAllVariables(context, paramsMatch, matchSolution));
+			final AtomicBoolean foundMatch = new AtomicBoolean(false);
+			context.matchUnordered(parametersMatchers, Variables.extractAllVariables(mt),
+				Variables.variablesForEachSolution(context, matchSolution, foundMatch));
+			match.self(foundMatch.get());
+
 		}
 
 		return match.done();

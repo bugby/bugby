@@ -1,6 +1,7 @@
 package org.bugby;
 
 import org.bugby.api.TreeMatcherFactory;
+import org.bugby.api.annotation.Correlation;
 import org.bugby.api.annotation.MatchCount;
 import org.bugby.api.annotation.Missing;
 import org.bugby.api.annotation.OrSet;
@@ -22,6 +23,7 @@ public class Bugby {
 		matcherFactory.addWildcardsFromClass(MatchCount.class);
 		matcherFactory.addWildcardsFromClass(Missing.class);
 		matcherFactory.addWildcardsFromClass(OrSet.class);
+		matcherFactory.addWildcardsFromClass(Correlation.class);
 		return matcherFactory;
 	}
 

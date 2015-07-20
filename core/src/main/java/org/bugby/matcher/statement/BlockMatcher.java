@@ -3,10 +3,10 @@ package org.bugby.matcher.statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.bugby.api.FluidMatcher;
 import org.bugby.api.MatchingContext;
-import org.bugby.api.MatchingPath;
 import org.bugby.api.TreeMatcher;
 import org.bugby.api.TreeMatcherFactory;
 import org.bugby.api.Variables;
@@ -81,8 +81,9 @@ public class BlockMatcher extends DefaultTreeMatcher implements TreeMatcher {
 				e.printStackTrace();
 			}
 		} else {
-			List<List<MatchingPath>> varsMatch = context.matchUnordered(variablesMatchers, varDeclarations);
-			match.self(Variables.forAllVariables(context, varsMatch, matchSolution));
+			final AtomicBoolean foundMatch = new AtomicBoolean(false);
+			context.matchUnordered(variablesMatchers, varDeclarations, Variables.variablesForEachSolution(context, matchSolution, foundMatch));
+			match.self(foundMatch.get());
 		}
 
 		return match.done();

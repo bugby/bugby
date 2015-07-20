@@ -1,29 +1,30 @@
 package org.bugby.matcher;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
 
 import org.bugby.api.MatchingContext;
 import org.bugby.api.MatchingPath;
 import org.bugby.api.MatchingType;
 import org.bugby.api.MatchingValueKey;
+import org.bugby.api.SolutionFoundCallback;
 import org.bugby.api.TreeMatcher;
 import org.bugby.api.TreeMatcherExecutionType;
 import org.bugby.matcher.algorithm.NodeMatch;
 import org.bugby.matcher.algorithm.OneLevelMatcher;
+import org.bugby.matcher.javac.ElementUtils;
 import org.bugby.matcher.javac.ParsedSource;
 import org.bugby.matcher.javac.TypesUtils;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
 import com.sun.source.tree.BlockTree;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.tree.StatementTree;
@@ -34,55 +35,20 @@ public class DefaultMatchingContext implements MatchingContext {
 	private final OneLevelMatcher<Tree, TreeMatcher, MatchingPath> oneLevelMatcher = new OneLevelMatcher<Tree, TreeMatcher, MatchingPath>(
 			nodeMatch());
 
-	private final Map<String, CorrelationInfo> correlations = new HashMap<String, CorrelationInfo>();
 	private final Multimap<TreeMatcher, Tree> matches = HashMultimap.create();
 	private final ParsedSource parsedSource;
 	private final Map<MatchingValueKey, Object> values = new HashMap<MatchingValueKey, Object>();
 
 	private final TreeMatcher rootMatcher;
+	private final ClassLoader builtProjectClassLoader;
 
 	private MatchingPath rootPath;
 	private MatchingPath currentPath;
 
-	private static class CorrelationInfo {
-		private final Comparator<Tree> comparator;
-		private final Set<Tree> nodes = Sets.newIdentityHashSet();
-
-		public CorrelationInfo(Comparator<Tree> comparator, Tree node) {
-			this.comparator = comparator;
-			this.nodes.add(node);
-		}
-
-		public Comparator<Tree> getComparator() {
-			return comparator;
-		}
-
-		public Tree getFirstNode() {
-			return nodes.iterator().next();
-		}
-
-		public void addNode(Tree n) {
-			nodes.add(n);
-		}
-
-		public void removeNode(Tree n) {
-			nodes.remove(n);
-		}
-
-		public int getNodeCount() {
-			return nodes.size();
-		}
-
-		@Override
-		public String toString() {
-			return "CI:" + nodes;
-		}
-
-	}
-
-	public DefaultMatchingContext(TreeMatcher rootMatcher, ParsedSource parsedSource) {
+	public DefaultMatchingContext(ClassLoader builtProjectClassLoader, TreeMatcher rootMatcher, ParsedSource parsedSource) {
 		this.parsedSource = parsedSource;
 		this.rootMatcher = rootMatcher;
+		this.builtProjectClassLoader = builtProjectClassLoader;
 	}
 
 	private NodeMatch<Tree, TreeMatcher, MatchingPath> nodeMatch() {
@@ -129,38 +95,6 @@ public class DefaultMatchingContext implements MatchingContext {
 		};
 	}
 
-	@Override
-	public boolean checkCorrelation(String key, Tree nodeInSourceAST, Comparator<Tree> comparator) {
-		CorrelationInfo correlation = correlations.get(key);
-		if (correlation == null) {
-			correlations.put(key, new CorrelationInfo(comparator, nodeInSourceAST));
-			return true;
-		}
-
-		if (correlation.getComparator().compare(correlation.getFirstNode(), nodeInSourceAST) == 0) {
-			correlation.addNode(nodeInSourceAST);
-			return true;
-		}
-		return false;
-	}
-
-	private Multimap<TreeMatcher, Tree> transformResult(List<TreeMatcher> matchers, List<List<Tree>> oneLevelMatch) {
-		Multimap<TreeMatcher, Tree> result = HashMultimap.create();
-		for (List<Tree> solution : oneLevelMatch) {
-			// special case for empty matching
-			if (solution.isEmpty()) {
-				// TODO i should put here the parent.
-				result.put(matchers.get(0), getCompilationUnitTree());
-			}
-			for (int i = 0; i < solution.size(); ++i) {
-				if (!result.containsEntry(matchers.get(i), solution.get(i))) {
-					result.put(matchers.get(i), solution.get(i));
-				}
-			}
-		}
-		return result;
-	}
-
 	private List<List<MatchingPath>> validateResult(List<TreeMatcher> matchers, List<List<MatchingPath>> result) {
 		List<List<MatchingPath>> finalResult = result;
 		for (TreeMatcher m : matchers) {
@@ -180,18 +114,30 @@ public class DefaultMatchingContext implements MatchingContext {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public List<List<MatchingPath>> matchOrdered(List<TreeMatcher> matchers, List<? extends Tree> nodes) {
-		List<TreeMatcher> filteredMatchers = startMatchers(matchers, true);
-		List<List<MatchingPath>> result = oneLevelMatcher.matchOrdered((List<Tree>) nodes, filteredMatchers);
-		return validateResult(matchers, result);
+		return matchOrdered(matchers, nodes, null);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
+	public List<List<MatchingPath>> matchOrdered(List<TreeMatcher> matchers, List<? extends Tree> nodes,
+			SolutionFoundCallback solutionFoundCallback) {
+		List<TreeMatcher> filteredMatchers = startMatchers(matchers, true);
+		List<List<MatchingPath>> result = oneLevelMatcher.matchOrdered((List<Tree>) nodes, filteredMatchers, solutionFoundCallback);
+		return validateResult(matchers, result);
+	}
+
+	@Override
 	public List<List<MatchingPath>> matchUnordered(List<TreeMatcher> matchers, List<? extends Tree> nodes) {
+		return matchUnordered(matchers, nodes, null);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<List<MatchingPath>> matchUnordered(List<TreeMatcher> matchers, List<? extends Tree> nodes,
+			SolutionFoundCallback solutionFoundCallback) {
 		List<TreeMatcher> filteredMatchers = startMatchers(matchers, false);
-		List<List<MatchingPath>> result = oneLevelMatcher.matchUnordered((List<Tree>) nodes, filteredMatchers);
+		List<List<MatchingPath>> result = oneLevelMatcher.matchUnordered((List<Tree>) nodes, filteredMatchers, solutionFoundCallback);
 		return validateResult(matchers, result);
 	}
 
@@ -295,6 +241,11 @@ public class DefaultMatchingContext implements MatchingContext {
 		TypeMirror processedSourceNodeType = processType(sourceNodeType);
 
 		return getParsedSource().getTypes().isAssignable(processedSourceNodeType, processedPatternType);
+	}
+
+	@Override
+	public Class<?> getClassAnnotationField(Element element, Class<? extends Annotation> annotationType, String fieldName) {
+		return ElementUtils.getAnnotationClassValue(builtProjectClassLoader, element, annotationType, fieldName);
 	}
 
 }
