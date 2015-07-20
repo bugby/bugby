@@ -1,5 +1,6 @@
 package org.bugby;
 
+import org.bugby.api.OrSet;
 import org.bugby.api.TreeMatcherFactory;
 import org.bugby.matcher.DefaultTreeMatcherFactory;
 import org.bugby.wildcard.MatchCount;
@@ -20,6 +21,7 @@ public class Bugby {
 		matcherFactory.addWildcardsFromClass(WildcardAnnotations.class);
 		matcherFactory.addWildcardsFromClass(MatchCount.class);
 		matcherFactory.addWildcardsFromClass(Missing.class);
+		matcherFactory.addWildcardsFromClass(OrSet.class);
 		return matcherFactory;
 	}
 

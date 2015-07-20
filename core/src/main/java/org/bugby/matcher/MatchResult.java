@@ -1,5 +1,7 @@
 package org.bugby.matcher;
 
+import java.io.File;
+
 import org.bugby.api.TreeMatcher;
 import org.bugby.matcher.javac.ParsedSource;
 
@@ -35,7 +37,7 @@ public class MatchResult {
 		}
 
 		if (maxNode != null) {
-			System.err.println("Found match at: (" + parsedSource.getCompilationUnitTree().getSourceFile().getName() + ":"
+			System.err.println("Found match at: (" + new File(parsedSource.getCompilationUnitTree().getSourceFile().getName()).getName() + ":"
 					+ parsedSource.getLine(maxNode) + ") ->" + maxNode);
 		} else {
 			System.out.println("No match was found");

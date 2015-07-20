@@ -1,5 +1,6 @@
 package org.bugby.matcher;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -14,6 +15,7 @@ import org.bugby.api.MatchingPath;
 import org.bugby.api.MatchingType;
 import org.bugby.api.MatchingValueKey;
 import org.bugby.api.TreeMatcher;
+import org.bugby.api.TreeMatcherExecutionType;
 import org.bugby.matcher.algorithm.NodeMatch;
 import org.bugby.matcher.algorithm.OneLevelMatcher;
 import org.bugby.matcher.javac.ParsedSource;
@@ -167,26 +169,29 @@ public class DefaultMatchingContext implements MatchingContext {
 		return finalResult;
 	}
 
-	private void startMatchers(List<TreeMatcher> matchers, boolean ordered) {
+	private List<TreeMatcher> startMatchers(List<TreeMatcher> matchers, boolean ordered) {
+		List<TreeMatcher> filteredMatchers = new ArrayList<>(matchers.size());
 		for (TreeMatcher m : matchers) {
-			m.startMatching(ordered, this);
+			if (m.startMatching(ordered, this) == TreeMatcherExecutionType.keep) {
+				filteredMatchers.add(m);
+			}
 		}
-
+		return filteredMatchers;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<List<MatchingPath>> matchOrdered(List<TreeMatcher> matchers, List<? extends Tree> nodes) {
-		startMatchers(matchers, true);
-		List<List<MatchingPath>> result = oneLevelMatcher.matchOrdered((List<Tree>) nodes, matchers);
+		List<TreeMatcher> filteredMatchers = startMatchers(matchers, true);
+		List<List<MatchingPath>> result = oneLevelMatcher.matchOrdered((List<Tree>) nodes, filteredMatchers);
 		return validateResult(matchers, result);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<List<MatchingPath>> matchUnordered(List<TreeMatcher> matchers, List<? extends Tree> nodes) {
-		startMatchers(matchers, false);
-		List<List<MatchingPath>> result = oneLevelMatcher.matchUnordered((List<Tree>) nodes, matchers);
+		List<TreeMatcher> filteredMatchers = startMatchers(matchers, false);
+		List<List<MatchingPath>> result = oneLevelMatcher.matchUnordered((List<Tree>) nodes, filteredMatchers);
 		return validateResult(matchers, result);
 	}
 

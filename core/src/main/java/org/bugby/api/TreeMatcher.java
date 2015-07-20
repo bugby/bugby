@@ -16,8 +16,14 @@ public interface TreeMatcher {
 	 * siblings involved in the matching process.
 	 * @param ordered
 	 */
-	public void startMatching(boolean ordered, MatchingContext context);
+	public TreeMatcherExecutionType startMatching(boolean ordered, MatchingContext context);
 
+	/**
+	 * called only for the matchers that were included in the matching process.
+	 * @param node
+	 * @param context
+	 * @return
+	 */
 	public boolean matches(Tree node, MatchingContext context);
 
 	/**

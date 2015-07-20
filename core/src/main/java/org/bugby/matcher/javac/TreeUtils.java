@@ -371,6 +371,19 @@ public final class TreeUtils {
 		return elt;
 	}
 
+	public static Element getElementFromDeclaration(Tree annotatedNode) {
+		if (annotatedNode instanceof MethodTree) {
+			return TreeUtils.elementFromDeclaration((MethodTree) annotatedNode);
+		}
+		if (annotatedNode instanceof VariableTree) {
+			return TreeUtils.elementFromDeclaration((VariableTree) annotatedNode);
+		}
+		if (annotatedNode instanceof ClassTree) {
+			return TreeUtils.elementFromDeclaration((ClassTree) annotatedNode);
+		}
+		return null;
+	}
+
 	/**
 	 * Gets the element for the declaration corresponding to this use of an element. To get the element for a declaration, use
 	 * {@link com.sun.source.util.Trees#getElement(TreePath)} instead. TODO: remove this method, as it really doesn't do anything.

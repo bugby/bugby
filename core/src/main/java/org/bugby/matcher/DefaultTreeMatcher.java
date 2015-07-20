@@ -9,6 +9,7 @@ import org.bugby.api.MatchingContext;
 import org.bugby.api.MatchingPath;
 import org.bugby.api.MatchingType;
 import org.bugby.api.TreeMatcher;
+import org.bugby.api.TreeMatcherExecutionType;
 import org.bugby.api.TreeMatcherFactory;
 
 import com.sun.source.tree.ExpressionStatementTree;
@@ -108,20 +109,19 @@ abstract public class DefaultTreeMatcher implements TreeMatcher {
 	// }
 
 	/**
-	 * called before starting the matching, multiple siblings with multiple nodes from the AST to be checked. Called
-	 * once for each of the siblings involved in the matching process.
-	 * 
+	 * called before starting the matching, multiple siblings with multiple nodes from the AST to be checked. Called once for each of the
+	 * siblings involved in the matching process.
+	 *
 	 * @param ordered
 	 */
 	@Override
-	public void startMatching(boolean ordered, MatchingContext context) {
-		// does nothing
+	public TreeMatcherExecutionType startMatching(boolean ordered, MatchingContext context) {
+		return TreeMatcherExecutionType.keep;
 	}
 
 	/**
-	 * called once the matching was returned by the multiple matchers. The matcher has a chance to alter the final
-	 * result returned to the caller
-	 * 
+	 * called once the matching was returned by the multiple matchers. The matcher has a chance to alter the final result returned to the caller
+	 *
 	 * @param currentResult
 	 * @return
 	 */

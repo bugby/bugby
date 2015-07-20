@@ -9,15 +9,13 @@ import org.bugby.api.MatchingContext;
 import org.bugby.api.MatchingPath;
 import org.bugby.api.MatchingValueKey;
 import org.bugby.api.TreeMatcher;
+import org.bugby.api.TreeMatcherExecutionType;
 import org.bugby.matcher.DefaultTreeMatcher;
 import org.bugby.matcher.javac.TreeUtils;
 import org.bugby.wildcard.MatchCount;
 
 import com.sun.source.tree.AnnotationTree;
-import com.sun.source.tree.ClassTree;
-import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.Tree;
-import com.sun.source.tree.VariableTree;
 
 public class MatchCountMatcher extends DefaultTreeMatcher {
 	private final MatchingValueKey matchingKey;
@@ -27,7 +25,7 @@ public class MatchCountMatcher extends DefaultTreeMatcher {
 
 	public MatchCountMatcher(AnnotationTree annotationNode, Tree annotatedNode, TreeMatcher annotatedNodeMatcher) {
 		super(annotationNode);
-		Element element = getElementFromDeclaration(annotatedNode);
+		Element element = TreeUtils.getElementFromDeclaration(annotatedNode);
 		MatchCount ann = element.getAnnotation(MatchCount.class);
 		if (ann == null) {
 			throw new RuntimeException("The node is not annotated with MatchCount annotation:" + annotatedNode);
@@ -49,9 +47,9 @@ public class MatchCountMatcher extends DefaultTreeMatcher {
 	}
 
 	@Override
-	public void startMatching(boolean ordered, MatchingContext context) {
+	public TreeMatcherExecutionType startMatching(boolean ordered, MatchingContext context) {
 		context.putValue(matchingKey, 0);
-		super.startMatching(ordered, context);
+		return super.startMatching(ordered, context);
 	}
 
 	@Override
@@ -64,16 +62,4 @@ public class MatchCountMatcher extends DefaultTreeMatcher {
 		return Collections.emptyList();
 	}
 
-	private static Element getElementFromDeclaration(Tree annotatedNode) {
-		if (annotatedNode instanceof MethodTree) {
-			return TreeUtils.elementFromDeclaration((MethodTree) annotatedNode);
-		}
-		if (annotatedNode instanceof VariableTree) {
-			return TreeUtils.elementFromDeclaration((VariableTree) annotatedNode);
-		}
-		if (annotatedNode instanceof ClassTree) {
-			return TreeUtils.elementFromDeclaration((ClassTree) annotatedNode);
-		}
-		throw new RuntimeException("Received a tree node without annotation possible:" + annotatedNode);
-	}
 }
