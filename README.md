@@ -2,8 +2,8 @@
 
 BUGBY (from "*Bug by* example") is a new approach to static code analysis for Java.
 Static code analysis has been arround for several years now.
-Tools like [Findbugs](http://findbugs.sourceforge.net) or [PMD](http://pmd.sourceforge.net/) have been around for years and they found
-their important audiance within the Java developers community.
+Tools like [Findbugs](http://findbugs.sourceforge.net) or [PMD](http://pmd.sourceforge.net/) exist for a while and they found
+their important audience within the Java developers community.
 
 Findbugs has around 400 bug definitions and PMD around 350. So it's like saying that out of the infinite possibilities to write Java code,
 out of the billions of billions of lines of Java code written around the world, only less than 800 combinations exist that can lead to bugs,
