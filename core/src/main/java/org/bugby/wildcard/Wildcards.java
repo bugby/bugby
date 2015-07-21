@@ -69,6 +69,10 @@ public class Wildcards {
 		return null;
 	}
 
+	public static <T> Class<T> someTypeExcepting(Class<?> class1) {
+		return null;
+	}
+
 	/**
 	 * matches any expression. The clazz parameter that represents the class of the exception to be thrown is not checked. It has only the role
 	 * to allow throwing the desired exception. This is usually used when the pattern concentrates more on the "catch" part of an block.
