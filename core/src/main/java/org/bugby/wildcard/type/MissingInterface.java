@@ -1,4 +1,4 @@
-package org.bugby.wildcard;
+package org.bugby.wildcard.type;
 
 public interface MissingInterface<T> {
 

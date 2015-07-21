@@ -1,4 +1,20 @@
-CO_ABSTRECT_SELF -> not possible with java 6+ !?
-CO_SELF_NO_OBJECT -> not possible with java 6+ !?
+---- dont do
 DE_MIGHT_DROP -> same as PMD empty catch
 DE_MIGHT_IGNORE -> same as PMD empty catch
+HE_EQUALS_NO_HASHCODE -> same has PMD OverrideBothEqualsAndHashCode
+HE_EQUALS_USE_HASHCODE  -> same has PMD OverrideBothEqualsAndHashCode
+HE_HASHCODE_NO_EQUALS  -> same has PMD OverrideBothEqualsAndHashCode
+HE_HASHCODE_USE_OBJECT_EQUALS  -> same has PMD OverrideBothEqualsAndHashCode
+HE_INHERITS_EQUALS_USE_HASHCODE  -> same has PMD OverrideBothEqualsAndHashCode
+NM_FIELD_NAMING_CONVENTION -> checkstyle
+NM_FUTURE_KEYWORD_USED_AS_IDENTIFIER -> for old Java only !?
+NM_FUTURE_KEYWORD_USED_AS_MEMBER_IDENTIFIER  -> for old Java only !?
+NM_METHOD_NAMING_CONVENTION -> checkstyle
+NM_CLASS_NAMING_CONVENTION -> checkstyle
+
+----- troubles
+GC_UNCHECKED_TYPE_IN_GENERIC_CALL -> don't understand
+ODR_OPEN_DATABASE_RESOURCE -> need the match on execution paths
+ODR_OPEN_DATABASE_RESOURCE_EXCEPTION_PATH -> need the match on execution paths
+OS_OPEN_STREAM -> need the match on execution paths
+OS_OPEN_STREAM_EXCEPTION_PATH -> need the match on execution paths

@@ -1,4 +1,4 @@
-package org.bugby.bugs.findbugs;
+package org.bugby.bugs.findbugs.badpractice;
 
 import static org.bugby.wildcard.Wildcards.someValue;
 

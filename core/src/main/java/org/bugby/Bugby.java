@@ -6,9 +6,9 @@ import org.bugby.api.annotation.MatchCount;
 import org.bugby.api.annotation.Missing;
 import org.bugby.api.annotation.OrSet;
 import org.bugby.matcher.DefaultTreeMatcherFactory;
-import org.bugby.wildcard.SomeType;
 import org.bugby.wildcard.WildcardAnnotations;
 import org.bugby.wildcard.Wildcards;
+import org.bugby.wildcard.type.SomeType;
 
 public class Bugby {
 

@@ -4,7 +4,7 @@ import static org.bugby.wildcard.Wildcards.someTypedValue;
 import static org.bugby.wildcard.Wildcards.someValue;
 
 import org.bugby.api.annotation.Pattern;
-import org.bugby.wildcard.SomeType;
+import org.bugby.wildcard.type.SomeType;
 
 @Pattern
 public class CallToUnsupportedMethod {

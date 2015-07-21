@@ -3,7 +3,7 @@ package org.bugby.bugs.pmd.basic;
 import static org.bugby.wildcard.Wildcards.someValue;
 
 import org.bugby.api.annotation.Pattern;
-import org.bugby.wildcard.SomeType;
+import org.bugby.wildcard.type.SomeType;
 
 /**
  * Partially created objects can be returned by the Double Checked Locking pattern when used in Java. An optimizing JRE may assign a reference to

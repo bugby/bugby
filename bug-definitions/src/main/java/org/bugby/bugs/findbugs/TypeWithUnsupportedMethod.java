@@ -1,6 +1,6 @@
 package org.bugby.bugs.findbugs;
 
-import org.bugby.wildcard.SomeType;
+import org.bugby.wildcard.type.SomeType;
 
 public class TypeWithUnsupportedMethod {
 
