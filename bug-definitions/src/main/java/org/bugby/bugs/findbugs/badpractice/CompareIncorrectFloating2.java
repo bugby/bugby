@@ -15,12 +15,11 @@ import org.bugby.api.annotation.Pattern;
  * static methods which handle all the special cases correctly. @author acraciun
  */
 @Pattern
-public class CompareIncorrectFloating implements Comparator<Object> {
+public class CompareIncorrectFloating2 implements Comparator<Object> {
 
 	@Override
 	public int compare(Object o1, Object o2) {
-		someExpressionUsing(someFloatValue() > someFloatValue());
-		//TODO same for someExpressionUsing(someFloatValue() < someFloatValue());
+		someExpressionUsing(someFloatValue() < someFloatValue());
 		return someIntValue();
 	}
 }

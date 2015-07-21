@@ -1,5 +1,6 @@
 package org.bugby.bugs.findbugs.badpractice;
 
+import static org.bugby.wildcard.WildcardAnnotations.$Missing;
 import static org.bugby.wildcard.Wildcards.someBooleanValue;
 import static org.bugby.wildcard.Wildcards.someExpressionUsing;
 
@@ -14,7 +15,7 @@ import org.bugby.api.annotation.Pattern;
 public class EqualsMethods {
 	@Override
 	public boolean equals(Object obj) {
-		//TODO @Missing
+		$Missing();
 		someExpressionUsing(obj instanceof EqualsMethods);
 		return someBooleanValue();
 	}

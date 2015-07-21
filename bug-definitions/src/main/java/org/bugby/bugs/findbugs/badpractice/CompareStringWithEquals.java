@@ -2,6 +2,7 @@ package org.bugby.bugs.findbugs.badpractice;
 
 import static org.bugby.wildcard.Wildcards.someExpressionUsing;
 
+import org.bugby.api.annotation.OrSet;
 import org.bugby.api.annotation.Pattern;
 
 /**
@@ -16,8 +17,13 @@ import org.bugby.api.annotation.Pattern;
  */
 @Pattern
 public class CompareStringWithEquals {
-	public void someCode(String x, String y) {
+	@OrSet
+	public void someCode1(String x, String y) {
 		someExpressionUsing(x == y);
-		//TODO same for  x!= y
+	}
+
+	@OrSet
+	public void someCode2(String x, String y) {
+		someExpressionUsing(x != y);
 	}
 }

@@ -4,6 +4,9 @@ import static org.bugby.wildcard.Wildcards.someTypedValue;
 
 import java.util.Collection;
 import java.util.EnumMap;
+import java.util.IdentityHashMap;
+
+import org.bugby.api.annotation.OrSet;
 
 /**
  * DMI: Adding elements of an entry set may fail due to reuse of Entry objects (DMI_ENTRY_SETS_MAY_REUSE_ENTRY_OBJECTS)
@@ -18,8 +21,14 @@ import java.util.EnumMap;
 public class EntrySetsMayReuseEntryObjects {
 
 	@SuppressWarnings({"unchecked"})
-	public void someCode() {
+	@OrSet
+	public void someCode1() {
 		someTypedValue(Collection.class).addAll(someTypedValue(EnumMap.class).entrySet());
-		//TODO same of IdentityHashMap
+	}
+
+	@SuppressWarnings({"unchecked"})
+	@OrSet
+	public void someCode2() {
+		someTypedValue(Collection.class).addAll(someTypedValue(IdentityHashMap.class).entrySet());
 	}
 }

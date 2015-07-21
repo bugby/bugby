@@ -1,9 +1,12 @@
 package org.bugby.bugs.findbugs.badpractice;
 
 import static org.bugby.wildcard.Wildcards.someExpressionUsing;
+import static org.bugby.wildcard.Wildcards.someIntValue;
+import static org.bugby.wildcard.Wildcards.someTypedValue;
 
 import java.util.Random;
 
+import org.bugby.api.annotation.OrSet;
 import org.bugby.api.annotation.Pattern;
 
 /**
@@ -22,10 +25,80 @@ import org.bugby.api.annotation.Pattern;
  */
 @Pattern
 public class RandomUsedOnlyOnce {
-	public void someCode() {
+	@OrSet
+	public void someCode1() {
 		Random r = new Random();
 		someExpressionUsing(r.nextDouble());
-		//TODO check this is accurate
-		//TODO do the same for all nextXXX methods
+	}
+
+	@OrSet
+	public void someCode2() {
+		someExpressionUsing(new Random().nextDouble());
+	}
+
+	@OrSet
+	public void someCode3() {
+		Random r = new Random();
+		someExpressionUsing(r.nextInt());
+	}
+
+	@OrSet
+	public void someCode4() {
+		someExpressionUsing(new Random().nextInt());
+	}
+
+	@OrSet
+	public void someCode5() {
+		Random r = new Random();
+		someExpressionUsing(r.nextInt(someIntValue()));
+	}
+
+	@OrSet
+	public void someCode6() {
+		someExpressionUsing(new Random().nextInt(someIntValue()));
+	}
+
+	@OrSet
+	public void someCode7() {
+		Random r = new Random();
+		someExpressionUsing(r.nextBoolean());
+	}
+
+	@OrSet
+	public void someCode8() {
+		someExpressionUsing(new Random().nextBoolean());
+	}
+
+	@OrSet
+	public void someCode9() {
+		Random r = new Random();
+		someExpressionUsing(r.nextFloat());
+	}
+
+	@OrSet
+	public void someCode10() {
+		someExpressionUsing(new Random().nextFloat());
+	}
+
+	@OrSet
+	public void someCode11() {
+		Random r = new Random();
+		someExpressionUsing(r.nextLong());
+	}
+
+	@OrSet
+	public void someCode12() {
+		someExpressionUsing(new Random().nextLong());
+	}
+
+	@OrSet
+	public void someCode13() {
+		Random r = new Random();
+		r.nextBytes(someTypedValue(byte[].class));
+	}
+
+	@OrSet
+	public void someCode14() {
+		new Random().nextBytes(someTypedValue(byte[].class));
 	}
 }

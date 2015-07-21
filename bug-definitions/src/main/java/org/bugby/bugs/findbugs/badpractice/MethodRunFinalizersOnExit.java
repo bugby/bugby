@@ -2,6 +2,7 @@ package org.bugby.bugs.findbugs.badpractice;
 
 import static org.bugby.wildcard.Wildcards.someBooleanValue;
 
+import org.bugby.api.annotation.OrSet;
 import org.bugby.api.annotation.Pattern;
 
 /**
@@ -15,8 +16,15 @@ import org.bugby.api.annotation.Pattern;
  */
 @Pattern
 public class MethodRunFinalizersOnExit {
-	public void someCode() {
+	@SuppressWarnings("deprecation")
+	@OrSet
+	public void someCode1() {
 		System.runFinalizersOnExit(someBooleanValue());
-		//TODO add also Runtime...
+	}
+
+	@SuppressWarnings("deprecation")
+	@OrSet
+	public void someCode2() {
+		Runtime.runFinalizersOnExit(someBooleanValue());
 	}
 }
