@@ -244,6 +244,14 @@ public class DefaultMatchingContext implements MatchingContext {
 	}
 
 	@Override
+	public boolean sameType(TypeMirror patternType, TypeMirror sourceNodeType) {
+		TypeMirror processedPatternType = processType(patternType);
+		TypeMirror processedSourceNodeType = processType(sourceNodeType);
+
+		return getParsedSource().getTypes().isSameType(processedPatternType, processedSourceNodeType);
+	}
+
+	@Override
 	public Class<?> getClassAnnotationField(Element element, Class<? extends Annotation> annotationType, String fieldName) {
 		return ElementUtils.getAnnotationClassValue(builtProjectClassLoader, element, annotationType, fieldName);
 	}

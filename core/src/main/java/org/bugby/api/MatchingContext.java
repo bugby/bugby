@@ -51,6 +51,8 @@ public interface MatchingContext {
 
 	boolean compatibleTypes(TypeMirror patternType, TypeMirror sourceNodeType);
 
+	boolean sameType(TypeMirror patternType, TypeMirror sourceNodeType);
+
 	Map<MatchingValueKey, Object> getValues();
 
 	/**

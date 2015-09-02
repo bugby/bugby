@@ -45,7 +45,7 @@
 	<modules>
 		<module>core</module>
 		<module>bug-definitions</module>
-<!-- 		<module>maven-plugin</module> -->
+		<module>maven-plugin</module>
 <!-- 		<module>maven-plugin-it</module> -->
 	</modules>
 

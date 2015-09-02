@@ -12,11 +12,14 @@ import org.bugby.api.TreeMatcher;
 import org.bugby.api.TreeMatcherExecutionType;
 import org.bugby.api.TreeMatcherFactory;
 
+import com.sun.source.tree.DoWhileLoopTree;
 import com.sun.source.tree.ExpressionStatementTree;
 import com.sun.source.tree.ExpressionTree;
+import com.sun.source.tree.IfTree;
 import com.sun.source.tree.ReturnTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
+import com.sun.source.tree.WhileLoopTree;
 
 abstract public class DefaultTreeMatcher implements TreeMatcher {
 	private static volatile int sequence = 0;
@@ -81,6 +84,20 @@ abstract public class DefaultTreeMatcher implements TreeMatcher {
 		if (node instanceof ReturnTree) {
 			return (T) ((ReturnTree) node).getExpression();
 		}
+
+		if (node instanceof IfTree) {
+			return (T) ((IfTree) node).getCondition();
+		}
+
+		if (node instanceof WhileLoopTree) {
+			return (T) ((WhileLoopTree) node).getCondition();
+		}
+
+		if (node instanceof DoWhileLoopTree) {
+			return (T) ((DoWhileLoopTree) node).getCondition();
+		}
+
+		//TODO FOR !? - should probably return a list of ExpressionTree
 
 		if (node instanceof VariableTree) {
 			return (T) ((VariableTree) node).getInitializer();

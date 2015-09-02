@@ -10,6 +10,7 @@ import org.bugby.matcher.DefaultTreeMatcher;
 import org.bugby.matcher.javac.TreeUtils;
 
 import com.sun.source.tree.ExpressionTree;
+import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.Tree;
 
@@ -18,8 +19,8 @@ public class SomeTypedValueMatcher extends DefaultTreeMatcher implements TreeMat
 
 	public SomeTypedValueMatcher(MethodInvocationTree patternNode, TreeMatcherFactory factory) {
 		super(patternNode);
-		// assumes one argument is present
-		checkType = TreeUtils.elementFromUse(patternNode.getArguments().get(0)).asType();
+		// assumes one argument is present - I have Type.class -> i need to get Type
+		checkType = TreeUtils.elementFromUse(((MemberSelectTree) patternNode.getArguments().get(0)).getExpression()).asType();
 	}
 
 	@Override
@@ -29,8 +30,9 @@ public class SomeTypedValueMatcher extends DefaultTreeMatcher implements TreeMat
 			return match.done(false);
 		}
 		ExpressionTree mt = (ExpressionTree) node;
+		TypeMirror nodeType = TreeUtils.elementFromUse(mt).asType();
 
-		match.self(checkType.equals(TreeUtils.elementFromUse(mt).asType()));
+		match.self(context.sameType(checkType, nodeType));
 
 		return match.done();
 	}

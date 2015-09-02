@@ -10,6 +10,7 @@ import org.bugby.matcher.wildcard.expr.SomeConditionMatcher;
 import org.bugby.matcher.wildcard.expr.SomeConditionUsingMatcher;
 import org.bugby.matcher.wildcard.expr.SomeExpressionThrowingMatcher;
 import org.bugby.matcher.wildcard.expr.SomeExpressionUsingMatcher;
+import org.bugby.matcher.wildcard.expr.SomeTypedValueMatcher;
 import org.bugby.matcher.wildcard.expr.SomeValueMatcher;
 
 @SuppressWarnings("unused")
@@ -64,11 +65,12 @@ public class Wildcards {
 		return false;
 	}
 
-	@Pattern(SomeValueMatcher.class)
+	@Pattern(SomeTypedValueMatcher.class)
 	public static <T> T someTypedValue(Class<T> type) {
 		return null;
 	}
 
+	@Pattern(SomeTypedValueMatcher.class)
 	public static <T> Class<T> someTypeExcepting(Class<?> class1) {
 		return null;
 	}
