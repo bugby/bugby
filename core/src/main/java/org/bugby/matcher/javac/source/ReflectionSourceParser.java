@@ -1,4 +1,4 @@
-package org.bugby;
+package org.bugby.matcher.javac.source;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,21 +11,24 @@ import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.ArrayList;
 
-import org.bugby.matcher.javac.ParsedSource;
-import org.bugby.matcher.javac.SourceParser;
+import org.bugby.api.BugbyException;
 
 import com.google.common.base.Defaults;
 
-public class SourceFromReflection {
-	public SourceFromReflection() {
-		// TODO Auto-generated constructor stub
+public class ReflectionSourceParser extends AbstractSourceParser {
+	private final String sourceEncoding;
+	private final ClassLoader builtProjectClassLoader;
+
+	public ReflectionSourceParser(String sourceEncoding, ClassLoader builtProjectClassLoader) {
+		this.sourceEncoding = sourceEncoding;
+		this.builtProjectClassLoader = builtProjectClassLoader;
 	}
 
-	protected void printModifiers(int flags, PrintWriter print) {
+	protected void printModifiers(int flags, IndentPrinter print) {
 		if (Modifier.isAbstract(flags)) {
 			print.print("abstract ");
 		}
@@ -44,20 +47,30 @@ public class SourceFromReflection {
 		if (Modifier.isFinal(flags)) {
 			print.print("final ");
 		}
+		if (Modifier.isVolatile(flags)) {
+			print.print("volatile ");
+		}
+		//		if (Modifier.isTransient(flags)) {
+		//			print.print("transient ");
+		//		}
 	}
 
-	protected void printDefaultValue(Class<?> type, PrintWriter print) {
+	protected void printDefaultValue(Class<?> type, IndentPrinter print) {
 		if (type.equals(Character.class) || type.equals(char.class)) {
 			print.print("' '");
 			return;
 		}
-		print.print(Defaults.defaultValue(type));
+		print.print("" + Defaults.defaultValue(type));
 		if (type.equals(Float.class) || type.equals(float.class)) {
 			print.print("f");
 		}
 	}
 
-	protected void printType(Type genericType, PrintWriter print) {
+	protected void printType(Type genericType, IndentPrinter print) {
+		printType(genericType, print, false);
+	}
+
+	protected void printType(Type genericType, IndentPrinter print, boolean withBounds) {
 		if (genericType instanceof GenericArrayType) {
 			printType(((GenericArrayType) genericType).getGenericComponentType(), print);
 			print.print("[]");
@@ -66,14 +79,48 @@ public class SourceFromReflection {
 			if (cls.isArray()) {
 				print.print(cls.getComponentType().getName() + "[]");
 			} else {
-				print.print(cls.getName());
+				//XXX may not work with classes having $ in their name
+				print.print(cls.getName().replace('$', '.'));
 			}
+		} else if (genericType instanceof ParameterizedType) {
+			ParameterizedType pt = (ParameterizedType) genericType;
+			printType(pt.getRawType(), print);
+			print.print("<");
+			boolean first = true;
+			for (Type arg : pt.getActualTypeArguments()) {
+				if (!first) {
+					print.print(", ");
+				}
+				printType(arg, print, false);
+				first = false;
+			}
+			print.print(">");
+		} else if (genericType instanceof TypeVariable<?>) {
+			TypeVariable<?> tv = (TypeVariable<?>) genericType;
+			print.print(tv.getName());
+
+			if (withBounds && hasBounds(tv)) {
+				print.print(" extends ");
+				boolean first = true;
+				for (Type arg : tv.getBounds()) {
+					if (!first) {
+						print.print("&");
+					}
+					printType(arg, print);
+					first = false;
+				}
+			}
+
 		} else {
-			print.print(genericType);
+			print.print(genericType.toString());
 		}
 	}
 
-	protected void printField(Field field, PrintWriter print) {
+	private boolean hasBounds(TypeVariable<?> tv) {
+		return tv.getBounds().length > 0;
+	}
+
+	protected void printField(Field field, IndentPrinter print) {
 		printModifiers(field.getModifiers(), print);
 		printType(field.getGenericType(), print);
 		print.print(" ");
@@ -85,7 +132,7 @@ public class SourceFromReflection {
 		print.println(";");
 	}
 
-	protected void printMethod(Method method, PrintWriter print) {
+	protected void printMethod(Method method, IndentPrinter print) {
 		if (method.isBridge() || method.isSynthetic()) {
 			return;
 		}
@@ -103,22 +150,25 @@ public class SourceFromReflection {
 			print.print("throws ");
 			for (int i = 0; i < method.getGenericExceptionTypes().length; ++i) {
 				if (i > 0) {
-					print.append(", ");
+					print.print(", ");
 				}
 				printType(method.getGenericExceptionTypes()[i], print);
 			}
 		}
 
 		print.println("{");
+		print.incrementIndent();
 		if (!method.getReturnType().equals(void.class)) {
 			print.print("return ");
 			printDefaultValue(method.getReturnType(), print);
 			print.println(";");
 		}
+		print.decrementIndent();
 		print.println("}");
+		print.println();
 	}
 
-	protected void printParameter(int i, Type type, PrintWriter print) {
+	protected void printParameter(int i, Type type, IndentPrinter print) {
 		//TODO add annotations
 		if (i > 0) {
 			print.print(", ");
@@ -128,7 +178,10 @@ public class SourceFromReflection {
 		print.print("p" + i);
 	}
 
-	protected void printConstructor(Constructor<?> constructor, PrintWriter print) {
+	protected void printConstructor(Constructor<?> constructor, IndentPrinter print) {
+		if (constructor.isSynthetic()) {
+			return;
+		}
 		printModifiers(constructor.getModifiers(), print);
 		printTypeParameters(constructor.getTypeParameters(), print);
 		print.print(constructor.getDeclaringClass().getSimpleName());
@@ -140,40 +193,36 @@ public class SourceFromReflection {
 		//add throws
 		print.println("{");
 		print.println("}");
+		print.println();
 	}
 
-	protected void printTypeParameters(TypeVariable<?>[] typeParams, PrintWriter print) {
+	protected void printTypeParameters(TypeVariable<?>[] typeParams, IndentPrinter print) {
 		if (typeParams.length > 0) {
-			print.append("<");
+			print.print("<");
 			for (int i = 0; i < typeParams.length; ++i) {
 				if (i > 0) {
-					print.append(", ");
+					print.print(", ");
 				}
-				printType(typeParams[i], print);
+				printType(typeParams[i], print, true);
 			}
-			print.append(">");
+			print.print(">");
 		}
 	}
 
-	public void generateSource(Class<?> clz, Writer output) {
-		PrintWriter print = new PrintWriter(new BufferedWriter(output));
-
-		print.println("package " + clz.getPackage().getName() + ";");
-		print.println();
-
+	private void printClassDef(Class<?> clz, IndentPrinter print) {
 		printModifiers(clz.getModifiers(), print);
 		print.print("class " + clz.getSimpleName());
 		printTypeParameters(clz.getTypeParameters(), print);
 
 		if (clz.getGenericSuperclass() != null) {
-			print.append(" extends ");
+			print.print(" extends ");
 			printType(clz.getGenericSuperclass(), print);
 		}
 		if (clz.getGenericInterfaces().length > 0) {
-			print.append(" implements ");
+			print.print(" implements ");
 			for (int i = 0; i < clz.getGenericInterfaces().length; ++i) {
 				if (i > 0) {
-					print.append(", ");
+					print.print(", ");
 				}
 				printType(clz.getGenericInterfaces()[i], print);
 			}
@@ -181,10 +230,15 @@ public class SourceFromReflection {
 		}
 
 		print.println("{");
+		print.incrementIndent();
+		for (Class<?> subtype : clz.getDeclaredClasses()) {
+			printClassDef(subtype, print);
+		}
 
 		for (Field field : clz.getDeclaredFields()) {
 			printField(field, print);
 		}
+		print.println();
 
 		for (Constructor<?> constructor : clz.getDeclaredConstructors()) {
 			printConstructor(constructor, print);
@@ -193,20 +247,53 @@ public class SourceFromReflection {
 		for (Method method : clz.getDeclaredMethods()) {
 			printMethod(method, print);
 		}
+		print.decrementIndent();
 		print.println("}");
+		print.println();
+	}
+
+	public void generateSource(Class<?> clz, Writer output) {
+		PrintWriter rawPrint = new PrintWriter(new BufferedWriter(output));
+		IndentPrinter print = new IndentPrinter(rawPrint, "\t");
+
+		print.println("package " + clz.getPackage().getName() + ";");
+		print.println();
+
+		print.println("@SuppressWarnings(\"restriction\")");
+		printClassDef(clz, print);
 		print.flush();
 	}
 
+	@Override
+	public ParsedSource parseSource(String typeName) throws BugbyException {
+		try {
+			Class<?> cls = builtProjectClassLoader.loadClass(typeName);
+			FileWriter f = new FileWriter("target/" + cls.getSimpleName() + ".java");
+			generateSource(cls, f);
+			f.flush();
+			f.close();
+			return super.parse(null, new File("target/" + cls.getSimpleName() + ".java"), typeName, builtProjectClassLoader, sourceEncoding);
+		}
+		catch (ClassNotFoundException | IOException e) {
+			throw new BugbyException("Cannot parse:" + typeName, e);
+		}
+	}
+
 	public static void main(String[] args) throws IOException {
-		SourceFromReflection s = new SourceFromReflection();
+		ReflectionSourceParser s = new ReflectionSourceParser("UTF-8", Thread.currentThread().getContextClassLoader());
 		//s.generateSource(IOException.class, new OutputStreamWriter(System.out));
-		Class<?> clz = ArrayList.class;
+		Class<?> clz = Class.class;
 		FileWriter f = new FileWriter("target/" + clz.getSimpleName() + ".java");
 		s.generateSource(clz, f);
 		f.close();
 
-		ParsedSource src =
-				SourceParser.parse(new File("target/" + clz.getSimpleName() + ".java"), Thread.currentThread().getContextClassLoader(), "UTF-8");
+		ParsedSource src = s.parseSource(clz.getName());
 		System.out.println(src.getCompilationUnitTree());
 	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName();
+	}
+
 }

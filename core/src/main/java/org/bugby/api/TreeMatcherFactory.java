@@ -2,7 +2,7 @@ package org.bugby.api;
 
 import org.bugby.matcher.MatchResult;
 import org.bugby.matcher.javac.ElementWrapperTree;
-import org.bugby.matcher.javac.ParsedSource;
+import org.bugby.matcher.javac.source.ParsedSource;
 
 import com.sun.source.tree.Tree;
 
@@ -17,6 +17,11 @@ public interface TreeMatcherFactory {
 	 */
 	public TreeMatcher build(Tree patternNode);
 
+	/**
+	 *
+	 * @param type
+	 * @return the matcher corresponding to the given type name
+	 */
 	public TreeMatcher buildForType(String type);
 
 	/**

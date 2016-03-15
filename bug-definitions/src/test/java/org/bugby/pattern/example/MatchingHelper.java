@@ -4,12 +4,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 import org.bugby.Bugby;
 import org.bugby.api.TreeMatcher;
 import org.bugby.api.TreeMatcherFactory;
 import org.bugby.matcher.MatchResult;
+import org.bugby.matcher.javac.source.ProjectFileSourceParser;
+import org.bugby.matcher.javac.source.ReflectionSourceParser;
+import org.bugby.matcher.javac.source.SourceParser;
 
+import com.google.common.base.Charsets;
 import com.sun.source.tree.Tree;
 
 public class MatchingHelper {
@@ -33,7 +39,15 @@ public class MatchingHelper {
 	}
 
 	private static MatchResult match(Class<?> bugClass, Class<?> testClass) {
-		TreeMatcherFactory matcherFactory = Bugby.newTreeMatcherFactory(Thread.currentThread().getContextClassLoader());
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		String sourceEncoding = Charsets.UTF_8.name();
+		List<SourceParser> sourceParsers = Arrays.<SourceParser> asList(
+			new ProjectFileSourceParser(sourceEncoding, "../core", classLoader),
+			new ProjectFileSourceParser(sourceEncoding, classLoader),
+			new ReflectionSourceParser(sourceEncoding, classLoader)
+				);
+
+		TreeMatcherFactory matcherFactory = Bugby.newTreeMatcherFactory(classLoader, sourceParsers);
 		TreeMatcher rootMatcher = matcherFactory.buildForType(bugClass.getName());
 		matcherFactory.dumpMatcher(rootMatcher);
 		System.out.println("-------------------------");

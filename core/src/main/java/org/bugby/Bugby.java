@@ -1,21 +1,25 @@
 package org.bugby;
 
+import java.util.List;
+
 import org.bugby.api.TreeMatcherFactory;
 import org.bugby.api.annotation.Correlation;
 import org.bugby.api.annotation.MatchCount;
 import org.bugby.api.annotation.Missing;
 import org.bugby.api.annotation.OrSet;
 import org.bugby.matcher.DefaultTreeMatcherFactory;
+import org.bugby.matcher.javac.source.SourceParser;
 import org.bugby.wildcard.WildcardAnnotations;
 import org.bugby.wildcard.Wildcards;
 import org.bugby.wildcard.type.SomeType;
 
 public class Bugby {
 
-	public static TreeMatcherFactory newTreeMatcherFactory(ClassLoader builtProjectClassLoader) {
+	public static TreeMatcherFactory newTreeMatcherFactory(ClassLoader builtProjectClassLoader, List<SourceParser> sourceParsers) {
 
 		// 2. read patterns
 		DefaultTreeMatcherFactory matcherFactory = new DefaultTreeMatcherFactory(builtProjectClassLoader);
+		matcherFactory.setSourceParsers(sourceParsers);
 		//TODO here add more custom wildcards by dynamic discovery
 		matcherFactory.addWildcardsFromClass(Wildcards.class);
 		matcherFactory.addWildcardsFromClass(SomeType.class);

@@ -1,4 +1,4 @@
-package org.bugby.matcher.javac;
+package org.bugby.matcher.javac.source;
 
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;

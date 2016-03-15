@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -18,19 +19,59 @@
 	</repositories>
 
 	<properties>
+		<mavenVersion>3.1.0</mavenVersion>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.bugby</groupId>
+			<artifactId>bugby-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bugby</groupId>
+			<artifactId>bugby-bug-definitions</artifactId>
+			<version>${project.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>0.9.10</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
-			<version>2.1.0</version>
+			<version>${mavenVersion}</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.maven</groupId>
+					<artifactId>maven-model</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.maven</groupId>
+					<artifactId>maven-artifact</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.sisu</groupId>
+					<artifactId>org.eclipse.sisu.plexus</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+
+		<dependency>
+			<groupId>com.jcabi</groupId>
+			<artifactId>jcabi-maven-slf4j</artifactId>
+			<version>0.8</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-project</artifactId>
-			<version>2.1.0</version>
+			<artifactId>maven-core</artifactId>
+			<version>${mavenVersion}</version>
 		</dependency>
 
 		<dependency>
@@ -54,7 +95,8 @@
 			<artifactId>plexus-build-api</artifactId>
 			<version>0.0.7</version>
 		</dependency>
-	
+
+
 	</dependencies>
 
 	<dependencyManagement>

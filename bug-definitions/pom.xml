@@ -34,6 +34,13 @@
 			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- this log is only for tests. it's up to the user to choose other implementation -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.12</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 

@@ -20,8 +20,8 @@ import org.bugby.api.TreeMatcherExecutionType;
 import org.bugby.matcher.algorithm.NodeMatch;
 import org.bugby.matcher.algorithm.OneLevelMatcher;
 import org.bugby.matcher.javac.ElementUtils;
-import org.bugby.matcher.javac.ParsedSource;
 import org.bugby.matcher.javac.TypesUtils;
+import org.bugby.matcher.javac.source.ParsedSource;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;

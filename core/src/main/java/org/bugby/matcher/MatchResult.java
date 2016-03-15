@@ -3,7 +3,7 @@ package org.bugby.matcher;
 import java.io.File;
 
 import org.bugby.api.TreeMatcher;
-import org.bugby.matcher.javac.ParsedSource;
+import org.bugby.matcher.javac.source.ParsedSource;
 
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.Tree;

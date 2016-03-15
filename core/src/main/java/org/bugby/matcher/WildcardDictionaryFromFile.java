@@ -6,8 +6,8 @@ import javax.lang.model.type.TypeMirror;
 import org.bugby.api.annotation.Pattern;
 import org.bugby.api.annotation.PseudoAnnotation;
 import org.bugby.matcher.javac.ElementUtils;
-import org.bugby.matcher.javac.ParsedSource;
 import org.bugby.matcher.javac.TreeUtils;
+import org.bugby.matcher.javac.source.ParsedSource;
 
 import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.ClassTree;

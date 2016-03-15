@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
 
-import org.bugby.matcher.javac.ParsedSource;
+import org.bugby.matcher.javac.source.ParsedSource;
 
 import com.google.common.collect.Multimap;
 import com.sun.source.tree.CompilationUnitTree;

@@ -1,0 +1,7 @@
+ maven plugin.
+
+- configure source parsers - add one from maven downloaded sources
+- read wildcards
+- read bug definitions
+- apply bug defs to project's sources
+

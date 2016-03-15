@@ -1,12 +1,10 @@
 package org.bugby.matcher;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,7 +18,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
-import org.bugby.SourceFromReflection;
+import org.bugby.api.BugbyException;
 import org.bugby.api.MatchingContext;
 import org.bugby.api.TreeMatcher;
 import org.bugby.api.TreeMatcherFactory;
@@ -51,9 +49,9 @@ import org.bugby.matcher.expression.UnaryMatcher;
 import org.bugby.matcher.javac.ElementUtils;
 import org.bugby.matcher.javac.ElementWrapperTree;
 import org.bugby.matcher.javac.InternalUtils;
-import org.bugby.matcher.javac.ParsedSource;
-import org.bugby.matcher.javac.SourceParser;
 import org.bugby.matcher.javac.TreeUtils;
+import org.bugby.matcher.javac.source.ParsedSource;
+import org.bugby.matcher.javac.source.SourceParser;
 import org.bugby.matcher.statement.AssertMatcher;
 import org.bugby.matcher.statement.BlockMatcher;
 import org.bugby.matcher.statement.BreakMatcher;
@@ -124,6 +122,8 @@ import com.sun.source.tree.VariableTree;
 import com.sun.source.tree.WhileLoopTree;
 
 public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
+	private static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DefaultTreeMatcherFactory.class);
+
 	private static Set<Class<? extends Annotation>> skipAnnotations = new HashSet<Class<? extends Annotation>>(Arrays.asList(Pattern.class,
 		SuppressWarnings.class, Override.class, Correlation.class));
 
@@ -178,11 +178,21 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 	private final ClassLoader builtProjectClassLoader;
 	private ParsedSource parsedSource;
 
+	private List<SourceParser> sourceParsers = new ArrayList<>();
+
 	private Set<Class<? extends Annotation>> pseudoAnnotations = new HashSet<>();
 
 	public DefaultTreeMatcherFactory(ClassLoader builtProjectClassLoader) {
 		this.wildcardDictionary = new WildcardDictionary();
 		this.builtProjectClassLoader = builtProjectClassLoader;
+	}
+
+	public List<SourceParser> getSourceParsers() {
+		return sourceParsers;
+	}
+
+	public void setSourceParsers(List<SourceParser> sourceParsers) {
+		this.sourceParsers = sourceParsers;
 	}
 
 	private String getMethodName(MethodInvocationTree method) {
@@ -222,47 +232,6 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		return null;
 	}
 
-	// private static String sourceFileName(Class<?> clz) {
-	// return clz.getName().replace(".class", "").replace('.', File.separatorChar) + ".java";
-	// }
-
-	private static final String[] SOURCE_PATHS = {"src/main/java", "src/test/java", "../core/src/main/java"};
-
-	private static File sourcePath(String fileName) {
-		for (String p : SOURCE_PATHS) {
-			File f = new File(p, fileName);
-			if (f.exists()) {
-				return f;
-			}
-		}
-		throw new RuntimeException("Cannot find file:" + fileName);
-	}
-
-	private File sourceFile(String className) {
-		return sourcePath(className.replace('.', File.separatorChar) + ".java");
-	}
-
-	public TreeMatcher buildFromFile(File file) {
-		// TODO the source should not be kept as field
-		parsedSource = SourceParser.parse(file, builtProjectClassLoader, "UTF-8");
-		CompilationUnitTree cu = parsedSource.getCompilationUnitTree();
-
-		return build(cu);
-	}
-
-	@Override
-	public TreeMatcher buildForType(String aType) {
-		// remove the type argument if needed
-		String type = aType.replaceAll("<.*>", "");
-		// TODO here I need a mechanism to find the source of a given type
-		if (type.startsWith("org.bugby")) {
-			CompilationUnitMatcher cuMatcher = (CompilationUnitMatcher) buildFromFile(sourceFile(type));
-			return cuMatcher.getTypeMatchers().get(0);
-		}
-		TypeElement element = parsedSource.getElements().getTypeElement(type);
-		return new TypeWithoutSourceMatcher(new ElementWrapperTree(element), element.asType());
-	}
-
 	private boolean isPrimitive(String type) {
 		if (type.contains(".")) {
 			return false;
@@ -275,6 +244,42 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 		return false;
 	}
 
+	private TreeMatcher typeWithoutSourceMatcher(String type) {
+		TypeElement element = parsedSource.getElements().getTypeElement(type);
+		return new TypeWithoutSourceMatcher(new ElementWrapperTree(element), element.asType());
+	}
+
+	private Map<String, TreeMatcher> matchers = new HashMap<>();
+
+	@Override
+	public TreeMatcher buildForType(String aType) {
+		// remove the type argument if needed
+		String type = aType.replaceAll("<.*>", "");
+
+		TreeMatcher matcher = matchers.get(type);
+		if (matcher != null) {
+			return matcher;
+		}
+
+		try {
+			parsedSource = parseSource(aType);
+			System.out.println("--> " + type);
+			matcher = typeWithoutSourceMatcher(type);
+			matchers.put(type, matcher);
+			if (!type.startsWith("java.")) {
+				CompilationUnitMatcher cuMatcher = (CompilationUnitMatcher) build(parsedSource.getCompilationUnitTree());
+				matcher = cuMatcher.getTypeMatchers().get(0);
+				matchers.put(type, matcher);
+			}
+			System.out.println("<-- " + type);
+			return matcher;
+		}
+		catch (BugbyException ex) {
+			System.err.print("Cannot find source for :" + aType + ":" + ex);
+			return typeWithoutSourceMatcher(type);
+		}
+	}
+
 	@Override
 	public Tree loadTypeDefinition(String aType) {
 		// remove the type argument if needed
@@ -284,39 +289,35 @@ public class DefaultTreeMatcherFactory implements TreeMatcherFactory {
 			return new ElementWrapperTree(element);
 		}
 
-		ParsedSource typeParsedSource;
-		if (type.startsWith("org.bugby")) {
-			typeParsedSource = parseSource(type);
-		} else {
-			typeParsedSource = parseFakeSource(type);
-		}
+		ParsedSource typeParsedSource = parseSource(type);
 		CompilationUnitTree cu = typeParsedSource.getCompilationUnitTree();
 		// TODO should look into actual type names
 		return cu.getTypeDecls().get(0);
 
 	}
 
+	private Map<String, ParsedSource> parsedSources = new HashMap<>();
+
 	@Override
-	public ParsedSource parseSource(String className) {
-		return SourceParser.parse(sourceFile(className), builtProjectClassLoader, "UTF-8");
-	}
-
-	private ParsedSource parseFakeSource(String className) {
-		try {
-			Class<?> cls = builtProjectClassLoader.loadClass(className);
-			SourceFromReflection src = new SourceFromReflection();
-			FileWriter f = new FileWriter("target/" + cls.getSimpleName() + ".java");
-			src.generateSource(cls, f);
-			f.close();
-			return SourceParser.parse(new File("target/" + cls.getSimpleName() + ".java"), builtProjectClassLoader, "UTF-8");
+	public ParsedSource parseSource(String aTypeName) {
+		String typeName = aTypeName.replaceAll("<.*>", "");
+		ParsedSource parsed = parsedSources.get(typeName);
+		if (parsed != null) {
+			return parsed;
 		}
-		catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
+		for (SourceParser parser : sourceParsers) {
+			try {
+				log.info("TRYING " + parser + " for " + aTypeName);
+				parsed = parser.parseSource(typeName);
+				parsedSources.put(typeName, parsed);
+				return parsed;
+			}
+			catch (Exception ex) {
+				//try another parser
+				//log.error("Cannot find source: " + aTypeName + " with:" + parser.getClass().getName() + " =" + ex, ex);
+			}
 		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-
+		throw new BugbyException("Unable to parse source for type:" + typeName + " parser:" + sourceParsers.size());
 	}
 
 	@Override

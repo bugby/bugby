@@ -2,6 +2,7 @@ package org.bugby.matcher.javac;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
@@ -11,17 +12,25 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.tools.JavaFileObject;
 
-class CustomJavaFileObject implements JavaFileObject {
+import com.google.common.io.CharStreams;
+
+public class CustomJavaFileObject implements JavaFileObject {
 	private final String binaryName;
 	private final URI uri;
 	private final String name;
+	private final Kind kind;
 
 	public CustomJavaFileObject(String binaryName, URI uri) {
+		this(binaryName, uri, Kind.CLASS);
+	}
+
+	public CustomJavaFileObject(String binaryName, URI uri, Kind kind) {
 		this.uri = uri;
 		this.binaryName = binaryName;
 		name = uri.getPath() == null ? uri.getSchemeSpecificPart() : uri.getPath(); // for FS based URI the path is not
 																					// null, for JAR URI the scheme
 																					// specific part is not null
+		this.kind = kind;
 	}
 
 	@Override
@@ -31,6 +40,7 @@ class CustomJavaFileObject implements JavaFileObject {
 
 	@Override
 	public InputStream openInputStream() throws IOException {
+		System.out.println("OPEN:" + uri);
 		return uri.toURL().openStream(); // easy way to handle any URI!
 	}
 
@@ -46,12 +56,12 @@ class CustomJavaFileObject implements JavaFileObject {
 
 	@Override
 	public Reader openReader(boolean ignoreEncodingErrors) throws IOException {
-		throw new UnsupportedOperationException();
+		return new InputStreamReader(openInputStream());
 	}
 
 	@Override
 	public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {
-		throw new UnsupportedOperationException();
+		return CharStreams.toString(openReader(ignoreEncodingErrors));
 	}
 
 	@Override
@@ -71,12 +81,13 @@ class CustomJavaFileObject implements JavaFileObject {
 
 	@Override
 	public Kind getKind() {
-		return Kind.CLASS;
+		return kind;
 	}
 
 	@Override
 	// copied from SImpleJavaFileManager
-	public boolean isNameCompatible(String simpleName, Kind kind) {
+			public
+			boolean isNameCompatible(String simpleName, Kind kind) {
 		String baseName = simpleName + kind.extension;
 		return kind.equals(getKind()) && (baseName.equals(getName()) || getName().endsWith("/" + baseName));
 	}

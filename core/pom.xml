@@ -15,7 +15,8 @@
 
 
 	<properties>
-<!-- 		<java.home>${JAVA_HOME}</java.home> -->
+		<!-- <java.home>${JAVA_HOME}</java.home> -->
+		<aetherVersion>0.9.0.M2</aetherVersion>
 	</properties>
 
 	<dependencies>
@@ -36,15 +37,44 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>16.0</version>
+			<version>16.0.1</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.bitbucket.mstrobel</groupId>
+			<artifactId>procyon-core</artifactId>
+			<version>0.5.29</version>
+		</dependency>
 
+		<dependency>
+			<groupId>org.eclipse.aether</groupId>
+			<artifactId>aether-api</artifactId>
+			<version>${aetherVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.aether</groupId>
+			<artifactId>aether-util</artifactId>
+			<version>${aetherVersion}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.12</version>
+		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!--  this log is only for tests. it's up to the user to choose other implementation -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.12</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
