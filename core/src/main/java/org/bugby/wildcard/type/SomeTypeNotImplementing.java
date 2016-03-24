@@ -3,6 +3,6 @@ package org.bugby.wildcard.type;
 import org.bugby.api.annotation.Pattern;
 
 @Pattern
-public class SomeTypeIncompatibleWith<T> {
+public class SomeTypeNotImplementing<T> {
 
 }

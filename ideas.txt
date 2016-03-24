@@ -14,10 +14,15 @@ TODO
 - EmptySwitchStatements -> switch without code
 - UnnecessaryConversionTemporary -> have an annotation to say primitive type whenever i but "int"
 - match on literals with regex
+- String literals (and other types)
 - easier to have both <,> someExpressionUsing(x, op, y)
 - implement MissingInterface
 - implement SomeTypeImplementing<X,...>
 - implement SomeTypeExtending<X,...>
+- implement SomeTypeExcepting<X,...>
+- implement SomeTypeNotImplementing<X,...>
+- implement SomeTypeNotExtending<X,...>
+
 - @PossibleTypes(t1,t2 ...)
 - handle cases when I have  {someExpressionUsing(abc); return ...} to make sure i match also on return abc;
 - replace @Override to actually check if the method overrides something in MethodMatcher
@@ -25,3 +30,5 @@ TODO
 - someStringLiteralContaining
 - match on execution paths - make sure a pattern exists on all different exit paths
 - order of fields and blocks is important!
+- someIntValue with range (in and out) - should look at constants too
+- someArrayValue

@@ -8,6 +8,7 @@ import org.bugby.bugs.findbugs.badpractice.ComparisonBoolean;
 import org.junit.Test;
 
 public class TestFindbugsPadPractice {
+
 	@Test
 	public void testCloneNoSuperCallBug() {
 		assertBug(CloneNoSuperCall1.class, CloneNoSuperCallBug.class, 5);
@@ -27,4 +28,5 @@ public class TestFindbugsPadPractice {
 	public void testComparisonBooleanNoBug() {
 		assertNoBug(ComparisonBoolean.class, ComparisonBooleanNoBug.class);
 	}
+
 }

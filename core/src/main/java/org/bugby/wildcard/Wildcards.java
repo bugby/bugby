@@ -21,6 +21,11 @@ public class Wildcards {
 	public static long someLong = 0;
 	public static boolean someBoolean = true;
 
+	@Pattern(SomeValueMatcher.class)
+	public static String someStringLiteral() {
+		return null;
+	}
+
 	public static String someStringLiteralContaining(String regex) {
 		return null;
 	}
@@ -37,6 +42,16 @@ public class Wildcards {
 
 	@Pattern(SomeValueMatcher.class)
 	public static int someIntValue() {
+		return 0;
+	}
+
+	@Pattern(SomeValueMatcher.class)
+	public static int someIntValue(int min, int max) {
+		return 0;
+	}
+
+	@Pattern(SomeValueMatcher.class)
+	public static int someIntValueOutside(int min, int max) {
 		return 0;
 	}
 
@@ -61,8 +76,23 @@ public class Wildcards {
 	}
 
 	@Pattern(SomeValueMatcher.class)
+	public static double someDoubleLiteral() {
+		return 0;
+	}
+
+	@Pattern(SomeValueMatcher.class)
 	public static boolean someBooleanValue() {
 		return false;
+	}
+
+	@Pattern(SomeValueMatcher.class)
+	public static Object[] someArrayValue() {
+		return null;
+	}
+
+	@Pattern(SomeValueMatcher.class)
+	public static <T> T[] someArrayValue(Class<T> type) {
+		return null;
 	}
 
 	@Pattern(SomeTypedValueMatcher.class)
@@ -91,6 +121,11 @@ public class Wildcards {
 	@Pattern(SomeConditionMatcher.class)
 	public static boolean someCondition() {
 		return true;
+	}
+
+	@Pattern(SomeExpressionUsingMatcher.class)
+	public static <T> T someExpressionUsing1(Object value) {
+		return null;
 	}
 
 	@Pattern(SomeExpressionUsingMatcher.class)
